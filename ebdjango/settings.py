@@ -85,11 +85,15 @@ if 'RDS_HOSTNAME' in os.environ:
             'PORT': os.environ['RDS_PORT'],
         }
     }
+
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ebdjango',
+            'USER':'root',
+            'PASSWORD': 'P@ssword',
+            'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
 
