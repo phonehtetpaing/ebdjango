@@ -1,5 +1,6 @@
 awsebcli==3.14.4
 blessed==1.15.0
+beautifulsoup4==4.9.1
 boto3==1.7.45
 botocore==1.10.45
 cached-property==1.4.3
@@ -12,6 +13,8 @@ colorama==0.3.9
 configparser==3.5.0
 deprecation==2.0.6
 Django==2.0.5
+django-dynamic-fixture==3.1.1
+django_mock_queries==2.1.5
 django-bootstrap-datepicker-plus==3.0.4
 django-debug-toolbar==1.9.1
 django-filter==1.1.0
@@ -31,6 +34,7 @@ dockerpty==0.4.1
 docopt==0.6.2
 docutils==0.14
 feedparser==5.2.1
+freezegun==0.3.15
 future==0.16.0
 google-api-python-client==1.6.6
 google-auth==1.4.1
@@ -51,6 +55,10 @@ pyasn1==0.4.3
 pyasn1-modules==0.2.1
 pycrypto==2.6.1
 pyparsing==2.2.2
+pytest==5.2.1
+pytest-cov==2.8.1
+pytest-django==3.5.1
+pytest-mock==1.11.1
 python-dateutil==2.7.3
 python-decouple==3.1
 pytz==2017.2
