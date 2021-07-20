@@ -2,23 +2,32 @@ branch-defaults:
   default:
     environment: django-env
   main:
-    environment: python-env
+    environment: messaging-platform-update-env
     group_suffix: null
 environment-defaults:
+  Messagingplatformupdate-env:
+    branch: null
+    repository: null
   django-env:
     branch: null
     repository: null
+  messaging-platform-update-env:
+    branch: main
+    repository: ebdjango
+  python-env:
+    branch: null
+    repository: null
 global:
-  application_name: peacefactory-ebtest
-  branch: null
+  application_name: messaging_platform_update
+  branch: main
   default_ec2_keyname: null
-  default_platform: Python 3.7
+  default_platform: Python 3.8
   default_region: us-west-2
   include_git_submodules: true
   instance_profile: null
   platform_name: null
   platform_version: null
   profile: null
-  repository: null
+  repository: ebdjango
   sc: git
   workspace_type: Application

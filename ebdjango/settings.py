@@ -25,7 +25,7 @@ SECRET_KEY = 'm4c_3$p7&^yvjlnn8ka60!-($n1kjy@gg*)^n&1%!a*cw!1)%1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['python-env.eba-e3gr9hq7.us-west-2.elasticbeanstalk.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['messaging-platform-update-env.eba-tnnkwx9m.us-west-2.elasticbeanstalk.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
