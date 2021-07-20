@@ -13,7 +13,7 @@ environment-defaults:
     repository: null
   messaging-platform-update-env:
     branch: main
-    repository: ebdjango3
+    repository: ebdjango1
   python-env:
     branch: null
     repository: null
