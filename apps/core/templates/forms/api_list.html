@@ -1,0 +1,222 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load get_url_file_name %}
+{% load to_string %}
+
+{% for api in api_list %}
+<div class="row api-child" data-id="{{ forloop.counter }}">
+    <div class="col-md-12">
+        <div class="message-bubble">
+            <div class="form-group">
+                <label><i class="ti-menu"></i></label><i class="ti-close"></i>
+                {% if api.type == 'textsendmessage' %}
+                <textarea rows="5" class="form-control input-child border-input bubble-input bubble-border-blue expand"
+                          placeholder=" " name="TextSendMessage_0_{{ forloop.counter }}"
+                          maxlength="2000" required="">{{ api.payload }}</textarea>
+                <small class="form-text text-muted">Max 2000 characters.</small>
+
+                {% elif api.type == 'imagesendmessage' %}
+                <div class="message-img-thumbnail vertical-align">
+                    <img src="{{ api.payload }}">
+                </div>
+                <input type="url" class="message-img-input form-control border-input input-child" placeholder="https://example.com/original.jpg" name="ImageSendMessage_original_content_url_0_{{ forloop.counter }}" value="{{ api.payload }}" maxlength="1000" required>
+                <small class="form-text text-muted">
+                    Max 1000 characters.
+                </small>
+
+                {% elif api.type == 'filesendmessage' %}
+                <div class="message-file-thumbnail vertical-align">
+                    <i class="fa fa-file fa-5x" aria-hidden="true"></i>
+                    <span class=" text-center">{{ api.payload|get_url_file_name }}</span>
+                </div>
+                <input type="url" class="message-file-input form-control border-input input-child" placeholder="https://example.com/original.pdf" name="FileSendMessage_{{ forloop.counter }}" value="{{ api.payload }}" maxlength="1000" required>
+                <small class="form-text text-muted">
+                    Max 1000 characters.
+                </small>
+
+                {% elif api.type == 'carouselsendmessage' %}
+                <input type="text" class="form-control border-input input-child" placeholder="https://example.com/original.jpg" name="CarouselTemplate_alt_text_0_{{ forloop.counter }}" value="{{ api.param.alt_text}}" hidden>
+                <i class="columns-toggle ti-angle-down"></i>
+                <div class="carousel_columns scrolling-wrapper">
+                    {% for column in api.payload %}
+                    <div class="message-bubble bubble-white bubble-border-blue api-child col-md-12 item">
+                        <input type="hidden" name="CarouselTemplate_column_{{column.id}}_{{ forloop.counter }}" required>
+                        <i class="ti-close"></i>&nbsp;{% trans "lbl_thumbnail" %}</label>
+                        <div class="content">
+                            <div class="form-group">
+                                <div class="message-img-thumbnail vertical-align">
+                                    <img src="{{ column.image_url }}">
+                                </div>
+                                <input type="text" class="message-img-input form-control border-input" placeholder=" " name="column_thumbnail_image_url_{{ forloop.parentloop.counter }}" value="{{ column.image_url }}"  maxlength="1000" required>
+                                <small class="form-text text-muted">
+                                    Max 1000 characters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>{% trans "lbl_title" %}</label>
+                                <input type="text" class="form-control border-input" placeholder="" name="column_title_{{ forloop.parentloop.counter }}" value="{{ column.title }}"  maxlength="40" required>
+                                <small class="form-text text-muted">
+                                    Max 40 characters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>{% trans "lbl_text" %}</label>
+                                <input type="text" class="form-control border-input" placeholder="" name="column_text_{{ forloop.parentloop.counter }}" value="{{ column.subtitle }}"  maxlength="60" required>
+                                <small class="form-text text-muted">
+                                    Max 60 characters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>{% trans "lbl_action_url" %}</label>
+                                <input type="url" class="form-control border-input" placeholder=" " name="column_action_json_{{ forloop.parentloop.counter }}" value="{{ column.actions }}" maxlength="1000" required>
+                                <small class="form-text text-muted">
+                                    Max 1000 characters.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="carousel_columns_control text-right">
+                    <button type="button" class="btn btn-info btn-fill btn-wd add-carousel-child"><i class="ti-plus"></i></button>
+                </div>
+
+                {% elif api.type == 'quickreplysendmessage'%}
+                <textarea rows="5" class="form-control input-child border-input bubble-input bubble-border-blue expand"
+                          placeholder=" " name="QuickReplySendMessage_question_{{ forloop.counter }}"
+                          maxlength="160" required="">{{ api.question }}</textarea>
+                <div class='vertical-align form-group'>
+                    <div class='quick-replies'>
+                        {% for reply in api.payload %}
+                        <div class='quick-reply anchor' data-quickreply-child-id='{{ forloop.counter }}'>
+                            <input type='text' class='bubble-input input-child' maxlength='20' value='{{ reply.title }}' placeholder='Enter Reply Text' name='QuickReplySendMessage_title_{{ forloop.parentloop.counter }}'>
+                            <div class='option-bubble bubble-white'>
+                                <div class='bubble-content'>
+                                    <div class='horizontal-align'>
+                                        <select class='input-child' name="QuickReplySendMessage_action_goto_{{ forloop.parentloop.counter }}">
+                                            <optgroup label="{% trans 'option_label_system' %}">
+                                                <option value="none"{% if reply.payload|to_string == 'none' or reply.payload|to_string == '' %} selected{% endif %}>{% trans "option_continue" %}</option>
+                                                <option value="__event_GET_STARTED"{% if reply.payload|to_string == '__event_GET_STARTED' %} selected{% endif %}>{% trans "option_event_registration" %}</option>
+                                            </optgroup>
+
+                                            <optgroup label="{% trans 'option_label_blocks' %}">
+                                                {% for block in message_blocks %}
+                                                <option value="{{ block.id }}"{% if reply.payload|to_string == block.id|to_string %} selected{% endif %}>{{ block.admin_text }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type='button' class='add-quickreply-child message-bubble bubble-dashed'>+ {% trans "lbl_add_quickreply" %}</button>
+                </div>
+
+                {% elif api.type == 'waitsendmessage' %}
+                <div class='form-group'>
+                    <div class='bubble-input bubble-white range-slider anchor' data-api-child-id='0'>
+                        {% trans "api_wait_description" %}
+                        <input class='range-slider__range input-child' type='range' name='WaitSendMessage_{{ forloop.counter }}' value={{ api.payload }} min='0' max='500'>
+                        <span class='range-slider__value'>0</span>
+                    </div>
+                </div>
+
+                {% elif api.type == 'tagsendmessage' %}
+                <div class="message-img-thumbnail text-center">
+                    <i class="fa fa-user-plus fa-4x" aria-hidden="true"></i><i class="fa fa-tags fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="form-inline horizontal-align bubble-white">
+                    <select class="input-child mb-2 mr-sm-2 mb-sm-0" name="TagSendMessage_{{ forloop.counter }}">
+                        <option value="add" {% if api.payload.mode == "add" %}  selected{% endif %}>{% trans "option_add" %}</option>
+                        <option value="remove" {% if api.payload.mode == "remove" %}  selected{% endif %}>{% trans "option_remove" %}</option>
+                    </select>
+                    <input type="text" class="form-control border-input input-child" placeholder="some tag description" name="TagSendMessage_{{ forloop.counter }}" value="{{ api.payload.tag }}" maxlength="1000" required>
+                </div>
+
+                {% elif api.type == 'todosendmessage' %}
+                <div class="message-img-thumbnail text-center">
+                    <i class="fa fa-flag fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="form-inline horizontal-align bubble-white">
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_question' %}" name="TodoSendMessage_{{ forloop.counter }}" value="{{ api.payload.question }}" maxlength="1000" required>
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_title' %}" name="TodoSendMessage_{{ forloop.counter }}" value="{{ api.payload.title }}" maxlength="1000" required>
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_memo' %}" name="TodoSendMessage_{{ forloop.counter }}" value="{{ api.payload.memo }}" maxlength="1000" required>
+                </div>
+
+                {% elif api.type == 'inputsendmessage' %}
+                <div class="message-img-thumbnail text-center">
+                    <i class="fa fa-keyboard-o fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="form-inline horizontal-align bubble-white">
+                    <input type="text" class="form-control border-input input-child mb-2 mr-sm-2 mb-sm-0" placeholder="{% trans 'placeholder_todo_question' %}" name="InputSendMessage_{{ forloop.counter }}" value="{{ api.payload.question }}" maxlength="1000" required>
+                    <!-- maybe insert some validation for things like email? -->
+                    <select class="input-child" name="InputSendMessage_{{ forloop.counter }}">
+                        <option value="email"{% if api.payload.attribute == 'email' %} selected{% endif %}>{% trans "tbl_title_email" %}</option>
+                        <option value="tel1"{% if api.payload.attribute == 'tel1' %} selected{% endif %}>{% trans "lbl_tel" %}</option>
+                        <option value="address1"{% if api.payload.attribute == 'address1' %} selected{% endif %}>{% trans "lbl_address" %}</option>
+                        <option value="first_name"{% if api.payload.attribute == 'first_name' %} selected{% endif %}>{% trans "lbl_first_name" %}</option>
+                        <option value="last_name"{% if api.payload.attribute == 'last_name' %} selected{% endif %}>{% trans "lbl_last_name" %}</option>
+                    </select>
+                </div>
+
+                {% elif api.type == 'formsendmessage' %}
+                <div class="message-img-thumbnail text-center">
+                    <i class="fa fa-keyboard-o fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="form-group bubble-white p-4">
+                    <div class="col-md-12">
+                        <div class="row form-group">
+                            <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_form_title' %}" name="FormSendMessage_{{ forloop.counter }}" value="{{ api.title }}" maxlength="1000" required>
+                            <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_form_memo' %}" name="FormSendMessage_{{ forloop.counter }}" value="{{ api.memo }}" maxlength="1000" required>
+                        </div>
+                        <div class="row form-group">
+                            <select class="input-child form-check-label form-inline" name="FormSendMessage_{{ forloop.counter }}">
+                                <option value="todo" {% if api.todo %}selected{% endif %}> {%trans "lbl_form_todo_option" %}</option>
+                            </select>
+                        </div>
+                        <div class="form-questions">
+                            {% for child in api.payload %}
+                            <div class="row form-question" data-form-child-id='{{ forloop.counter }}'>
+                                <input type="text" class="form-control col-md-3 border-input input-child" placeholder="{% trans 'placeholder_form_attribute' %}" name="FormSendMessage_{{ forloop.parentloop.counter }}" value="{{ child.attribute }}" maxlength="1000" required>
+                                <input type="text" class="form-control col-md-9 border-input input-child" placeholder="{% trans 'placeholder_form_question' %}" name="FormSendMessage_{{ forloop.parentloop.counter }}" value="{{ child.question }}" maxlength="1000" required>
+                            </div>
+                        {% endfor %}
+                        </div>
+
+                        <div class="row offset-md-4 p-4">
+                            <button type='button' class='add-form-child message-bubble bubble-dashed'>+ {% trans "lbl_add_form_question" %}</button>
+                        </div>
+                    </div>
+                </div>
+                {% elif api.type == 'gotomessage' %}
+                <div class="message-img-thumbnail text-center">
+                    <i class="fa fa-arrow-right fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="form-inline bubble-white">
+                    <div class="form-group mx-5">
+                        <label for="GoToMessage_{{ forloop.counter }}_block">{% trans "lbl_goto_block" %}</label>
+                        <select id="GoToMessage_{{ forloop.counter }}_block" class='input-child ml-3' name="GoToMessage_{{ forloop.counter }}">
+                            <optgroup label="{% trans 'option_label_blocks' %}">
+                                {% for block in message_blocks %}
+                                <option value="{{ block.id }}"{% if api.payload.0|to_string == block.id|to_string %} selected{% endif %}>{{ block.admin_text }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group mx-5">
+                        <label for="GoToMessage_{{ forloop.counter }}_step">{% trans "lbl_goto_step" %}</label>
+                        <input id="GoToMessage_{{ forloop.counter }}_step" type="number" class="form-control ml-3 border-input input-child" placeholder="{% trans 'placeholder_goto_step' %}" name="GoToMessage_{{ forloop.counter }}" value="{{ api.payload.1 }}" min="0" required>
+                    </div>
+
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

@@ -1,0 +1,66 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load is_event_exist %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-title">
+                <h4>{% trans "lbl_event_catagory_detail"%}</h4>
+            </div>
+            <div class="content">
+                <form action="{% if event_category %}{% url namespace|add:':event_category_edit' event_category_id=event_category.id %}{% else %}{% url namespace|add:':event_category_add' %}{% endif %}" method="post" role="form">
+                    <fieldset {% if event_category.id|is_event_exist %} disabled {% endif %}>
+                        {% csrf_token %}
+                        <div class="card">
+                            {% include 'forms/default_form.html' with form=form %}
+                        </div>
+
+                        {%if event_category.vendor_branch.is_google_calendar_ready %}
+                        <!--google calendar settings-->
+                        <div class="card">
+                            {% include 'forms/default_form_field.html' with form=gcal_form field=gcal_form.is_gcal_use %}
+
+                            <div id="gcal" {% if not event_category.is_gcal_use %}style="display:none"{% endif %}>
+                                {% include 'forms/default_form_field.html' with form=gcal_form field=gcal_form.is_gcal_available_time %}
+                                {% include 'forms/default_form_field.html' with form=gcal_form field=gcal_form.is_user_select_event_minutes %}
+
+                                <div id="minute" {% if not event_category.is_user_select_event_minutes %}style="display:none"{% endif %}>
+                                    {% include 'forms/default_form_field.html' with form=gcal_form field=gcal_form.event_minutes_csv values=event_category.event_minutes_csv %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </fieldset>
+                    <!--submit button/ error message-->
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        {% if event_category.id|is_event_exist %}
+                        <div type="" class="text-danger" disabled> {% trans "lbl_event_exists" %}</div>
+                        {% else %}
+                        <button type="submit" class="btn btn-info btn-fill btn-wd"> {% trans "btn_save" %}</button>
+                        {% endif %}
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    document.getElementById('is_gcal_use_0').addEventListener("change", function(){ displayDiv("gcal", "none") });
+    document.getElementById('is_gcal_use_1').addEventListener("change", function(){ displayDiv("gcal", "block") });
+
+    document.getElementById('is_user_select_event_minutes_0').addEventListener("change", function(){ displayDiv("minute", "none") });
+    document.getElementById('is_user_select_event_minutes_1').addEventListener("change", function(){ displayDiv("minute", "block") });
+})();
+
+function displayDiv(id, value) {
+    document.getElementById(id).style.display=value;
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,223 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+<script>
+{% block tailscript %}
+<!--Chart related functions-->
+var endpoint = '/api/data/platforms'
+$.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+        setChart("pieChart", 'pie', data)
+    },
+    error: function(error_data){
+        console.log("error")
+        console.log(error_data)
+    }
+})
+$.ajax({
+    method: "GET",
+    url: '/api/data/tag/ranking/',
+    success: function(data){
+        tmp = setChart("tagChart", 'horizontalBar', data)
+        tmp.options.legend.display = false
+        tmp.options.scales.xAxes[0].ticks.stepSize = 1
+        tmp.update();
+    },
+    error: function(error_data){
+        console.log("error")
+        console.log(error_data)
+    }
+})
+
+function setChart(chart, type, data){
+    var ctx = document.getElementById(chart);
+    var parent = document.getElementById(chart+"-parent");
+    ctx.width = parent.offsetWidth;
+    ctx.height = parent.offsetHeight;
+
+    return myChart = new Chart(ctx, {
+        type: type,
+        data: {
+            labels: data.labels,
+            datasets: [{
+                data: data.default,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(34,139,34, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(34,139,34, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales:{
+              yAxes: [],
+              xAxes: []
+            },
+            maintainAspectRatio: true,
+        }
+    });
+}
+{% endblock %}
+</script>
+
+{% block content %}
+<div id="step1" class="row">
+    <div class="col-md-4">
+        <div class="card p-30">
+            <div class="media">
+                <div class="media-left media media-middle">
+                    <span><i class="fa fa-users f-s-40 color-primary"></i></span>
+                </div>
+                <div class="media-body media-text-right">
+                    <h2>{{ usercount }}</h2>
+                    <p class="m-b-0"> {% trans "lbl_users"%}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-30">
+            <div class="media">
+                <div class="media-left media media-middle">
+                    <span><i class="fa fa-check-square f-s-40 color-success"></i></span>
+                </div>
+                <div class="media-body media-text-right">
+                    <h2>{{ todocount }}</h2>
+                    <p class="m-b-0">{% trans "lbl_todos"%}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-30">
+            <div class="media">
+                <div class="media-left media media-middle">
+                    <span><i class="fa fa-calendar f-s-40 color-warning"></i></span>
+                </div>
+                <div class="media-body media-text-right">
+                    <h2>{{ eventcount }}</h2>
+                    <p class="m-b-0">{% trans "lbl_events"%}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div id="step2" class="col-lg-4">
+        <div class="card">
+            <div class="panel">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h4>{% trans "lbl_platforms"%}</h4>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="pieChart-parent" class="chart-container">
+                            <canvas id="pieChart" ></canvas>
+                        </div>
+                    </div>
+             </div>
+        </div>
+        <!-- /# card -->
+    </div>
+
+    <div id="step3" class="col-lg-8">
+        <div class="card">
+            <h4 class="card-title">{% trans "lbl_tag_ranking"%}</h4>
+            <div class="card-body browser">
+                <div id="tagChart-parent" class="chart-container">
+                    <canvas id="tagChart" ></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- Todo list -->
+    <div id="step4" class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% trans "lbl_todos"%}</h4>
+                <div class="card-content">
+                    <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{% trans "tbl_title_action"%}</th>
+                            <th>{% trans "tbl_title_user"%}</th>
+                            <th>{% trans "tbl_title_status"%}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for todo in todos %}
+                        <tr>
+                            <td>{{ todo.title }}</td>
+                            <td>{{ todo.end_user.last_name }} {{ todo.end_user.first_name }}</td>
+                            <td>
+                                {% if todo.todo_action_status.name == "NEW" %}
+                                    {% trans "lbl_todo_status_new"%}
+                                {% elif todo.todo_action_status.name == "In-Progress" %}
+                                    {% trans "lbl_todo_status_inprogress"%}
+                                {% elif todo.todo_action_status.name == "DONE" %}
+                                    {% trans "lbl_todo_status_done"%}
+                                {% elif todo.todo_action_status.name == "Pending" %}
+                                    {% trans "lbl_status_pending"%}
+                                {% endif %}
+                            </td>
+                             <td class="color-primary">
+                                 <a href="{% url namespace|add:':todo_detail' todo_id=todo.id %}" class="badge badge-info btn-fill btn-wd"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{% trans "btn_details" %}</a>
+                             </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Event List-->
+    <div id="step5" class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% trans "lbl_events"%}</h4>
+                <div class="card-content">
+                    <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{% trans "tbl_title_starttime"%}</th>
+                            <th>{% trans "tbl_title_event"%}</th>
+                            <th>{% trans "tbl_title_location"%}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.start_dt|default:"" }}</td>
+                            <td>{{ event.name|default:"" }}</td>
+                            <td>{{ event.location|default:"" }}</td>
+                            <td> <a href="{% url namespace|add:':event_reservation_list' event_id=event.id  %}" class="btn btn-info btn-sm"><i class="fa fa-book" aria-hidden="true"></i> {% trans "btn_reservations" %}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src='{% static "core/assets/js/intro/dashboard-intro.js" %}'></script>
+{% endblock %}

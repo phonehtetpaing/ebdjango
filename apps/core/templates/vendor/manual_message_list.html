@@ -1,0 +1,110 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load get_tagged_user_count %}
+{% load i18n %}
+
+{% block content %}
+<div class="col-lg-12">
+    <div class="card">
+        <form id="selectform" action="{% url namespace|add:':manual_message_delete'%}" method="post" role="form">
+            {% csrf_token %}
+            <div class="card-title">
+                <h4>{% trans "lbl_manual_message"%} </h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="align-middle"><input type="checkbox" name="select_all" id="select_all" value="all"></th>
+                            <th id="step1">{% trans "tbl_title_title"%}</th>
+                            <th id="step2">{% trans "tbl_title_tagged_user_count"%}</th>
+                            <th id="step3">{% trans "tbl_title_status"%}</th>
+                            <th>{% trans "tbl_title_schedule"%}</th>
+                            {# Translators: this is a create new button #}
+                            <th id="step4"><a href="{% url namespace|add:':manual_message_add' %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-plus" aria-hidden="true"></i>{% trans "btn_new" %}</a></th>
+                            <th><button type="submit" class="btn badge badge-danger btn-fill btn-wd" onclick="return confirm('{% trans 'dia-erase-confirm' %}')"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</button></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for manual_message in messages %}
+                        <tr>
+                            <td class="align-middle"><input type="checkbox" name="select_item" value={{ manual_message.id }}></td>
+                            <td>{{ manual_message.name|default:"-" }}</td>
+                            <td>{{ manual_message.tags|get_tagged_user_cont }}</td>
+                            <td>
+                                {% if manual_message.message_status.name == "draft"%}
+                                    {% trans "lbl_status_draft"%}
+                                {% elif manual_message.message_status.name == "pending"%}
+                                    {% trans "lbl_status_pending"%}
+                                {% elif manual_message.message_status.name == "scheduled"%}
+                                    {% trans "lbl_status_scheduled"%}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if manual_message.push_dt %}
+                                    {{ manual_message.push_dt|date:'Y-m-d H:i' }}
+                                {% else %}
+                                    ---
+                                {% endif %}
+                            </td>
+                            <td>
+                                {# Translators: this is an edit button #}
+                                <a id="step5" href="{% url namespace|add:':manual_message_detail' message_id=manual_message.id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{% trans "btn_edit" %}</a>
+                            </td>
+                            <td>
+                                {% if manual_message.tags|get_tagged_user_cont != 0 and manual_message.message_status.name == "pending"%}
+                                <div class="btn-group">
+                                  <a id="step7" href="{% url namespace|add:':manual_message_confirm' message_id=manual_message.id %}" class="btn badge badge-primary btn-fill btn-wd"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;{% trans "btn_send" %}</a>
+                                  <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only"></span>
+                                  </button>
+                                  <div class="dropdown-menu">
+                                    <a href="{% url namespace|add:':manual_message_test' message_id=manual_message.id %}" class="dropdown-item"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;{% trans "btn_test" %}</a>
+                                  </div>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if messages.has_other_pages %}
+                <ul class="pagination pagination-sm">
+                    {% if messages.has_previous %}
+                    <li><a href="?page={{ messages.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in messages.paginator.page_range %}
+                    {% if messages.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if messages.has_next %}
+                    <li><a href="?page={{ messages.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src='{% static "core/assets/js/intro/manualmessage-list-intro.js" %}'></script>
+
+{% endblock content %}
+{% block append_js_on_tail %}
+<script>
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        checkboxes.prop('checked', $(this).is(':checked'));
+    });
+</script>
+{% endblock %}

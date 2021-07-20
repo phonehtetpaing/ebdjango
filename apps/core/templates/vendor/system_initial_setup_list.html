@@ -1,0 +1,37 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load is_event_reservation_exist %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-title">
+                <h4>{% trans "lbl_vendor_user"%}</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{% trans "tbl_title_vendor_cd"%}</th>
+                            <th>{% trans "lbl_company_name"%}</th>
+                            <th><a href="{% url namespace|add:':system_initial_setup_new' %}" class="btn btn-info btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> {% trans "btn_new" %}</a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for vendor in vendors %}
+                        <tr>
+                            <td>{{ vendor.cd }}</td>
+                            <td>{{ vendor.company_name}}</td>
+                            <td> <a href="{% url namespace|add:':system_initial_setup_detail' vendor_id=vendor.id %}" class="btn btn-primary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i> {% trans "btn_edit" %}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

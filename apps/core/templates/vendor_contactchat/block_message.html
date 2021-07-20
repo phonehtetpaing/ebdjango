@@ -1,0 +1,109 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load get_url_file_name %}
+{% load to_string %}
+
+{% block css %}
+<link href='{% static "core/assets/css/editor.css" %}' rel="stylesheet" type="text/css">
+{% endblock %}
+{% block content %}
+
+<!-- Trigger Conditions -->
+<div class="content">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row card-title">
+                <h4>{% trans "lbl_sequence_title" %}</h4>
+            </div>
+            <div class="btn-group-vertical w-100">
+                {% for sequence in message_sequences %}
+                <a class=" w-100" href="{% url namespace|add:':block_message_detail' message_block_id=sequence.start_block_id %}">
+                    <button type="button" class="w-100 message-bubble bubble-white text-left" >
+                        <span><i class="ti-comment-alt"></i> {{ sequence.admin_text }}</span>
+                    </button>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="row card-title">
+                <h4>{% trans "lbl_block_title" %}</h4>
+            </div>
+            <div id="step1" class="vertical-align">
+                <label for='block-filter' style="position: relative; left: -52px; top: 30px;">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </label>
+
+                <input id='block-filter' type='text' class='block-filter message-bubble text-center' maxlength='20' value='' placeholder='Search' style="width:100%; display:block">
+                <hr>
+                <div class="block-list btn-group-vertical w-100">
+                    {% for block in message_blocks %}
+                    <a class=" w-100" href="{% url namespace|add:':block_message_detail' message_block_id=block.id %}">
+                        <button type="button" class=" w-100 message-bubble bubble-white text-left">
+                            <span><i class="ti-comment-alt"></i> {{ block.admin_text }}</span>
+                        </button>
+                    </a>
+                    {% endfor %}
+                </div>
+                <a id="step12" class=" w-100" href="{% url namespace|add:':block_message_add' %}">
+                    <button type="button" class="w-100 message-bubble bubble-dashed text-left">
+                        <span><i class="ti-comment-alt"></i> + New block</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form action="{% url namespace|add:':block_message_edit' message_block_id=message_block_id %}" method="post" role="form">
+                {% csrf_token %}
+                <!--block header-->
+                <div id="step13" class="api-header">
+                    <div class="title-display float-left">
+                        <h3>{{ message_block.admin_text }}  <a class="bi-title-edit"><i class="fa fa-pencil" aria-hidden="true"></i></a></h3>
+                    </div>
+                    <div class="title-edit float-left" >
+                        <h3><input type='text' class='bubble-input' maxlength='20' value='{{ message_block.admin_text }}' placeholder='Enter block title' name='admin_text'> <a class="bi-title-save"><i class="fa fa-save" aria-hidden="true"></i></a></h3>
+                    </div>
+                    <a href="{% url namespace|add:':block_message_delete' message_block_id=message_block_id %}" class="float-right btn btn-circular btn-secondary d-flex justify-content-center align-items-center">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <br>
+                <br>
+
+                <!--main api list-->
+                <div class="message-block" id="apis">
+                     {% include 'forms/api_list.html' with api_list=api_list %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="save btn btn-md btn-success">{% trans "btn_confirm" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2 step-msg-controll">
+            <div id="step2" class="controll-container btn-group-vertical">
+                <button id="step3" class="add-textsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-comment-alt"></i><p>{% trans "api_add_text" %}</p></button>
+                <button id="step4" class="add-imgsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-image"></i><p>{% trans "api_add_image" %}</p></button>
+                <button id="step5" class="add-carouselsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-layers-alt"></i><p>{% trans "api_add_carousel" %}</p></button>
+                <button id="step6" class="add-quickreplysend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-comments"></i><p>{% trans "api_add_quickreply" %}</p></button>
+                <button id="step7" class="add-waitsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-timer"></i><p>{% trans "api_add_wait" %}</p></button>
+                <button id="step8" class="add-filesend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-files"></i><p>{% trans "api_add_file" %}</p></button>
+                <button id="step9" class="add-tagsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-tag"></i><p>{% trans "api_add_tag" %}</p></button>
+                <button id="step11" class="add-formsend btn btn-info btn-outline m-b-10 m-l-5"><i class="fa fa-keyboard-o" aria-hidden="true"></i><p>{% trans "api_add_form" %}</p></button>
+                <button id="step00" class="add-goto btn btn-info btn-outline m-b-10 m-l-5"><i class="fa fa-arrow-right" aria-hidden="true"></i><p>{% trans "api_add_goto" %}</p></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src='{% static "core/assets/js/intro/blockmessage-intro.js" %}'></script>
+
+{% endblock content %}
+{% block append_js_on_tail %}
+<script src='{% static "core/assets/js/editor.js" %}'></script>
+<script src='{% static "core/assets/js/autosize.min.js" %}'></script>
+{% endblock %}

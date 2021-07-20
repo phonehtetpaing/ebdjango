@@ -1,0 +1,79 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-title">
+                <h4>{% trans "lbl_event_base_setting"%}</h4>
+
+            </div>
+
+            <div class="card-body">
+                <form action="{% url namespace|add:':setting_event_edit' vendor_event_settings_id=vendor_event_settings.id %}" method="post" role="form">
+                    {% csrf_token %}
+                    {% for hidden_field in form.hidden_fields %}
+                              {{ hidden_field }}
+                            {% endfor %}
+
+                            {% if form.non_field_errors %}
+                              <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                  {{ error }}
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                    <br>
+                    {% if vendor_branch.is_google_calendar_ready %}
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-9">
+                                {% if vendor_branch.google_credentials %}
+                                    <a href="{% url 'google_api:google_calender_reoauth' %}" class="btn btn-secondary btn-sm">
+                                        <i class="ti-google" aria-hidden="true"></i>
+                                       Google カレンダー 再登録
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'google_api:google_calender_reoauth' %}" class="btn btn-primary btn-sm">
+                                        <i class="ti-google" aria-hidden="true"></i>
+                                       Google カレンダー認証
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                             {% include 'forms/default_form_field.html' with field=form.work_start_time %}
+                        </div>
+                        <div class="col-md-2">
+                            {% include 'forms/default_form_field.html' with field=form.work_end_time %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            {% include 'forms/default_form_field.html' with form=form field=form.day_off_csv values=vendor_event_settings.day_off_csv %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include 'forms/default_form_field.html' with field=form.buffer_period %}
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info btn-fill btn-wd"> {% trans "btn_save" %}</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

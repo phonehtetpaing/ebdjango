@@ -1,0 +1,90 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <form method="post" action="{% url namespace|add:':settings_vendor_account_edit' vendor_user_id=vendor_user.id %}" class="form-signin" id="form2">
+                    {% csrf_token %}
+                    {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Login Info</h5>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    {% include 'forms/default_form_field.html' with field=form.email %}
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <a href="{% url namespace|add:':settings_vendor_account_login_detail' vendor_user_id=vendor_user.id %}" class="btn btn-lg btn-primary btn-block">{% trans "btn_change_pswd" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Vendor User Info</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include 'forms/default_form_field.html' with field=form.first_name %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include 'forms/default_form_field.html' with field=form.last_name %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include 'forms/default_form_field.html' with field=form.first_name_kana %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include 'forms/default_form_field.html' with field=form.last_name_kana %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Messenger Account Info</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {% include 'forms/default_form_field.html' with field=form.facebook_sender_id %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {% include 'forms/default_form_field.html' with field=form.line_user_id %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "btn_save" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

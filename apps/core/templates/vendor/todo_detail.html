@@ -1,0 +1,120 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+
+
+<!-- Trigger Conditions -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="step1" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>{% trans "lbl_title_action"%}</th>
+                                            <th>{% trans "lbl_title_user"%}</th>
+                                            <th>{% trans "lbl_title_inquiry_dt"%}</th>
+                                            <th>{% trans "lbl_title_status"%}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ todo.title }}</td>
+                                            <td>
+                                                {{ todo.end_user.last_name }} {{ todo.end_user.first_name }}
+                                            </td>
+                                            <td>{{ todo.regist_dt|date:'Y-m-d H:i' }}</td>
+                                            <td>
+                                                {% if todo.todo_action_status.name == "NEW" %}
+                                                    {% trans "lbl_todo_status_new"%}
+                                                {% elif todo.todo_action_status.name == "In-Progress" %}
+                                                    {% trans "lbl_todo_status_inprogress"%}
+                                                {% elif todo.todo_action_status.name == "DONE" %}
+                                                    {% trans "lbl_todo_status_done"%}
+                                                {% elif todo.todo_action_status.name == "Pending" %}
+                                                    {% trans "lbl_status_pending"%}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="step2" class="table">
+                                        <thead>
+                                        <tr>
+                                            <h4>{% trans "lbl_end_user_reply"%}</h4>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for reply in user_replies %}
+                                        <tr>
+                                            <td>{{ reply.attribute }}</td>
+                                            <td>{{ reply.value }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <form action="{% url namespace|add:':todo_edit' todo_id=todo.id %}" method="post" role="form">
+                {% csrf_token %}
+                    <div id="step3" class="card">
+                        <div class="card-header">
+                            <h4>{% trans "lbl_change_status"%}</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "lbl_status"%}</label>
+                            <select class="form-control" name="todo_action_status">
+                                {% for status in todo_action_status %}
+                                <option name="todo_action_status" value="{{status.id}}" {% if status.id == todo.todo_action_status.id %}selected{% endif %}>
+                                    {% if status.name == "NEW" %}
+                                        {% trans "lbl_todo_status_new"%}
+                                    {% elif status.name == "In-Progress" %}
+                                        {% trans "lbl_todo_status_inprogress"%}
+                                    {% elif status.name == "DONE" %}
+                                        {% trans "lbl_todo_status_done"%}
+                                    {% elif status.name == "Pending" %}
+                                        {% trans "lbl_status_pending"%}
+                                    {% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "lbl_memo"%}</label>
+                            <textarea name="memo" class="form-control" rows="5" placeholder="Message">{{todo.memo|default:''}}</textarea>
+                        </div>
+                        <div id="step4" class="text-center">
+                            <button type="submit" class="btn btn-info btn-fill btn-wd"> {% trans "btn_save" %}</button>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src='{% static "core/assets/js/intro/todo-detail-intro.js" %}'></script>
+
+{% endblock content %}

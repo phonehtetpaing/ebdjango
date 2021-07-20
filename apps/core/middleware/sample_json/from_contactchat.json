@@ -1,0 +1,19 @@
+{
+  "end_user":
+  {
+    "id": 9999
+  },
+  "request":
+    {
+      "device_type": 3,
+      // 1: mobile 2: tablet  3: pc  4: other
+      "device_family": "Other",
+      "os_family": "Mac OS X",
+      "os_version": "10.11.6",
+      "browser_family": "Chrome",
+      "browser_version": "69.0.3497",
+      "params": "", // not needed?
+      "ip_address": "205.10.0.1",
+  }
+}
+

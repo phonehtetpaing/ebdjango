@@ -1,0 +1,15 @@
+{
+    "text": "Here is a quick reply!",
+    "quick_replies":[
+        {
+            "content_type":"text",
+            "title":"Search",
+            "payload":"<POSTBACK_PAYLOAD>"
+        },
+        {
+            "content_type":"text",
+            "title":"Search",
+            "payload":"<POSTBACK_PAYLOAD>"
+        }
+    ]
+  }

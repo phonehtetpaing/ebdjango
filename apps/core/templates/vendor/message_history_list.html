@@ -1,0 +1,149 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-title">
+                <h4>{% trans "lbl_sent_message"%}</h4>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs customtab2" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#auto_message" role="tab"><span class="hidden-sm-up"><i class="ti-auto_message"></i></span> <span class="hidden-xs-down">{% trans "lbl_auto_message"%}</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#manual_message" role="tab"><span class="hidden-sm-up"><i class="ti-manual_message"></i></span> <span class="hidden-xs-down">{% trans "lbl_manual_message"%}</span></a> </li>
+                </ul>
+                <!-- Tab panes -->
+
+                <div class="tab-content tabcontent-border">
+                    <div class="tab-pane active" id="auto_message" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "tbl_title_condition"%}</th>
+                                    <th>{% trans "tbl_title_name"%}</th>
+                                    <th>{% trans "tbl_title_sendtime"%}</th>
+                                    <th>{% trans "tbl_title_usercount"%}</th>
+                                    <th>{% trans "tbl_title_status"%}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for history_message in auto_message_history %}
+                                <tr>
+                                    <td>{{ history_message.auto_message_condition.name }}</td>
+                                    <td>{{ history_message.auto_message_trigger.title_name }}</td>
+                                    <td>{{ history_message.send_dt }}</td>
+                                    <td>{{ history_message.send_user_count|default:"-" }}</td>
+                                    <td>
+                                        {% if history_message.message_status.name == "draft"%}
+                                        {% trans "lbl_status_draft"%}
+                                        {% elif history_message.message_status.name == "pending"%}
+                                        {% trans "lbl_status_pending"%}
+                                        {% elif history_message.message_status.name == "sent"%}
+                                        {% trans "lbl_status_sent"%}
+                                        {% elif history_message.message_status.name == "error"%}
+                                        {% trans "lbl_status_error"%}
+                                        {% elif history_message.message_status.name == "sending"%}
+                                        {% trans "lbl_status_sending"%}
+                                        {% endif %}
+                                    </td>
+                                    <td> <a href="{% url namespace|add:':auto_message_history_detail' auto_message_history_id=history_message.id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;{% trans "btn_details" %}</a></td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if auto_message_history.has_other_pages %}
+                        <ul class="pagination pagination-sm">
+                            {% if auto_message_history.has_previous %}
+                            <li><a href="?page1={{ auto_message_history.previous_page_number }}">&laquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in auto_message_history.paginator.page_range %}
+                            {% if auto_message_history.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% else %}
+                            <li><a href="?page1={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if auto_message_history.has_next %}
+                            <li><a href="?page1={{ auto_message_history.next_page_number }}">&raquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane" id="manual_message" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "tbl_title_name"%}</th>
+                                    <th>{% trans "tbl_title_sendtime"%}</th>
+                                    <th>{% trans "tbl_title_usercount"%}</th>
+                                    <th>{% trans "tbl_title_status"%}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for history_message in manual_message_history %}
+                                <tr>
+                                    <td>{{ history_message.manual_message_overview.name }}</td>
+                                    <td>{{ history_message.send_dt }}</td>
+                                    <td>{{ history_message.send_user_count|default:"-" }}</td>
+                                    <td>
+                                        {% if history_message.manual_message_overview.message_status.name == "draft"%}
+                                        {% trans "lbl_status_draft"%}
+                                        {% elif history_message.manual_message_overview.message_status.name == "pending"%}
+                                        {% trans "lbl_status_pending"%}
+                                        {% elif history_message.manual_message_overview.message_status.name == "sent"%}
+                                        {% trans "lbl_status_sent"%}
+                                        {% elif history_message.manual_message_overview.message_status.name == "error"%}
+                                        {% trans "lbl_status_error"%}
+                                        {% elif history_message.manual_message_overview.message_status.name == "sending"%}
+                                        {% trans "lbl_status_sending"%}
+                                        {% endif %}
+                                    </td>
+                                    <td> <a href="{% url namespace|add:':manual_message_history_detail' manual_message_history_id=history_message.id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;{% trans "btn_details" %}</a></td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if manual_message_history.has_other_pages %}
+                        <ul class="pagination pagination-sm">
+                            {% if manual_message_history.has_previous %}
+                            <li><a href="?page2={{ manual_message_history.previous_page_number }}">&laquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in manual_message_history.paginator.page_range %}
+                            {% if manual_message_history.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% else %}
+                            <li><a href="?page2={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if manual_message_history.has_next %}
+                            <li><a href="?page2={{ manual_message_history.next_page_number }}">&raquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

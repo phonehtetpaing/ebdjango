@@ -1,0 +1,152 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block css %}
+<link href='{% static "core/assets/css/editor.css" %}' rel="stylesheet" type="text/css">
+{% endblock %}
+{% block content %}
+
+
+<!-- Trigger Conditions -->
+<div class="content">
+    <div class="row">
+        <div class="col-md-10">
+            <form action="{% url namespace|add:':auto_message_confirm' auto_message_id=auto_message_id %}" method="post" role="form">
+                {% csrf_token %}
+                <fieldset disabled>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-2">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>{% trans "lbl_send_option"%}</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'forms/default_form_field.html' with form=trigger_form field=trigger_form.title_name %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'forms/default_form_field.html' with form=trigger_form field=trigger_form.trigger_days_num %}
+                                    </div>
+                                    <div class="col-md-2">
+                                        {% include 'forms/default_form_field.html' with form=trigger_form field=trigger_form.is_trigger_after %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'forms/default_form_field.html' with form=trigger_form field=trigger_form.trigger_time %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="apis">
+                        {% for api in api_list %}
+                        <div class="row api-child">
+                            <div class="{% if api.type == 'imagesendmessage' %}col-md-4{% else %}col-md-12{% endif %}">
+                                <div class="card">
+                                    <div class="form-group">
+                                        {% if api.type == 'textsendmessage' %}
+                                        <label><i class="ti-menu"></i>&nbsp;{% trans "lbl_api_text_message" %}</label><i class="ti-close"></i>
+                                        <textarea rows="5" class="form-control border-input input-child" style="height: auto" placeholder="Please write a message to send" name="TextSendMessage_0_{{ forloop.counter }}" maxlength="2000" required>{{ api.payload }}</textarea>
+                                        <small class="form-text text-muted">
+                                            Max 2000 characters.
+                                        </small>
+
+                                        {% elif api.type == 'imagesendmessage' %}
+                                        <label><i class="ti-menu"></i>&nbsp;{% trans "lbl_api_image_message" %}</label><i class="ti-close"></i>
+                                        <div class="message-img-thumbnail vertical-align">
+                                            <img src="{{ api.payload }}">
+                                        </div>
+                                        <input type="url" class="message-img-input form-control border-input input-child" placeholder="https://example.com/original.jpg" name="ImageSendMessage_original_content_url_0_{{ forloop.counter }}" value="{{ api.payload }}" maxlength="1000" required>
+                                        <small class="form-text text-muted">
+                                            Max 1000 characters.
+                                        </small>
+
+                                        {% elif api.type == 'carouselsendmessage' %}
+                                        <label><i class="ti-menu"></i>&nbsp;{% trans "lbl_api_carousel_message" %}&nbsp;<i class="columns-toggle ti-angle-down"></i></label><i class="ti-close"></i>
+                                        <input type="text" class="form-control border-input input-child" placeholder="https://example.com/original.jpg" name="CarouselTemplate_alt_text_0_{{ forloop.counter }}" value="{{ api.param.alt_text}}" hidden>
+                                        <div class="carousel_columns">
+                                            {% for column in api.payload %}
+                                            <div class="card api-child">
+                                                <input type="hidden" name="CarouselTemplate_column_{{column.id}}_{{ forloop.counter }}" required>
+                                                <div class="content">
+                                                    <div class="row"><i class="ti-close"></i>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label><i class="ti-menu"></i>&nbsp;{% trans "lbl_thumbnail" %}</label>
+                                                                <div class="message-img-thumbnail vertical-align">
+                                                                    <img src="{{ column.image_url }}">
+                                                                </div>
+                                                                <input type="text" class="message-img-input form-control border-input" placeholder=" " name="column_thumbnail_image_url_{{ forloop.parentloop.counter }}" value="{{ column.image_url }}"  maxlength="1000" required>
+                                                                <small class="form-text text-muted">
+                                                                    Max 1000 characters.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>{% trans "lbl_title" %}</label>
+                                                                <input type="text" class="form-control border-input" placeholder="" name="column_title_{{ forloop.parentloop.counter }}" value="{{ column.title }}"  maxlength="40" required>
+                                                                <small class="form-text text-muted">
+                                                                    Max 40 characters.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>{% trans "lbl_text" %}</label>
+                                                                <input type="text" class="form-control border-input" placeholder="" name="column_text_{{ forloop.parentloop.counter }}" value="{{ column.subtitle }}"  maxlength="60" required>
+                                                                <small class="form-text text-muted">
+                                                                    Max 60 characters.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>{% trans "lbl_action_url" %}</label>
+                                                                <input type="url" class="form-control border-input" placeholder=" " name="column_action_json_{{ forloop.parentloop.counter }}" value="{{ column.actions }}" maxlength="1000" required>
+                                                                <small class="form-text text-muted">
+                                                                    Max 1000 characters.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="carousel_columns_control text-right">
+                                            <button type="button" class="btn btn-info btn-fill btn-wd add-carousel-child"><i class="ti-plus"></i>&nbsp</button>
+                                        </div>
+
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <a href="{% url namespace|add:':auto_message_detail' auto_message_id=auto_message_id %}" class="btn btn-md btn-danger">{% trans "btn_back" %}</a>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <button type="submit" class="save btn btn-md btn-success">{% trans "btn_save" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,238 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load get_page_title %}
+{% load get_favicon %}
+{% load get_logo %}
+{% load get_logo_max_width %}
+{% load get_copyright %}
+{% load include_maybe %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href='{% static request|get_favicon %}'>
+    <title>{{request|get_page_title}}</title>
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" type="text/css"
+          media="all" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <!--  APP CSS     -->
+    <link href='{% static "core/assets/css/app.css" %}' rel="stylesheet" />
+
+    <link href='{% static "core/assets/css/lib/calendar2/semantic.ui.min.css" %}' rel="stylesheet">
+    <link href='{% static "core/assets/css/lib/calendar2/pignose.calendar.min.css" %}' rel="stylesheet">
+    <link href='{% static "core/assets/css/lib/owl.carousel.min.css" %}' rel="stylesheet" />
+    <link href='{% static "core/assets/css/lib/owl.theme.default.min.css" %}' rel="stylesheet" />
+    <link href='{% static "core/assets/css/helper.css" %}' rel="stylesheet">
+    <link href='{% static "core/assets/css/style.css" %}' rel="stylesheet">
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <!--Intro JS CSS-->
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css' rel="stylesheet">
+    <!--Additional custom css-->
+    {% block css %}{% endblock %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
+    <!--[if lt IE 9]>
+    <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript">
+        {% block headscript %}{% endblock %}
+    </script>
+    <![endif]-->
+</head>
+
+<body class="fix-header fix-sidebar">
+<!-- Preloader - style you can find in spinners.css -->
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+</div>
+<!-- Main wrapper  -->
+<div id="main-wrapper">
+    <!-- header header  -->
+    <div class="header">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <!-- Logo -->
+            <div class="navbar-header">
+                <a class="navbar-brand">
+                    <!-- Logo icon -->
+                    <b><img style={{request|get_logo_max_width}} src='{% static request|get_logo %}' alt="homepage" class="dark-logo" /></b>
+                    <!--End Logo icon -->
+                </a>
+            </div>
+            <!-- End Logo -->
+            <div class="navbar-collapse">
+                <!-- toggle and nav items -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
+                    <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted  " href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
+                    <li class="nav-item m-l-10"> <a class="nav-link sidebartoggler hidden-sm-down text-muted  " href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                </ul>
+                <!-- User profile and search -->
+                <ul class="navbar-nav my-lg-0">
+                    <li class="nav-item dropdown">
+                        <div id="help_tour" class="nav-link dropdown-toggle ">
+                            <a href="javascript:void(0);" onclick="startIntro();"><i class="fa fa-question-circle fa-2x" style="color:#ffcc66;" aria-hidden="true"></i></a>
+                        </div>
+                    </li>
+
+                    <!-- Comment -->
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link dropdown-toggle text-muted text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><label>{% trans "lbl_change_language"%}</label> <i class="fa fa-language"></i></a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn col-md-12">
+                            <ul>
+                                <li>
+                                    <div class="drop-title">{% trans "title_language"%}</div>
+                                </li>
+                                <li>
+                                    {% get_current_language as LANGUAGE_CODE %}
+                                    {% get_available_languages as LANGUAGES %}
+                                    {% get_language_info_list for LANGUAGES as languages %}
+                                    {% for language in languages %}
+                                    <form name="{{ language.code }}" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+                                        <input name="language" type="hidden" value="{{ language.code }}" />
+                                        <a href="javascript:document.{{ language.code }}.submit()"> {{ language.name_local }}</a>
+                                    </form>
+                                    {% endfor %}
+
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- End Comment -->
+                    <!-- Profile -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if vendor_branch.vendor.picture_url %}
+                            <img src='{{ vendor_branch.vendor.picture_url }}' alt="user" class="profile-pic" />
+                            {% else %}
+                            <img src='{% static "core/assets/images/default_vendor_picture.png" %}' alt="user" class="profile-pic" />
+                            {% endif %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                            <ul class="dropdown-user">
+                                <li><a href="{% url namespace|add:':setting_vendor_index' %}"><i class="fa fa-cog"></i>{% trans "nav_account"%}</a></li>
+                                <li><a href="{% url namespace|add:':logout' %}"><i class="fa fa-power-off"></i> {% trans "lbl_logout" %}</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- End header header -->
+    <!-- Left Sidebar  -->
+    <div class="left-sidebar">
+        <!-- Sidebar scroll-->
+        <div class="scroll-sidebar">
+            <!-- Sidebar navigation-->
+            {% with "navigation/"|add:namespace|add:".html" as navigation %}
+                {% if navigation|template_exists %}
+                    {% include_maybe navigation %}
+                {% else %}
+                    {% include_maybe "navigation/smart_sec.html" %}
+                {% endif %}
+            {% endwith %}
+            <!-- End Sidebar navigation -->
+        </div>
+        <!-- End Sidebar scroll-->
+    </div>
+    <!-- End Left Sidebar  -->
+    <!-- Page wrapper  -->
+    <div class="page-wrapper">
+        <!-- Bread crumb -->
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h3 class="text-primary">{{ title }}</h3> </div>
+            <div class="col-md-7 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    {% for crumb in path %}
+                    <li class="breadcrumb-item active">{{ crumb }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        <!-- End Bread crumb -->
+        <!-- Container fluid  -->
+        <div class="container-fluid">
+            <!-- Start Page Content -->
+
+            {% block content %}
+            {{ content }}
+            {% endblock %}
+
+            <!-- End PAge Content -->
+        </div>
+        <!-- End Container fluid  -->
+        <!-- footer -->
+        <footer class="footer"> © {{request|get_copyright}} All rights reserved.</a></footer>
+        <!-- End footer -->
+    </div>
+    <!-- End Page wrapper  -->
+</div>
+<!-- End Wrapper -->
+<!-- All Jquery -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="//cdn.rawgit.com/monim67/django-bootstrap-datepicker-plus/master/bootstrap_datepicker_plus/static/bootstrap_datepicker_plus/js/datepicker-widget.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+
+<!--<script src='{% static "core/assets/js/lib/bootstrap/js/popper.min.js" %}'></script>-->
+<!--<script src='{% static "core/assets/js/lib/bootstrap/js/bootstrap.min.js" %}'></script>-->
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src='{% static "core/assets/js/jquery.slimscroll.js" %}'></script>
+<!--Menu sidebar -->
+<script src='{% static "core/assets/js/sidebarmenu.js" %}'></script>
+<!--stickey kit -->
+<script src='https://cdn.rawgit.com/leafo/sticky-kit/v1.1.2/jquery.sticky-kit.js'></script>
+
+<!-- FlowChart JS -->
+<script src='{% static "core/assets/js/jquery.flowchart.js" %}'></script>
+
+<!-- jQuery UI -->
+<script src='{% static "core/assets/js/jquery-ui/jquery-ui.min.js" %}'></script>
+
+<!-- jQuery Touch Punch -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js'></script>
+
+<!-- Amchart -->
+<script src='{% static "core/assets/js/lib/calendar-2/moment.latest.min.js" %}'></script>
+<script src='{% static "core/assets/js/lib/calendar-2/semantic.ui.min.js" %}'></script>
+<script src='{% static "core/assets/js/lib/calendar-2/prism.min.js" %}'></script>
+<script src='{% static "core/assets/js/lib/calendar-2/pignose.calendar.min.js" %}'></script>
+<script src='{% static "core/assets/js/lib/calendar-2/pignose.init.js" %}'></script>
+<script src='{% static "core/assets/js/lib/owl-carousel/owl.carousel.min.js" %}'></script>
+<script src='{% static "core/assets/js/lib/owl-carousel/owl.carousel-init.js" %}'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js'></script>
+<!-- javascript translation catalog -->
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<!--Intro JS-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
+<!-- scripit init-->
+<script src='{% static "core/assets/js/scripts.js" %}'></script>
+
+<!--Custom JavaScript -->
+{% block append_js_on_tail %} {% endblock %}
+
+<script type="text/javascript">
+            $(document).ready(function(){
+              {% block tailscript %}{% endblock %}
+            })
+</script>
+</body>
+</html>
