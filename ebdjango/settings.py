@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'boards',
     'taggit',
+    'apps.core',
 ]
 
 MIDDLEWARE = [
