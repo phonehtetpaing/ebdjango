@@ -1,0 +1,26 @@
+{% extends "messageflow/messages/base_message.html" %}
+{% load i18n %}
+{% load to_string %}
+{% load message_utils %}
+{% load staticfiles %}
+
+
+{% block message_contents %}
+
+
+{% trans 'Image URL' %}:
+<select class='input-child image-input mb-20' name="message_set-{{message_counter}}-json_content">
+         <optgroup label="{% trans 'Images' %}">
+                <option selected disabled>{% trans 'Select an image file.' %}</option>
+                {% for file in files %}
+                <option value="{{ file.upload.url }}"{% if message.json_content.value|to_string == file.upload.url|to_string %} selected{% endif %}>{{ file.pretty_name }}</option>
+                {% endfor %}
+         </optgroup>
+</select>
+<div id="message_set-{{message_counter}}-image" class="img-thumbnail d-flex justify-content-center p-20">
+    <div style="max-height: 250px; max-width: 400px">
+        <img src="{% static 'images/picture_icon_4.svg' %}" alt="upload a photo" style="max-width:auto; height:100px;">
+    </div>
+</div>
+<input type="hidden" name="message_set-{{message_counter}}-options" id="id_message_set-{{message_counter}}-options" value="None">
+{% endblock %}

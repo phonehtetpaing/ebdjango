@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load to_string %}
+
+<div class='my-10 message-option d-flex justify-content-between' data-option-child-id='{{ option_id }}'>
+    <input type='text' style="border-radius: 0.75rem;" class='w-25 form-control bubble-input input-child' maxlength='20' value='{{ option.title }}' placeholder='Enter Option Text' name='message_set-{{ message_counter }}-option-title'>
+    <div>
+        <i class="ti-arrow-right align-middle"></i>
+    </div>
+    <div>
+        <select class='input-child' name="message_set-{{ message_counter }}-option-payload">
+            <optgroup label="{% trans 'option_label_system' %}">
+                <option value="continue"{% if option.payload|to_string == 'continue' %} selected{% endif %}>{% trans "option_continue" %}</option>
+            </optgroup>
+            <optgroup label="{% trans 'option_label_blocks' %}">
+                {% for block in message_blocks %}
+                <option value="{{ block.id }}"{% if option.payload|to_string == block.id|to_string %} selected{% endif %}>{{ block }}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+    </div>
+</div>

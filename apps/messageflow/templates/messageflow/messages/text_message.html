@@ -1,0 +1,16 @@
+{% extends "messageflow/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_contents %}
+
+<textarea name="message_set-{{message_counter}}-json_content"
+          id="id_message_set-{{message_counter}}-json_content"
+          rows="5"
+          class="form-control input-child border-input bubble-input bubble-border-blue expand"
+          placeholder=" "
+          maxlength="2000"
+          required="">{{ message.json_content.value }}</textarea>
+
+<small class="form-text text-muted">{% trans "Maximum 2000 characters." %}</small>
+<input type="hidden" name="message_set-{{message_counter}}-options" id="id_message_set-{{message_counter}}-options" value="None">
+{% endblock %}

@@ -1,0 +1,29 @@
+
+    :root {
+      robottextcolor: #B8FF4E;
+      robotbubblecolor: #FF0000;
+      usertextcolor: #9B18FF;
+      userbubblecolor: #FF0000;
+    }
+    
+    .custom-theme .conversational-form cf-chat-response.robot text {
+      color: var(robottextcolor);
+    }
+    .custom-theme .conversational-form cf-chat-response.robot text > p {
+      background: var(robotbubblecolor);
+    }
+    
+    .custom-theme .conversational-form cf-chat-response.robot thumb {
+      background-color: var(robotbubblecolor);
+    }
+    
+    .custom-theme .conversational-form cf-chat-response.user text {
+      color: var(usertextcolor);
+    }
+    .custom-theme .conversational-form cf-chat-response.user text > p {
+      background: var(userbubblecolor);
+    }
+    .custom-theme .conversational-form cf-chat-response.user thumb {
+      background-color: var(userbubblecolor);
+    }
+    

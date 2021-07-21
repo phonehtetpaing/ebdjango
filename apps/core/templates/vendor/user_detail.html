@@ -1,0 +1,258 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+        <form action="{% url namespace|add:':user_edit' end_user_id=end_user.id %}" method="post" role="form">
+        {% csrf_token %}
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card">
+                        <h3>{% trans "title_user_info"%}</h3>
+                        <div class="content">
+                            {% for hidden_field in form.hidden_fields %}
+                              {{ hidden_field }}
+                            {% endfor %}
+
+                            {% if form.non_field_errors %}
+                              <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                  {{ error }}
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'forms/default_form_field.html' with field=form.first_name %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'forms/default_form_field.html' with field=form.last_name %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'forms/default_form_field.html' with field=form.gender %}
+                                    </div>
+                                    <div class="col-md-2">
+                                        {% include 'forms/default_form_field.html' with field=form.age %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'forms/default_form_field.html' with field=form.birth_date %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'forms/default_form_field.html' with field=form.email %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'forms/default_form_field.html' with field=form.tel1 %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'forms/default_form_field.html' with field=form.zip_code %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'forms/default_form_field.html' with field=form.prefecture %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        {% include 'forms/default_form_field.html' with field=form.address1 %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        {% include 'forms/default_form_field.html' with field=form.address2 %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'forms/default_form_field.html' with field=form.admin_text %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {% for tag_user in tag_users %}
+                                            <btn class="btn btn-sm btn-success btn-icon {% if tag_user.tag_code in tag_code_list %}active{% endif %}">
+                                                {{ tag_user.display_name }}
+                                            </btn>
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>{% trans "Attribute"%}</th>
+                                                <th>{% trans "Value"%}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for attribute, value in end_user_attributes.items %}
+                                                {% if not attribute|first in '_'%}
+                                                    <tr>
+                                                        <td>{{ attribute }}</td>
+                                                        <td>{{ value }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    {% if auto_message_conditions and end_user_auto_message %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h4>{% trans "lbl_auto_message_dt"%}</h4>
+                                <div class="content">
+                                {% for auto_message_condition in auto_message_conditions %}
+                                    {% for end_user_auto_message in end_user_auto_messages %}
+                                        {% if auto_message_condition.auto_message_type.id == end_user_auto_message.auto_message_type.id %}
+                                            <h6 class="card-title m-t-15">{{auto_message_condition.name}}</h6>
+                                            <div class="row p-t-20">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label class="control-label">{% trans "lbl_date"%}</label>
+                                                        <input type="date" id="firstName" class="form-control" placeholder="e" name="{{auto_message_condition.name}}_date" value="{{ end_user_auto_message.message_target_dt|default:""|date:"Y-m-d" }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group has-danger">
+                                                        <label class="control-label">{% trans "lbl_time"%}</label>
+                                                        <input type="time" id="lastName" class="form-control form-control-danger" placeholder="10:00" name="{{auto_message_condition.name}}_time" value="{{ end_user_auto_message.message_target_dt|default:""|date:"H:i" }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h3>Tag</h3>
+                                <div class="content">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <div class="col-md-12">
+                                            {% for tag in tags %}
+                                            <button type="button" class="btn btn-outline btn-secondary {% if tag.cd in tag_code_list %}active{% endif %}" data-color="success">
+                                                <input type="checkbox" name="tag_id[]" value="{{ tag.id }}" {% if tag.cd in tag_code_list %}checked{% endif %} hidden>{{ tag.name }}
+                                            </button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    {% if end_user_facebook %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-user">
+                                <h3>Facebook Profile</h3>
+                                <div class="card-content">
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2 col-centered">
+                                            <img class="img-fluid avatar rounded-circle border-white" src="{{ end_user_facebook.profile_pic_url }}" alt="..."/>
+                                        </div>
+                                    </div>
+                                    <div class="row text-center">
+                                        <div class=" text-center">
+                                            <div class="row text-center">
+                                                <h4 class="col text-center title">{{ end_user_facebook.last_name }} {{end_user_facebook.first_name }}</h4>
+                                            </div>
+                                            <div class="description col text-center">
+                                                <dl class="row">
+                                                    <dt class="col-sm-5 text-left"><small>Gender:</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_facebook.gender|default:"" }}</small></dd>
+                                                    <dt class="col-sm-5 text-left"><small>Registration DateTime：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_facebook.regist_dt|default:"" }}</small></dd>
+                                                    <dt class="col-sm-5 text-left"><small>Update DateTime：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_facebook.update_dt|default:"" }}</small></dd>
+                                                    <dt class="col-sm-5 text-left"><small>ID：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_facebook.sender_id|default:"" }}</small></dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if end_user_line %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-user">
+                                <h3>LINE Profile</h3>
+                                <div class="card-content">
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2 col-centered">
+                                            <img class="img-fluid avatar rounded-circle border-white" src="{{ end_user_line.picture_url }}" alt="..."/>
+                                        </div>
+                                    </div>
+                                    <div class="row text-center">
+                                        <div class=" text-center">
+                                            <div class="row text-center">
+                                                <h4 class="col text-center title">{{ end_user_line.display_name }}</h4>
+                                            </div>
+                                            <div class="description col text-center">
+                                                <dl class="row">
+                                                    <dt class="col-sm-5 text-left"><small>Registration DateTime：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_line.regist_dt|default:"" }}</small></dd>
+                                                    <dt class="col-sm-5 text-left"><small>Update DateTime：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_line.update_dt|default:"" }}</small></dd>
+                                                    <dt class="col-sm-5 text-left"><small>ID：</small></dt>
+                                                    <dd class="col-sm-7"><small>{{ end_user_line.user_id|default:"" }}</small></dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-info btn-fill btn-wd"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans "btn_save" %}</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

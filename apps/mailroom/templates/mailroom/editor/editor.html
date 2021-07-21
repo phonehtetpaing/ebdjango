@@ -1,0 +1,41 @@
+{% extends base_template %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+        <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+        <link href='{% static "froala_editor/css/froala_editor.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+        <link href='{% static "froala_editor/css/froala_style.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+        <script type="text/javascript" src='{% static "froala_editor/js/froala_editor.min.js" %}'></script>
+        <style>
+            @media (max-width:768px) {
+             #left-column
+             {
+                border: 0px solid !important;
+             }
+            }
+        </style>
+        {{ message_form.media }}
+        {% block message_head %}
+            {{ message_head }}
+        {% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="row m-0 p-20 h-100">
+    <div id="left-column" class="col-md-4 p-0 h-md-100">
+        {% with "mailroom/base/lists.html" as trig_msg_list %}
+        {% include trig_msg_list %}
+        {% endwith %}
+    </div>
+    <div class="col-md-8 p-0 h-md-100">
+        {% block editor_content %}
+        {{ editor_content }}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block append_js_on_tail %}
+{{ append_js_on_tail }}
+{% endblock %}

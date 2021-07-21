@@ -1,0 +1,47 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block body %}
+    <!-- Business Plan Options -->
+    <div class="card">
+            <div class="card-header">
+                {% trans "Whitelabel Resale Plans" %}
+            </div>
+            <div class="card-body">
+                <div class="">
+                    <a class="btn btn-success mb-15"
+                       href="{% url namespace|add:':business_plan_add' %}"
+                        role="button">{% trans "New Plan" %}</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <head>
+                        <tr style="text-align:left;">
+                            <th>{% trans "Plan Name"%}</th>
+                            <th>{% trans "Price"%}</th>
+                            <th colspan=3>{% trans "Duration"%}</th>
+                        </tr>
+                        </head>
+                        <tbody>
+                        {% for plan in business_plans %}
+                        <tr>
+                            <td>{{ plan.name }}</td>
+                            <td>¥{{ plan.price }}</td>
+                            <td>{% blocktrans count months=plan.duration %}{{ months }} Month{% plural %}{{ months }} Months{% endblocktrans %}</td>
+                            <td><a class="btn btn-success"
+                                   href="{% url namespace|add:':business_plan_edit' plan_id=plan.id %}"
+                                   role="button">{% trans "Edit" %}</a></td>
+                            <td><a class="btn btn-danger"
+                                   href="{% url namespace|add:':business_plan_delete' plan_id=plan.id %}"
+                                   role="button">{% trans "Delete" %}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </div>
+
+
+{% endblock %}

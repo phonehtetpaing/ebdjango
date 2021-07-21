@@ -1,0 +1,27 @@
+<div id="chat_history_messages" class="infinite-container">
+
+
+    {% for entry in loglines %}
+
+    {% if entry.is_user_message %}
+    <div class="row infinite-item d-flex justify-content-end">
+        <div class="border p-5 m-5 text-dark rounded shadow-sm">
+            {{ entry.message }}
+        </div>
+        {% if user.profile_pic_url %}
+        <img class="img-fluid img-thumbnail rounded-circle" src="{{ user.profile_pic_url }}" alt="user profile picture"/>
+        {% else %}
+        <img class="img-fluid img-thumbnail rounded-circle" src="https://api.adorable.io/avatars/40/{{ user.id }}" alt="user profile picture"/>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="row infinite-item d-flex justify-content-start">
+        <img class="img-fluid img-thumbnail rounded-circle" src="https://api.adorable.io/avatars/40/bot" alt="bot picture"/>
+        <div class="border bg-success p-5 m-5 text-dark rounded shadow-sm">
+            {{ entry.message }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% endfor %}
+</div>

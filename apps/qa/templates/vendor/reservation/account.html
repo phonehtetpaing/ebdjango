@@ -1,0 +1,908 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<main class="main-content bgc-grey-100">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    <div id="mainContent">
+        <div class="headline-main">
+            <h1 class="headline-main_headline">{% trans "screen_account_description_1" %}</h1>
+            <p class="headline-main_text">{% trans "screen_account_description_2" %}</p>
+        </div>
+        <form method="post" action="{% url namespace|add:':reservation_update_account_setting' %}">
+        {% csrf_token %}
+            <div class="row gap-20 masonry pos-r" style="position: relative; height: 1086px;">
+                <div class="masonry-sizer col-md-10"></div>
+                <div class="masonry-item col-md-10" style="position: absolute; left: 10%; top: 364px;">
+                    <div class="bgc-white p-20 bd">
+                        <div class="mT-30">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_account_name" %}</label>
+                                <div class="col-sm-10">
+                                    <small class="form-text text-muted">{% trans "screen_account_description_3" %}</small>
+                                    <input type="text" class="form-control" name="account_name" placeholder={% trans "placeholder_account_name" %} value="{{account.account_name}}" required maxlength='{% trans "validation_max_size_30" %}'>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_adjustable_time" %}</label>
+                                <div class="col-sm-10">
+                                    <small class="form-text text-muted">{% trans "screen_account_description_4" %}</small>
+                                    <p>
+                                        <input name="adjustable_monday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_monday_flag" id="is_mon_enabled" {% if account.adjustable_monday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_monday" %}
+                                        <select name="adjustable_monday_start_time">
+                                            <option value="11" {% if account.adjustable_monday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_monday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_monday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_monday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_monday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_monday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_monday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_monday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_monday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_monday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_monday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_monday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_monday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_monday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_monday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_monday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_monday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_monday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_monday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_monday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_monday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_monday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_monday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_monday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_monday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_monday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_monday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_monday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_monday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_monday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_monday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_monday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_monday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_monday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_monday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_monday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_monday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_monday_end_time">
+                                            <option value="11" {% if account.adjustable_monday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_monday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_monday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_monday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_monday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_monday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_monday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_monday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_monday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_monday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_monday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_monday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_monday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_monday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_monday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_monday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_monday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_monday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_monday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_monday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_monday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_monday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_monday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_monday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_monday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_monday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_monday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_monday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_monday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_monday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_monday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_monday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_monday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_monday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_monday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_monday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_monday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_tuesday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_tuesday_flag" id="is_tue_enabled" {% if account.adjustable_tuesday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_tuesday" %}
+                                        <select name="adjustable_tuesday_start_time">
+                                            <option value="11" {% if account.adjustable_tuesday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_tuesday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_tuesday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_tuesday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_tuesday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_tuesday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_tuesday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_tuesday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_tuesday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_tuesday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_tuesday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_tuesday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_tuesday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_tuesday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_tuesday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_tuesday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_tuesday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_tuesday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_tuesday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_tuesday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_tuesday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_tuesday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_tuesday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_tuesday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_tuesday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_tuesday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_tuesday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_tuesday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_tuesday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_tuesday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_tuesday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_tuesday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_tuesday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_tuesday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_tuesday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_tuesday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_tuesday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_tuesday_end_time">
+                                            <option value="11" {% if account.adjustable_tuesday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_tuesday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_tuesday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_tuesday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_tuesday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_tuesday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_tuesday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_tuesday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_tuesday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_tuesday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_tuesday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_tuesday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_tuesday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_tuesday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_tuesday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_tuesday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_tuesday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_tuesday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_tuesday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_tuesday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_tuesday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_tuesday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_tuesday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_tuesday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_tuesday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_tuesday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_tuesday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_tuesday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_tuesday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_tuesday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_tuesday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_tuesday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_tuesday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_tuesday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_tuesday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_tuesday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_tuesday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_wednesday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_wednesday_flag" id="is_wed_enabled" {% if account.adjustable_wednesday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_wednesday" %}
+                                        <select name="adjustable_wednesday_start_time">
+                                            <option value="11" {% if account.adjustable_wednesday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_wednesday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_wednesday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_wednesday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_wednesday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_wednesday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_wednesday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_wednesday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_wednesday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_wednesday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_wednesday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_wednesday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_wednesday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_wednesday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_wednesday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_wednesday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_wednesday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_wednesday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_wednesday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_wednesday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_wednesday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_wednesday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_wednesday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_wednesday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_wednesday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_wednesday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_wednesday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_wednesday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_wednesday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_wednesday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_wednesday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_wednesday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_wednesday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_wednesday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_wednesday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_wednesday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_wednesday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_wednesday_end_time">
+                                            <option value="11" {% if account.adjustable_wednesday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_wednesday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_wednesday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_wednesday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_wednesday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_wednesday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_wednesday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_wednesday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_wednesday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_wednesday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_wednesday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_wednesday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_wednesday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_wednesday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_wednesday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_wednesday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_wednesday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_wednesday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_wednesday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_wednesday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_wednesday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_wednesday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_wednesday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_wednesday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_wednesday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_wednesday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_wednesday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_wednesday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_wednesday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_wednesday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_wednesday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_wednesday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_wednesday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_wednesday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_wednesday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_wednesday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_wednesday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_thursday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_thursday_flag" id="is_thu_enabled" {% if account.adjustable_thursday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_thursday" %}
+                                        <select name="adjustable_thursday_start_time">
+                                            <option value="11" {% if account.adjustable_thursday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_thursday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_thursday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_thursday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_thursday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_thursday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_thursday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_thursday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_thursday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_thursday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_thursday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_thursday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_thursday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_thursday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_thursday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_thursday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_thursday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_thursday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_thursday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_thursday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_thursday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_thursday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_thursday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_thursday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_thursday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_thursday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_thursday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_thursday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_thursday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_thursday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_thursday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_thursday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_thursday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_thursday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_thursday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_thursday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_thursday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_thursday_end_time">
+                                            <option value="11" {% if account.adjustable_thursday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_thursday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_thursday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_thursday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_thursday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_thursday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_thursday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_thursday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_thursday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_thursday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_thursday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_thursday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_thursday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_thursday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_thursday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_thursday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_thursday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_thursday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_thursday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_thursday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_thursday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_thursday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_thursday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_thursday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_thursday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_thursday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_thursday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_thursday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_thursday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_thursday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_thursday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_thursday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_thursday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_thursday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_thursday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_thursday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_thursday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_friday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_friday_flag" id="is_fri_enabled" {% if account.adjustable_friday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_friday" %}
+                                        <select name="adjustable_friday_start_time">
+                                            <option value="11" {% if account.adjustable_friday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_friday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_friday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_friday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_friday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_friday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_friday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_friday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_friday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_friday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_friday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_friday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_friday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_friday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_friday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_friday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_friday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_friday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_friday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_friday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_friday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_friday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_friday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_friday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_friday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_friday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_friday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_friday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_friday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_friday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_friday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_friday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_friday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_friday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_friday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_friday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_friday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_friday_end_time">
+                                            <option value="11" {% if account.adjustable_friday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_friday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_friday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_friday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_friday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_friday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_friday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_friday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_friday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_friday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_friday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_friday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_friday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_friday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_friday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_friday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_friday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_friday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_friday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_friday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_friday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_friday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_friday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_friday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_friday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_friday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_friday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_friday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_friday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_friday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_friday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_friday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_friday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_friday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_friday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_friday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_friday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_saturday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_saturday_flag" id="is_sat_enabled" {% if account.adjustable_saturday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_saturday" %}
+                                        <select name="adjustable_saturday_start_time">
+                                            <option value="11" {% if account.adjustable_saturday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_saturday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_saturday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_saturday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_saturday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_saturday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_saturday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_saturday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_saturday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_saturday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_saturday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_saturday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_saturday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_saturday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_saturday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_saturday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_saturday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_saturday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_saturday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_saturday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_saturday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_saturday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_saturday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_saturday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_saturday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_saturday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_saturday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_saturday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_saturday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_saturday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_saturday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_saturday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_saturday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_saturday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_saturday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_saturday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_saturday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_saturday_end_time">
+                                            <option value="11" {% if account.adjustable_saturday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_saturday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_saturday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_saturday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_saturday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_saturday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_saturday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_saturday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_saturday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_saturday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_saturday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_saturday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_saturday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_saturday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_saturday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_saturday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_saturday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_saturday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_saturday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_saturday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_saturday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_saturday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_saturday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_saturday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_saturday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_saturday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_saturday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_saturday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_saturday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_saturday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_saturday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_saturday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_saturday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_saturday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_saturday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_saturday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_saturday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <input name="adjustable_sunday_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_sunday_flag" id="is_sun_enabled" {% if account.adjustable_sunday_flag == True %} checked {% endif %}> {% trans "lbl_day_of_week_kind_sunday" %}
+                                        <select name="adjustable_sunday_start_time">
+                                            <option value="11" {% if account.adjustable_sunday_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_sunday_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_sunday_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_sunday_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_sunday_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_sunday_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_sunday_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_sunday_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_sunday_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_sunday_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_sunday_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_sunday_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_sunday_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_sunday_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_sunday_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_sunday_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_sunday_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_sunday_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_sunday_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_sunday_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_sunday_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_sunday_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_sunday_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_sunday_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_sunday_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_sunday_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_sunday_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_sunday_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_sunday_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_sunday_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_sunday_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_sunday_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_sunday_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_sunday_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_sunday_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_sunday_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_sunday_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_sunday_end_time">
+                                            <option value="11" {% if account.adjustable_sunday_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_sunday_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_sunday_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_sunday_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_sunday_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_sunday_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_sunday_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_sunday_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_sunday_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_sunday_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_sunday_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_sunday_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_sunday_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_sunday_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_sunday_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_sunday_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_sunday_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_sunday_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_sunday_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_sunday_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_sunday_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_sunday_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_sunday_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_sunday_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_sunday_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_sunday_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_sunday_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_sunday_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_sunday_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_sunday_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_sunday_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_sunday_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_sunday_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_sunday_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_sunday_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_sunday_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_sunday_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                    <hr>
+                                    <small class="form-text text-muted">{% trans "screen_account_description_5" %}</small>
+                                    <p>
+                                        <input name="adjustable_lunch_break_flag" type="hidden" value="0">
+                                        <input type="checkbox" value="1" name="adjustable_lunch_break_flag" id="is_lunch_break_enabled" {% if account.adjustable_lunch_break_flag == True %} checked {% endif %}> {% trans "lbl_lunch_break" %}
+                                        <select name="adjustable_lunch_break_start_time">
+                                            <option value="11" {% if account.adjustable_lunch_break_start_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_lunch_break_start_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_lunch_break_start_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_lunch_break_start_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_lunch_break_start_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_lunch_break_start_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_lunch_break_start_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_lunch_break_start_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_lunch_break_start_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_lunch_break_start_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_lunch_break_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_lunch_break_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_lunch_break_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_lunch_break_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_lunch_break_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_lunch_break_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_lunch_break_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_lunch_break_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_lunch_break_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_lunch_break_start_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_lunch_break_start_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_lunch_break_start_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_lunch_break_start_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_lunch_break_start_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_lunch_break_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_lunch_break_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_lunch_break_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_lunch_break_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_lunch_break_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_lunch_break_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_lunch_break_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_lunch_break_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_lunch_break_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_lunch_break_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_lunch_break_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_lunch_break_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_lunch_break_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="adjustable_lunch_break_end_time">
+                                            <option value="11" {% if account.adjustable_lunch_break_end_time == "11" %} selected {% endif %}>05:00</option>
+                                            <option value="12" {% if account.adjustable_lunch_break_end_time == "12" %} selected {% endif %}>05:30</option>
+                                            <option value="13" {% if account.adjustable_lunch_break_end_time == "13" %} selected {% endif %}>06:00</option>
+                                            <option value="14" {% if account.adjustable_lunch_break_end_time == "14" %} selected {% endif %}>06:30</option>
+                                            <option value="15" {% if account.adjustable_lunch_break_end_time == "15" %} selected {% endif %}>07:00</option>
+                                            <option value="16" {% if account.adjustable_lunch_break_end_time == "16" %} selected {% endif %}>07:30</option>
+                                            <option value="17" {% if account.adjustable_lunch_break_end_time == "17" %} selected {% endif %}>08:00</option>
+                                            <option value="18" {% if account.adjustable_lunch_break_end_time == "18" %} selected {% endif %}>08:30</option>
+                                            <option value="19" {% if account.adjustable_lunch_break_end_time == "19" %} selected {% endif %}>09:00</option>
+                                            <option value="20" {% if account.adjustable_lunch_break_end_time == "20" %} selected {% endif %}>09:30</option>
+                                            <option value="21" {% if account.adjustable_lunch_break_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.adjustable_lunch_break_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.adjustable_lunch_break_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.adjustable_lunch_break_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.adjustable_lunch_break_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.adjustable_lunch_break_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.adjustable_lunch_break_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.adjustable_lunch_break_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.adjustable_lunch_break_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <option value="30" {% if account.adjustable_lunch_break_end_time == "30" %} selected {% endif %}>14:30</option>
+                                            <option value="31" {% if account.adjustable_lunch_break_end_time == "31" %} selected {% endif %}>15:00</option>
+                                            <option value="32" {% if account.adjustable_lunch_break_end_time == "32" %} selected {% endif %}>15:30</option>
+                                            <option value="33" {% if account.adjustable_lunch_break_end_time == "33" %} selected {% endif %}>16:00</option>
+                                            <option value="34" {% if account.adjustable_lunch_break_end_time == "34" %} selected {% endif %}>16:30</option>
+                                            <option value="35" {% if account.adjustable_lunch_break_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.adjustable_lunch_break_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.adjustable_lunch_break_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.adjustable_lunch_break_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.adjustable_lunch_break_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.adjustable_lunch_break_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.adjustable_lunch_break_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.adjustable_lunch_break_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.adjustable_lunch_break_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.adjustable_lunch_break_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.adjustable_lunch_break_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.adjustable_lunch_break_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.adjustable_lunch_break_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_lunch_time" %}</label>
+                                <div class="col-sm-10">
+                                    <small class="form-text text-muted">{% trans "screen_account_description_6" %}</small>
+                                    <p>
+                                        <select name="lunch_start_time">
+                                            <!--<option value="11" {% if account.lunch_start_time == "11" %} selected {% endif %}>05:00</option>-->
+                                            <!--<option value="12" {% if account.lunch_start_time == "12" %} selected {% endif %}>05:30</option>-->
+                                            <!--<option value="13" {% if account.lunch_start_time == "13" %} selected {% endif %}>06:00</option>-->
+                                            <!--<option value="14" {% if account.lunch_start_time == "14" %} selected {% endif %}>06:30</option>-->
+                                            <!--<option value="15" {% if account.lunch_start_time == "15" %} selected {% endif %}>07:00</option>-->
+                                            <!--<option value="16" {% if account.lunch_start_time == "16" %} selected {% endif %}>07:30</option>-->
+                                            <!--<option value="17" {% if account.lunch_start_time == "17" %} selected {% endif %}>08:00</option>-->
+                                            <!--<option value="18" {% if account.lunch_start_time == "18" %} selected {% endif %}>08:30</option>-->
+                                            <!--<option value="19" {% if account.lunch_start_time == "19" %} selected {% endif %}>09:00</option>-->
+                                            <!--<option value="20" {% if account.lunch_start_time == "20" %} selected {% endif %}>09:30</option>-->
+                                            <option value="21" {% if account.lunch_start_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.lunch_start_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.lunch_start_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.lunch_start_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.lunch_start_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.lunch_start_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.lunch_start_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.lunch_start_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.lunch_start_time == "29" %} selected {% endif %}>14:00</option>
+                                            <!--<option value="30" {% if account.lunch_start_time == "30" %} selected {% endif %}>14:30</option>-->
+                                            <!--<option value="31" {% if account.lunch_start_time == "31" %} selected {% endif %}>15:00</option>-->
+                                            <!--<option value="32" {% if account.lunch_start_time == "32" %} selected {% endif %}>15:30</option>-->
+                                            <!--<option value="33" {% if account.lunch_start_time == "33" %} selected {% endif %}>16:00</option>-->
+                                            <!--<option value="34" {% if account.lunch_start_time == "34" %} selected {% endif %}>16:30</option>-->
+                                            <!--<option value="35" {% if account.lunch_start_time == "35" %} selected {% endif %}>17:00</option>-->
+                                            <!--<option value="36" {% if account.lunch_start_time == "36" %} selected {% endif %}>17:30</option>-->
+                                            <!--<option value="37" {% if account.lunch_start_time == "37" %} selected {% endif %}>18:00</option>-->
+                                            <!--<option value="38" {% if account.lunch_start_time == "38" %} selected {% endif %}>18:30</option>-->
+                                            <!--<option value="39" {% if account.lunch_start_time == "39" %} selected {% endif %}>19:00</option>-->
+                                            <!--<option value="40" {% if account.lunch_start_time == "40" %} selected {% endif %}>19:30</option>-->
+                                            <!--<option value="41" {% if account.lunch_start_time == "41" %} selected {% endif %}>20:00</option>-->
+                                            <!--<option value="42" {% if account.lunch_start_time == "42" %} selected {% endif %}>20:30</option>-->
+                                            <!--<option value="43" {% if account.lunch_start_time == "43" %} selected {% endif %}>21:00</option>-->
+                                            <!--<option value="44" {% if account.lunch_start_time == "44" %} selected {% endif %}>21:30</option>-->
+                                            <!--<option value="45" {% if account.lunch_start_time == "45" %} selected {% endif %}>22:00</option>-->
+                                            <!--<option value="46" {% if account.lunch_start_time == "46" %} selected {% endif %}>22:30</option>-->
+                                            <!--<option value="47" {% if account.lunch_start_time == "47" %} selected {% endif %}>23:00</option>-->
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="lunch_end_time">
+                                            <!--<option value="11" {% if account.lunch_end_time == "11" %} selected {% endif %}>05:00</option>-->
+                                            <!--<option value="12" {% if account.lunch_end_time == "12" %} selected {% endif %}>05:30</option>-->
+                                            <!--<option value="13" {% if account.lunch_end_time == "13" %} selected {% endif %}>06:00</option>-->
+                                            <!--<option value="14" {% if account.lunch_end_time == "14" %} selected {% endif %}>06:30</option>-->
+                                            <!--<option value="15" {% if account.lunch_end_time == "15" %} selected {% endif %}>07:00</option>-->
+                                            <!--<option value="16" {% if account.lunch_end_time == "16" %} selected {% endif %}>07:30</option>-->
+                                            <!--<option value="17" {% if account.lunch_end_time == "17" %} selected {% endif %}>08:00</option>-->
+                                            <!--<option value="18" {% if account.lunch_end_time == "18" %} selected {% endif %}>08:30</option>-->
+                                            <!--<option value="19" {% if account.lunch_end_time == "19" %} selected {% endif %}>09:00</option>-->
+                                            <!--<option value="20" {% if account.lunch_end_time == "20" %} selected {% endif %}>09:30</option>-->
+                                            <option value="21" {% if account.lunch_end_time == "21" %} selected {% endif %}>10:00</option>
+                                            <option value="22" {% if account.lunch_end_time == "22" %} selected {% endif %}>10:30</option>
+                                            <option value="23" {% if account.lunch_end_time == "23" %} selected {% endif %}>11:00</option>
+                                            <option value="24" {% if account.lunch_end_time == "24" %} selected {% endif %}>11:30</option>
+                                            <option value="25" {% if account.lunch_end_time == "25" %} selected {% endif %}>12:00</option>
+                                            <option value="26" {% if account.lunch_end_time == "26" %} selected {% endif %}>12:30</option>
+                                            <option value="27" {% if account.lunch_end_time == "27" %} selected {% endif %}>13:00</option>
+                                            <option value="28" {% if account.lunch_end_time == "28" %} selected {% endif %}>13:30</option>
+                                            <option value="29" {% if account.lunch_end_time == "29" %} selected {% endif %}>14:00</option>
+                                            <!--<option value="30" {% if account.lunch_end_time == "30" %} selected {% endif %}>14:30</option>-->
+                                            <!--<option value="31" {% if account.lunch_end_time == "31" %} selected {% endif %}>15:00</option>-->
+                                            <!--<option value="32" {% if account.lunch_end_time == "32" %} selected {% endif %}>15:30</option>-->
+                                            <!--<option value="33" {% if account.lunch_end_time == "33" %} selected {% endif %}>16:00</option>-->
+                                            <!--<option value="34" {% if account.lunch_end_time == "34" %} selected {% endif %}>16:30</option>-->
+                                            <!--<option value="35" {% if account.lunch_end_time == "35" %} selected {% endif %}>17:00</option>-->
+                                            <!--<option value="36" {% if account.lunch_end_time == "36" %} selected {% endif %}>17:30</option>-->
+                                            <!--<option value="37" {% if account.lunch_end_time == "37" %} selected {% endif %}>18:00</option>-->
+                                            <!--<option value="38" {% if account.lunch_end_time == "38" %} selected {% endif %}>18:30</option>-->
+                                            <!--<option value="39" {% if account.lunch_end_time == "39" %} selected {% endif %}>19:00</option>-->
+                                            <!--<option value="40" {% if account.lunch_end_time == "40" %} selected {% endif %}>19:30</option>-->
+                                            <!--<option value="41" {% if account.lunch_end_time == "41" %} selected {% endif %}>20:00</option>-->
+                                            <!--<option value="42" {% if account.lunch_end_time == "42" %} selected {% endif %}>20:30</option>-->
+                                            <!--<option value="43" {% if account.lunch_end_time == "43" %} selected {% endif %}>21:00</option>-->
+                                            <!--<option value="44" {% if account.lunch_end_time == "44" %} selected {% endif %}>21:30</option>-->
+                                            <!--<option value="45" {% if account.lunch_end_time == "45" %} selected {% endif %}>22:00</option>-->
+                                            <!--<option value="46" {% if account.lunch_end_time == "46" %} selected {% endif %}>22:30</option>-->
+                                            <!--<option value="47" {% if account.lunch_end_time == "47" %} selected {% endif %}>23:00</option>-->
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_dinner_time" %}</label>
+                                <div class="col-sm-10">
+                                    <small class="form-text text-muted">{% trans "screen_account_description_7" %}</small>
+                                    <p>
+                                        <select name="dinner_start_time">
+                                            <!--<option value="11" {% if account.dinner_start_time == "11" %} selected {% endif %}>05:00</option>-->
+                                            <!--<option value="12" {% if account.dinner_start_time == "12" %} selected {% endif %}>05:30</option>-->
+                                            <!--<option value="13" {% if account.dinner_start_time == "13" %} selected {% endif %}>06:00</option>-->
+                                            <!--<option value="14" {% if account.dinner_start_time == "14" %} selected {% endif %}>06:30</option>-->
+                                            <!--<option value="15" {% if account.dinner_start_time == "15" %} selected {% endif %}>07:00</option>-->
+                                            <!--<option value="16" {% if account.dinner_start_time == "16" %} selected {% endif %}>07:30</option>-->
+                                            <!--<option value="17" {% if account.dinner_start_time == "17" %} selected {% endif %}>08:00</option>-->
+                                            <!--<option value="18" {% if account.dinner_start_time == "18" %} selected {% endif %}>08:30</option>-->
+                                            <!--<option value="19" {% if account.dinner_start_time == "19" %} selected {% endif %}>09:00</option>-->
+                                            <!--<option value="20" {% if account.dinner_start_time == "20" %} selected {% endif %}>09:30</option>-->
+                                            <!--<option value="21" {% if account.dinner_start_time == "21" %} selected {% endif %}>10:00</option>-->
+                                            <!--<option value="22" {% if account.dinner_start_time == "22" %} selected {% endif %}>10:30</option>-->
+                                            <!--<option value="23" {% if account.dinner_start_time == "23" %} selected {% endif %}>11:00</option>-->
+                                            <!--<option value="24" {% if account.dinner_start_time == "24" %} selected {% endif %}>11:30</option>-->
+                                            <!--<option value="25" {% if account.dinner_start_time == "25" %} selected {% endif %}>12:00</option>-->
+                                            <!--<option value="26" {% if account.dinner_start_time == "26" %} selected {% endif %}>12:30</option>-->
+                                            <!--<option value="27" {% if account.dinner_start_time == "27" %} selected {% endif %}>13:00</option>-->
+                                            <!--<option value="28" {% if account.dinner_start_time == "28" %} selected {% endif %}>13:30</option>-->
+                                            <!--<option value="29" {% if account.dinner_start_time == "29" %} selected {% endif %}>14:00</option>-->
+                                            <!--<option value="30" {% if account.dinner_start_time == "30" %} selected {% endif %}>14:30</option>-->
+                                            <!--<option value="31" {% if account.dinner_start_time == "31" %} selected {% endif %}>15:00</option>-->
+                                            <!--<option value="32" {% if account.dinner_start_time == "32" %} selected {% endif %}>15:30</option>-->
+                                            <!--<option value="33" {% if account.dinner_start_time == "33" %} selected {% endif %}>16:00</option>-->
+                                            <!--<option value="34" {% if account.dinner_start_time == "34" %} selected {% endif %}>16:30</option>-->
+                                            <option value="35" {% if account.dinner_start_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.dinner_start_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.dinner_start_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.dinner_start_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.dinner_start_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.dinner_start_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.dinner_start_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.dinner_start_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.dinner_start_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.dinner_start_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.dinner_start_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.dinner_start_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.dinner_start_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                        {% trans "lbl_between" %}
+                                        <select name="dinner_end_time">
+                                            <!--<option value="11" {% if account.dinner_end_time == "11" %} selected {% endif %}>05:00</option>-->
+                                            <!--<option value="12" {% if account.dinner_end_time == "12" %} selected {% endif %}>05:30</option>-->
+                                            <!--<option value="13" {% if account.dinner_end_time == "13" %} selected {% endif %}>06:00</option>-->
+                                            <!--<option value="14" {% if account.dinner_end_time == "14" %} selected {% endif %}>06:30</option>-->
+                                            <!--<option value="15" {% if account.dinner_end_time == "15" %} selected {% endif %}>07:00</option>-->
+                                            <!--<option value="16" {% if account.dinner_end_time == "16" %} selected {% endif %}>07:30</option>-->
+                                            <!--<option value="17" {% if account.dinner_end_time == "17" %} selected {% endif %}>08:00</option>-->
+                                            <!--<option value="18" {% if account.dinner_end_time == "18" %} selected {% endif %}>08:30</option>-->
+                                            <!--<option value="19" {% if account.dinner_end_time == "19" %} selected {% endif %}>09:00</option>-->
+                                            <!--<option value="20" {% if account.dinner_end_time == "20" %} selected {% endif %}>09:30</option>-->
+                                            <!--<option value="21" {% if account.dinner_end_time == "21" %} selected {% endif %}>10:00</option>-->
+                                            <!--<option value="22" {% if account.dinner_end_time == "22" %} selected {% endif %}>10:30</option>-->
+                                            <!--<option value="23" {% if account.dinner_end_time == "23" %} selected {% endif %}>11:00</option>-->
+                                            <!--<option value="24" {% if account.dinner_end_time == "24" %} selected {% endif %}>11:30</option>-->
+                                            <!--<option value="25" {% if account.dinner_end_time == "25" %} selected {% endif %}>12:00</option>-->
+                                            <!--<option value="26" {% if account.dinner_end_time == "26" %} selected {% endif %}>12:30</option>-->
+                                            <!--<option value="27" {% if account.dinner_end_time == "27" %} selected {% endif %}>13:00</option>-->
+                                            <!--<option value="28" {% if account.dinner_end_time == "28" %} selected {% endif %}>13:30</option>-->
+                                            <!--<option value="29" {% if account.dinner_end_time == "29" %} selected {% endif %}>14:00</option>-->
+                                            <!--<option value="30" {% if account.dinner_end_time == "30" %} selected {% endif %}>14:30</option>-->
+                                            <!--<option value="31" {% if account.dinner_end_time == "31" %} selected {% endif %}>15:00</option>-->
+                                            <!--<option value="32" {% if account.dinner_end_time == "32" %} selected {% endif %}>15:30</option>-->
+                                            <!--<option value="33" {% if account.dinner_end_time == "33" %} selected {% endif %}>16:00</option>-->
+                                            <!--<option value="34" {% if account.dinner_end_time == "34" %} selected {% endif %}>16:30</option>-->
+                                            <option value="35" {% if account.dinner_end_time == "35" %} selected {% endif %}>17:00</option>
+                                            <option value="36" {% if account.dinner_end_time == "36" %} selected {% endif %}>17:30</option>
+                                            <option value="37" {% if account.dinner_end_time == "37" %} selected {% endif %}>18:00</option>
+                                            <option value="38" {% if account.dinner_end_time == "38" %} selected {% endif %}>18:30</option>
+                                            <option value="39" {% if account.dinner_end_time == "39" %} selected {% endif %}>19:00</option>
+                                            <option value="40" {% if account.dinner_end_time == "40" %} selected {% endif %}>19:30</option>
+                                            <option value="41" {% if account.dinner_end_time == "41" %} selected {% endif %}>20:00</option>
+                                            <option value="42" {% if account.dinner_end_time == "42" %} selected {% endif %}>20:30</option>
+                                            <option value="43" {% if account.dinner_end_time == "43" %} selected {% endif %}>21:00</option>
+                                            <option value="44" {% if account.dinner_end_time == "44" %} selected {% endif %}>21:30</option>
+                                            <option value="45" {% if account.dinner_end_time == "45" %} selected {% endif %}>22:00</option>
+                                            <option value="46" {% if account.dinner_end_time == "46" %} selected {% endif %}>22:30</option>
+                                            <option value="47" {% if account.dinner_end_time == "47" %} selected {% endif %}>23:00</option>
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_reschedule_adjustable_term" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "screen_account_description_8" %}</small>
+                                                    <input type="radio" name="reschedule_able_term_flag" value="1" {% if account.reschedule_able_term_flag == "1" %} checked {% endif %}> {% trans "reschedule_by_one_day" %}
+                                                    <input type="radio" name="reschedule_able_term_flag" value="2" {% if account.reschedule_able_term_flag == "2" %} checked {% endif %}> {% trans "reschedule_by_two_day" %}
+                                                    <input type="radio" name="reschedule_able_term_flag" value="3" {% if account.reschedule_able_term_flag == "3" %} checked {% endif %}> {% trans "reschedule_by_three_day" %}
+                                                    <input type="radio" name="reschedule_able_term_flag" value="0" {% if account.reschedule_able_term_flag == "0" %} checked {% endif %}> {% trans "reschedule_no_limit" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary">{% trans "save_button" %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

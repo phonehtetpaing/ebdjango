@@ -1,0 +1,33 @@
+branch-defaults:
+  default:
+    environment: django-env
+  main:
+    environment: messaging-platform-update-env
+    group_suffix: null
+environment-defaults:
+  Messagingplatformupdate-env:
+    branch: null
+    repository: null
+  django-env:
+    branch: null
+    repository: null
+  messaging-platform-update-env:
+    branch: main
+    repository: ebdjango1
+  python-env:
+    branch: null
+    repository: null
+global:
+  application_name: messaging_platform_update
+  branch: null
+  default_ec2_keyname: null
+  default_platform: python-3.8
+  default_region: us-west-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: null
+  sc: git
+  workspace_type: Application

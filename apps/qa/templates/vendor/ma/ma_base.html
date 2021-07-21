@@ -1,0 +1,154 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="email-app">
+    <div class="email-side-nav remain-height ov-h iphone-list-height">
+        <div class="h-100 layers">
+            <div class="p-20 bgc-grey-100 layer w-100">
+                <div class="btn-group" role="group">
+                    <!-- Large modal -->
+                    <button type="button" id="modalToggle" class="btn btn-danger bdrs-2 mR-3 cur-p">
+                        {% trans "New Message" %}
+                    </button>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn cur-p bgc-white no-after dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="ti-more-alt"></i>
+                        </button>
+                        <ul class="dropdown-menu fsz-sm" aria-labelledby="btnGroupDrop1">
+                            <li>
+                                {% if selected_trigger %}
+                                <a href="{% url namespace|add:':ma_delete' trigger_id=selected_trigger.id %}" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-trash mR-10"></i>
+                                    <span>{% trans "Delete" %}</span></a>
+                                {% else %}
+                                <a class="d-b td-n pY-5 pX-10 bgcH-black c-grey-200"><i class="ti-trash mR-10"></i>
+                                    <span>{% trans "Delete" %}</span></a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer w-100">
+                <div class="bdT bdB"><input id="maSearch" type="text" class="form-control m-0 bdw-0 pY-15 pX-20" placeholder='{% trans "Search..." %}'></div>
+            </div>
+            <div id="maList" class="infinite-container bdb scrollable pos-r bdT layer w-100 fxg-1" style="height: 70vh;">
+                {% for trigger in triggers %}
+                <div class="infinite-item">
+                    <div>
+                        <div class=" peers fxw-nw p-20 bdB bgcH-grey-100 cur-p">
+                            <div class="peer mR-10">
+                                <div class="checkbox checkbox-circle checkbox-info peers ai-c">
+                                    <input type="checkbox" id="inputCall1" name="inputCheckboxesCall" class="peer">
+                                    <label for="inputCall1" class="peers peer-greed js-sb ai-c"></label>
+                                </div>
+                            </div>
+                            <a href="{% url namespace|add:':ma_edit' trigger_id=trigger.id %}">
+                                <div class="peer peer-greed ov-h">
+                                    <h5 class="fsz-def tt-c c-grey-900">{{ trigger.message.subject }}</h5>
+                                    <span class="whs-nw w-100 ov-h tov-e d-b">{{ trigger.trigger_type.name }}</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="loading" style="display: none;">Loading...</div>
+            </div>
+            {% if triggers.has_next %}
+            <a class="infinite-more-link" href="?page={{ triggers.next_page_number }}" hidden>More</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% block slimma_contents %}
+    {{ slimma_contents }}
+    {% endblock %}
+</div>
+
+{% with "vendor/wizard/ma_wizard.html" as navigation %}
+{% include navigation %}
+{% endwith %}
+
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script type="text/javascript" src='https://unpkg.com/popper.js'></script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js'></script>
+<!--editor note these have to be re-loaded after bootstrapjs because of bugs in the framework-->
+<script type="text/javascript" src='{% static "qa/js/vendor.js" %}'></script>
+<script type="text/javascript" src='{% static "qa/js/bundle.js" %}'></script>
+<!-- search filter -->
+<script>
+$(document).ready(function(){
+  $("#maSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#maList > div").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+<script type="text/javascript">
+$(function () {
+  var current_step = 0;
+  var last_step = 2;
+  var progress_bar = 0;
+  var percent_per_Step = 50;
+
+  var reset_wizzard = function () {
+    current_step = 0;
+    progress_bar = 0;
+    $('#modal').modal('hide');
+  }
+
+  $('#modalToggle').click(function() {
+    $('#modal').modal({
+      backdrop: 'static'
+    });
+
+    current_step =1;
+    var nextPanel = '#myTab a[href="#Panel'+current_step+'"]';
+    progress_bar = "" + current_step * percent_per_Step + "%";
+
+    $('.progress-bar').css('width', progress_bar);
+    $(nextPanel).tab('show');
+  });
+
+  $('#continue').click(function (e) {
+    e.preventDefault();
+
+    if (current_step >= last_step) {
+        var formData = {
+          campaign_name: $('#campaignName').val(),
+        }
+        // todo create the ma message
+        var selected_option = $('input[name=ma_type]:checked').val();
+        if (selected_option == 1) {
+            document.location.href = '{% url namespace|add:':ma_direct' message_id=1 %}';
+        } else if (selected_option == 2) {
+            document.location.href = '{% url namespace|add:':ma_add' %}';
+        }
+
+        reset_wizzard();
+        console.log('testing debug ', $('input[name=ma_type]:checked').val())
+    }
+    current_step +=1;
+    var nextPanel = '#myTab a[href="#Panel'+current_step+'"]';
+    progress_bar = "" + current_step * percent_per_Step + "%";
+
+    $('.progress-bar').css('width', progress_bar);
+    $(nextPanel).tab('show');
+  });
+})
+</script>
+<script>
+var infinite = new Waypoint.Infinite({
+  element: $('.infinite-container')[0],
+  context: document.getElementById('maList'),
+});
+</script>
+{% endblock %}

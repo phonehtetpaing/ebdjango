@@ -1,0 +1,100 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load get_affiliate_url %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-title">
+                <h4>{% trans "lbl_affiliate"%}</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{% trans "lbl_affiliate_name"%}</th>
+                            <th>{% trans "lbl_affiliate_tag_name"%}</th>
+                            <th>LINE</th>
+                            <th>FB</th>
+                            <th><a href="{% url namespace|add:':affiliate_detail' affiliate_id=0 %}" class="btn btn-info btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> {% trans "btn_new" %}</a></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for affiliate in affiliates %}
+                        <tr>
+                            <td>{{ affiliate.name|default:"" }}</td>
+                            <td>{{ affiliate.tag_name|default:"" }}</td>
+                            <td>
+                                <input id="copyTargetLINE{{ affiliate.id }}" type="text" class="form-control border-input" value="{{ affiliate.id | get_affiliate_line_url }}" readonly>
+                                <button class="btn btn-sm btn-secondary" onclick="copyToClipboardLINE{{ affiliate.id }}()">Copy URL</button>
+                            </td>
+                            <td>
+                                <input id="copyTargetFBMS{{ affiliate.id }}" type="text" class="form-control border-input" value="{{ affiliate.id | get_affiliate_fbms_url }}" readonly>
+                                <button class="btn btn-sm btn-secondary" onclick="copyToClipboardFBMS{{ affiliate.id }}()">Copy URL</button>
+                            </td>
+                            <td> <a href="{% url namespace|add:':affiliate_detail' affiliate_id=affiliate.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i> {% trans "btn_edit" %}</a></td>
+                            <td>
+                                {% if affiliate.is_active %}
+                                    <a href="{% url namespace|add:':affiliate_deactivate' affiliate_id=affiliate.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-minus-circle" aria-hidden="true"></i>{% trans "btn_affiliate_deactive" %}</a>
+                                {% else %}
+                                    <a href="{% url namespace|add:':affiliate_activate' affiliate_id=affiliate.id %}" class="btn btn-primary btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {% trans "btn_affiliate_active" %}</a>
+                                {% endif %}
+                            <td>
+                                <a href="{% url namespace|add:':affiliate_user_list' affiliate_id=affiliate.id %}" class="btn btn-info btn-sm"><i class="fa fa-users" aria-hidden="true"></i> {% trans "btn_user_list" %}</a>
+                            <td>
+                                <a href="{% url namespace|add:':affiliate_delete' affiliate_id=affiliate.id %}" class="btn btn-danger btn-sm" onclick="return confirm('{% trans 'dia-erase-confirm' %}')"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if affiliates.has_other_pages %}
+                <ul class="pagination pagination-sm">
+                    {% if affiliates.has_previous %}
+                    <li><a href="?page={{ affiliates.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in affiliates.paginator.page_range %}
+                    {% if affiliates.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if affiliates.has_next %}
+                    <li><a href="?page={{ affiliates.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+{% for affiliate in affiliates %}
+    function copyToClipboardLINE{{affiliate.id}}() {
+        var copyTarget = document.getElementById("copyTargetLINE{{affiliate.id}}");
+        copyTarget.select();
+        document.execCommand("Copy");
+        alert("Copy: URL : " + copyTarget.value);
+    }
+
+    function copyToClipboardFBMS{{affiliate.id}}() {
+        var copyTarget = document.getElementById("copyTargetFBMS{{affiliate.id}}");
+        copyTarget.select();
+        document.execCommand("Copy");
+        alert("Copy: URL : " + copyTarget.value);
+    }
+{% endfor %}
+</script>
+{% endblock %}

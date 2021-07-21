@@ -1,0 +1,93 @@
+{% extends "mailroom/editor/editor.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block message_head %}
+<style>
+#id_filter_all {
+  list-style-type: none;
+  padding: 20px;
+}
+#id_filter_all li {
+}
+#clear-input {
+    border: 1px solid #ced4da;
+}
+.form-group{
+    margin: 0px !important;
+}
+</style>
+
+{{ message_form.media }}
+{% block editor_head %}
+{{ editor_head }}
+{% endblock %}
+{% endblock %}
+
+{% block editor_content %}
+{% if trigger_form and message_form %}
+<div class="col-md-12 pl-20 pr-0 h-100">
+    <div class="card">
+        <div class="card-header">
+            {% trans "Trigger Message Editor" %}
+        </div>
+        <div class="card-body p-0 pb-5">
+            <form id="mailroom_form" action="{% url namespace|add:':mailroom:trigger_message_edit' trigger_id=selected_trigger.id %}" method="post" role="form">
+        <div class="email-wrapper row m-0">
+            <div class="email-content col px-0">
+                <!-- Trigger Type Row -->
+                <div class="row m-0 pt-20 px-20">
+                    <div class="col-md-12 p-0">
+                        <label for="triggertype" class="m-0">{% trans "Trigger Type" %}: </label>
+                        <select id="triggertype" name="triggertype">
+                            <option value="opt">{% trans "Time Event Based" %}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Trigger Time Row -->
+                <div class="row m-0 p-0 px-20 pt-20 pt-md-0">
+                    <div class="col-md-3 m-0 p-0 pr-20">
+                        {% include 'forms/default_form_field.html' with field=trigger_form.days %}
+                    </div>
+                    <div class="col-md-3 m-0 p-0 pr-20">
+                        {% include 'forms/default_form_field.html' with field=trigger_form.hours %}
+                    </div>
+                    <div class="col-md-6 m-0 p-0">
+                        {% include 'forms/default_form_field.html' with field=trigger_form.trigger_type %}
+                    </div>
+                </div>
+                <div class="row m-0 pt-20 px-20">
+                    <div class="email-content-wrapper col m-0 p-0">
+                        {% csrf_token %}
+                        <!-- for form errors -->
+                        {% for hidden_field in message_form.hidden_fields %}
+                        {{ hidden_field }}
+                        {% endfor %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <!-- Email recipients -->
+                        {% if False %}
+                        <div class="m-0">
+                            {% include 'forms/default_form_field.html' with field=message_form.recipients %}
+                        </div>
+                        {% endif %}
+                        <!--Email contents-->
+                        <div class="m-0">
+                            {% include "mailroom/editor/message_contents.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

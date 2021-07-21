@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<div data-block-id="{{block.id}}" class="message_block infinite-item row m-0 p-20 border-bottom bgc-white bgcH-grey-50 d-flex justify-content-between" style="box-sizing:border-box;">
+    <div class="px-0 load_block" style="cursor:pointer;">
+        {% if block.display_order == 0 %}<i class="ti-home"></i>{% endif %}
+        <h5 class="fsz-def tt-c c-grey-900">
+            {{ block.display_order }}. {{ block.name }}
+        </h5>
+        <span class="whs-nw w-100 ov-h tov-e d-b">{{ block.message_set.count }} {% trans "messages" %}</span>
+    </div>
+
+    <!-- draggable ordering icon -->
+    <div>
+       <i class="ti-move"></i>
+    </div>
+</div>

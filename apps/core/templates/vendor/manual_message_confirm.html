@@ -1,0 +1,147 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+
+
+<!-- Trigger Conditions -->
+<div class="content">
+    <div class="row">
+        <div class="col-md-10">
+            <form action="{% url namespace|add:':manual_message_send' message_id=message_id %}" method="post" role="form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-title">
+                                <h4>{% trans "lbl_recipient_tag"%}</h4>
+                            </div>
+                            <div>
+                                {% for tag_user in tag_list %}
+                                <div class="btn-group" data-toggle="buttons">
+                                    <button type="button" class="btn btn-outline btn-secondary btn-rounded {% if tag_user.id in selected_tag_list %}active{% endif %}" disabled>
+                                        <input type="checkbox" name="tag_id" {% if tag_user.id in selected_tag_list %}checked=""{% endif %} value="{{ tag_user.id }}" {% if tag_user.id not in selected_tag_list %}hidden{% endif %}>{{ tag_user.name }}
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div>{% trans "lbl_target_number_of_users"%}: {{tagged_user_count}}</div>
+                                    <div class="current-progressbar">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-primary w-{{user_ratio}} wow animated progress-animated" role="progressbar" aria-valuenow="{{tagged_user_count}}" aria-valuemin="0" aria-valuemax="{{end_user_count}}">
+                                                {{user_ratio}} %
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-12 col-md-2">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>{% trans "lbl_message_overview"%} </h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>{% trans "lbl_message_overview_title"%}</label>
+                                            <input type="text" class="form-control border-input" placeholder="Please enter admin memo text" name="name" value="{{ manual_message_overview.name }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+                    <div id="apis">
+                                    {% for api in api_list %}
+                                    <div class="row api-child">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="form-group">
+                                                    {% if api.type == 'textsendmessage' %}
+                                                    <label><i class="ti-menu"></i>&nbsp;Text Message</label>
+                                                        <textarea rows="5" class="form-control border-input input-child" style="height: auto" placeholder="Please write a message to send" name="TextSendMessage_0_{{ forloop.counter }}" disabled>{{ api.payload }}</textarea>
+
+                                                    {% elif api.type == 'imagesendmessage' %}
+                                                        <label><i class="ti-menu"></i>&nbsp;Image Message</label>
+                                                        <input type="text" class="form-control border-input input-child" placeholder="https://example.com/original.jpg" name="ImageSendMessage_original_content_url_0_{{ forloop.counter }}" value="{{ api.payload }}" disabled>
+
+                                                    {% elif api.type == 'carouselsendmessage' %}
+                                                        <label><i class="ti-menu"></i>&nbsp;Template&nbsp;<i class="columns-toggle ti-angle-down"></i></label>
+                                                        <input type="text" class="form-control border-input input-child" placeholder="https://example.com/original.jpg" name="CarouselTemplate_alt_text_0_{{ forloop.counter }}" value="{{ api.param.alt_text}}" disabled>
+                                                        <div class="carousel_columns">
+                                                            {% for column in api.payload %}
+                                                            <div class="card">
+                                                                <input type="hidden" name="CarouselTemplate_column_{{column.id}}_{{ forloop.counter }}" disabled>
+                                                                <div class="content">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label><i class="ti-menu"></i>&nbsp;Thumbnail</label>
+                                                                                    <input type="text" class="form-control border-input" placeholder=" " name="column_thumbnail_image_url_{{ forloop.parentloop.counter }}" value="{{ column.image_url }}" disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label>Title</label>
+                                                                                    <input type="text" class="form-control border-input" placeholder="" name="column_title_{{ forloop.parentloop.counter }}" value="{{ column.title }}" disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label>Text</label>
+                                                                                    <input type="text" class="form-control border-input" placeholder="" name="column_text_{{ forloop.parentloop.counter }}" value="{{ column.subtitle }}" disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <textarea rows="5" class="form-control border-input" style="height: auto" placeholder="Please write a message to send" name="column_action_json_{{ forloop.parentloop.counter }}" disabled>{{ column.actions }}</textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="save btn btn-md btn-success">{% trans "btn_send"%}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2 step-msg-controll">
+            <div class="controll-container btn-group-vertical">
+                <button class="add-textsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-comment-alt"></i><p>{% trans 'Add Text Message' %}</p></button>
+                <button class="add-imgsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-image"></i><p>{% trans 'Add Image Message' %}</p></button>
+                <button class="add-carouselsend btn btn-info btn-outline m-b-10 m-l-5"><i class="ti-layers-alt"></i><p>{% trans 'Add Template Message' %}</p></button>
+            </div>
+         </div>
+
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,193 @@
+{% extends "vendor/ma/ma_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<link href='{% static "froala_editor/css/froala_editor.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+<link href='{% static "froala_editor/css/froala_style.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+<script type="text/javascript" src='{% static "froala_editor/js/froala_editor.min.js" %}'></script>
+<style>
+#id_filter_all {
+  list-style-type: none;
+  padding: 20px;
+}
+#id_filter_all li {
+}
+#clear-input {
+    border: 1px solid #ced4da;
+}
+</style>
+{{ message_form.media }}
+{% endblock %}
+{% block slimma_contents %}
+<form id="slimma_form" action="{% url namespace|add:':ma_direct' message_id=1 %}" method="post" role="form">
+    <div class="email-wrapper row remain-height bgc-white ov-h ps" style="z-index: 2000;">
+        <div class="email-content h-75 w-75">
+            <div class="bdT pY-30 mail-padding">
+                <!-- Email recipients -->
+                <div class="row">
+                    <div class="col-md-12 pb-3" id="recipient_display">
+                    </div>
+                </div>
+                <input hidden type="text" name="email_recipients" id="email_recipients" value="">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include 'forms/input_form_field.html' with field=message_form.recipients %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pb-5" id="autocomplete_display" style="position: relative">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {% include 'forms/default_form_field.html' with field=message_form.filter_all %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'forms/default_form_field.html' with field=message_form.filter_gender %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'forms/default_form_field.html' with field=message_form.filter_birth_month %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'forms/default_form_field.html' with field=message_form.filter_completed_questionnaire %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "vendor/ma/ma_message_contents.html" %}
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    let emailContacts = {{ email_contacts|safe }};
+    let emailRecipients = [];
+    let emailMatches = [];
+    let inputAddable = true;
+    const recipientInput = document.querySelector("#id_recipients");
+    const hiddenRecipientsInput = document.querySelector("#email_recipients");
+    const recipientDisplay = document.querySelector("#recipient_display");
+    const autocompleteDisplay = document.querySelector("#autocomplete_display");
+    const clearInputButton = document.querySelector("#clear-input");
+
+    const filterGender = document.querySelector("#id_filter_gender");
+    const filterBirthMonth = document.querySelector("#id_filter_birth_month");
+    const filterQuestionnaire = document.querySelector("#id_filter_completed_questionnaire");
+
+    const userListed = document.querySelector("#id_filter_all_0");
+    const userAll = document.querySelector("#id_filter_all_1");
+    const userFilter = document.querySelector("#id_filter_all_2");
+
+
+    recipientInput.focus();
+
+    const toggleFilters = (disabled) => {
+        filterGender.disabled = disabled;
+        filterBirthMonth.disabled = disabled;
+        filterQuestionnaire.disabled = disabled;
+    }
+
+    const debounce = (fn, time) => {
+        let timeout;
+
+        return function() {
+            const functionCall = () => fn.apply(this, arguments);
+
+            clearTimeout(timeout);
+            timeout = setTimeout(functionCall, time);
+        }
+    }
+
+    const refreshEmailAddresses = () => {
+        recipientDisplay.innerHTML = emailRecipients.map((e, i) => '<a class="btn btn-secondary px-3 py-1 m-2 text-white" onclick="removeEmailAddress(' + i + ')">' + e + '  <i class="ti-close i-circle""></i></a>').join('');
+        if (!inputAddable) {
+            recipientInput.setAttribute("style", "text-decoration: line-through;");
+        } else {
+            recipientInput.setAttribute("style", "text-decoration: ;");
+        }
+        hiddenRecipientsInput.value = emailRecipients;
+        recipientInput.focus();
+    }
+
+    const addEmailAddress = (address) => {
+        console.log('debugging add email address', address);
+        emailRecipients.push(address);
+        refreshEmailAddresses();
+    }
+
+    const addEmailFromButton = (address) => {
+        inputAddable = false;
+        addEmailAddress(address);
+    }
+
+    const addEmailFromInput = (address) => {
+        if (inputAddable) {
+           addEmailAddress(address);
+        }
+        refreshEmailAddresses();
+    }
+
+    const removeEmailAddress = (id) => {
+        emailRecipients.splice(id, 1);
+        refreshEmailAddresses();
+    }
+
+    clearInputButton.onclick = () => {
+            recipientInput.value = "";
+            inputAddable = true;
+            recipientInput.setAttribute("style", "text-decoration: ;");
+            autocompleteDisplay.innerHTML = "";
+            recipientInput.focus();
+    };
+
+    toggleFilters(true);
+
+    userListed.onclick = () => {toggleFilters(true);};
+    userAll.onclick = () => {toggleFilters(true);};
+    userFilter.onclick = () => {toggleFilters(false);};
+
+    recipientInput.addEventListener("keydown", (key_pressed) => {
+        if (key_pressed.code === 'Comma' || key_pressed.code === 'Space' || key_pressed.code === 'Enter') {
+            key_pressed.preventDefault();
+            cleanInput = recipientInput.value.split(',').map(e => e.trim()).filter((e) => e != "");
+            inputAddable = true;
+            if(cleanInput.length > 0){
+                addEmailFromInput(cleanInput);
+            }
+            recipientInput.value = "";
+        } else if (key_pressed.code === 'Escape') {
+            recipientInput.value = "";
+        }
+        recipientInput.focus();
+    });
+
+    recipientInput.addEventListener("input", () => {
+        if (!recipientInput.value) {
+            inputAddable = true;
+            recipientInput.setAttribute("style", "text-decoration: ;");
+            autocompleteDisplay.innerHTML = "";
+        }
+    });
+
+    recipientInput.addEventListener("keyup", debounce(() => {
+        emailMatches = [];
+        autocompleteDisplay.innerHTML = "";
+        if (recipientInput.value.length >= 1 && recipientInput.value !== "@") {
+            let regex = new RegExp( recipientInput.value.toLowerCase() );
+            for( let i = 0; i < emailContacts.length; i++ )
+            if (emailContacts[i].match(regex)) {
+                emailMatches.push(emailContacts[i]);
+            }
+        }
+
+        autocompleteDisplay.innerHTML = emailMatches.map((e) => '<a class="btn btn-info px-5 py-1 m-2 text-white" onclick="addEmailFromButton(\[\'' + e + '\'\]);">' + e + ' <i class="ti-plus i-circle"></i></a>').join('');
+
+    }, 500));
+</script>
+{% endblock %}

@@ -1,0 +1,347 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load to_string %}
+
+{% block content %}
+
+<div class="row" style="height: 85vh;">
+    <!-- Listing of all questionnaires with their status -->
+    <div class="col-md-3 ml-5">
+        <div class="peers fxw-nw pos-r">
+            <div class="peer bdR qa-word-break iphone-list-height">
+                <div class="layers h-100">
+                    <div class="bdB layer w-100"><input type="text" placeholder="{% trans 'Search Questionnaires'%}..." name="questionnaireSearch" id="questionnaireSearch"
+                                                        class="form-constrol p-15 bdrs-0 w-100 bdw-0"></div>
+                    <div id="qaList" class="infinite-container layer w-100 fxg-1 scrollable pos-r" style="height: 70vh;">
+                        {% for questionnaire in questionnaires %}
+                         <div class="infinite-item">
+                            <a href="{% url namespace|add:':questionnaire_summary' questionnaire_id=questionnaire.id %}">
+                            {% if questionnaire.status|to_string == 'Completed' %}
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer"><i class="fa fa-2x fa-wpforms c-green-500"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.name }}</h6><small class="lh-1 c-green-500">{% trans questionnaire.status %}</small>
+                                </div>
+                            </div>
+                            {% elif questionnaire.status|to_string == 'Running' %}
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer"><i class="fa fa-2x fa-flask c-blue-500" aria-hidden="true"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.name }}</h6><small class="lh-1 c-amber-500">{% trans questionnaire.status %}</small>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer"><i class="fa fa-2x fa-flask c-grey-500" aria-hidden="true"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.name }}</h6><small class="lh-1 c-grey-500">{% trans questionnaire.status %}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            </a>
+                         </div>
+                        {% endfor %}
+                        <div class="loading" style="display: none;">Loading...</div>
+                    </div>
+                    {% if questionnaires.has_next %}
+                    <a class="infinite-more-link" href="?page={{ questionnaires.next_page_number }}" hidden>More</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if selected_questionnaire.status|to_string == 'Completed' %}
+    <!--selected questionnaire data summary-->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                {{ selected_questionnaire.name }}
+            </div>
+            <div class="card-body">
+                <!-- General Questionnaire Stats-->
+                <div class="row gap-20">
+                    <div class="col-md-3 col-sm-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Total Respondents" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">{{ total_respondents }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Total Views" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash2"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500">{{ total_views }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "New Participants" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash3"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-purple-50 c-purple-500">{{ new_participants }} </span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Bounce Rate" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash4"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-blue-50 c-blue-500"> na </span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row pt-20">
+                    <!-- Comparative stat report-->
+                    <div class="col-md-6">
+                        <div class="bd bgc-white">
+                            <div class="layers">
+                                <div class="layer w-100">
+                                    <div class="bgc-light-blue-500 c-white p-20">
+                                        <div class="peers ai-c jc-sb gap-40">
+                                            <div class="peer peer-greed">
+                                                <h5>{{ selected_questionnaire.valid_until }}</h5>
+                                                <p class="mB-0">{% trans "Engagement Report" %}</p>
+                                            </div>
+                                            <div class="peer">
+                                                <h3 class="text-right"></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive p-20">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th class="bdwT-0">{% trans "Statistic" %}</th>
+                                                <th class="bdwT-0">{% trans "Previous" %}</th>
+                                                <th class="bdwT-0">{% trans "Current" %}</th>
+                                                <th class="bdwT-0">{% trans "Growth" %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="fw-600">{% trans "Total Views" %}</td>
+                                                <td>{{ view_stat.prev }}</td>
+                                                <td>{{ view_stat.curr }}</td>
+                                                <td>
+                                                    {% if view_stat.prev > view_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500">
+                                                        -{{ view_stat.change }}%
+                                                    </span>
+                                                    {% elif view_stat.prev < view_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        +{{ view_stat.change }}%
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        0%
+                                                    </span>
+                                                     {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-600">{% trans "Total Respondents" %}</td>
+                                                <td>{{ total_respondent_stat.prev }}</td>
+                                                <td>{{ total_respondent_stat.curr }}</td>
+                                                <td>
+                                                    {% if total_respondent_stat.prev > total_respondent_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500">
+                                                        -{{ total_respondent_stat.change }}%
+                                                    </span>
+                                                    {% elif total_respondent_stat.prev < total_respondent_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        +{{ total_respondent_stat.change }}%
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        0%
+                                                    </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-600">{% trans "Recurring Respondents" %}</td>
+                                                <td>{{ recurring_respondents_stat.prev }}</td>
+                                                <td>{{ recurring_respondents_stat.curr }}</td>
+                                                <td>
+                                                    {% if recurring_respondents_stat.prev > recurring_respondents_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500">
+                                                        -{{ recurring_respondents_stat.change }}%
+                                                    </span>
+                                                    {% elif recurring_respondents_stat.prev < recurring_respondents_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        +{{ recurring_respondents_stat.change }}%
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        0%
+                                                    </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-600">{% trans "New Respondents" %}</td>
+                                                <td>{{ new_respondents_stat.prev }}</td>
+                                                <td>{{ new_respondents_stat.curr }}</td>
+                                                <td>
+                                                    {% if new_respondents_stat.prev > new_respondents_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500">
+                                                        -{{ new_respondents_stat.change }}%
+                                                    </span>
+                                                    {% elif new_respondents_stat.prev < new_respondents_stat.curr %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        +{{ new_respondents_stat.change }}%
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">
+                                                        0%
+                                                    </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Respondent List-->
+                    <div class="col-md-6">
+                        <div class="bd bgc-white">
+                            <div class="layers">
+                                <div class="layer w-100">
+                                    <div class="peers fxw-nw pos-r">
+                                        <div class="peer bdR col">
+                                            <div class="layers h-50">
+                                                <div class="bdB layer w-100"><input type="text" placeholder="{% trans 'Search Respondents'%}..." name="respondentSearch" id="respondentSearch"
+                                                                                    class="form-constrol p-15 bdrs-0 w-100 bdw-0"></div>
+                                                <div id="respList" class="layer w-100 fxg-1 scrollable pos-r">
+                                                    {% for end_user in participants %}
+                                                    <a href="{% url namespace|add:':questionnaire_respondent_responses' questionnaire_id=selected_questionnaire.id end_user_id=end_user.id %}">
+                                                        <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                                            <div class="peer"><img src="https://randomuser.me/api/portraits/men/1.jpg" alt="" class="w-3r h-3r bdrs-50p"></div>
+                                                            <div class="peer peer-greed pL-20">
+                                                                <h6 class="mB-0 lh-1 fw-400">{{ end_user.get_full_name }}</h6>
+                                                                <small class="lh-1 c-green-500">{{ end_user.update_dt }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="row pt-20 pl-15">
+                        <div class="col-md-12">
+                            <div class="bgc-grey-100 peers ai-c jc-sb p-20 fxw-nw">
+                            <div class="peer">
+                                <div class="btn-group" role="group">
+
+                                    <div class="btn-group mR-3" role="group">
+                                        <button id="btnGroupDrop1" type="button" class="btn cur-p bgc-purple-100 no-after dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-export pr-10"></i>{% trans "Export Report"%}</button>
+                                        <ul class="dropdown-menu fsz-sm" aria-labelledby="btnGroupDrop1">
+                                            <li><a href="" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-file mR-10"></i> <span>{% trans "PDF"%}</span></a></li>
+                                            <li><a href="" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-file mR-10"></i> <span>{% trans "CSV"%}</span></a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="btn-group mR-3" role="group">
+                                        <button id="btnGroupDrop2" type="button" class="btn cur-p bgc-purple-100 no-after dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-export pr-10"></i>{% trans "Export Respondents"%}</button>
+                                        <ul class="dropdown-menu fsz-sm" aria-labelledby="btnGroupDrop1">
+                                            <li><a href="{% url namespace|add:':questionnaire_report_respondents' questionnaire_id=selected_questionnaire.id %}" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-file mR-10"></i> <span>{% trans "PDF"%}</span></a></li>
+                                            <li><a href="" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-file mR-10"></i> <span>{% trans "CSV"%}</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif selected_questionnaire %}
+    <!--placeholder until questionnaire data summary is available-->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                {{ selected_questionnaire.name }}
+            </div>
+            <div class="card-body">
+                <div class="row justify-content-center align-items-center">
+                    <i class="fa fa-5x fa-cog fa-spin"></i>
+                    <span class="mx-auto">{% trans "Data will be available once the questionnaire has been completed." %}</span>
+                    <i class="fa fa-5x fa-cog fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block append_js_on_tail %}
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script>
+$(document).ready(function(){
+  $("#questionnaireSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#qaList > a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+$(document).ready(function(){
+  $("#respondentSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#respList > a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+<script>
+var infinite = new Waypoint.Infinite({
+  element: $('.infinite-container')[0],
+  context: document.getElementById('qaList'),
+});
+</script>
+{% endblock %}

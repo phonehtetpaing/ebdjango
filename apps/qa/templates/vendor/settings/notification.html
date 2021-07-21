@@ -1,0 +1,106 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row p-20">
+    <!-- Notification Applications -->
+    <div class="col-md-3 ml-5">
+        <div class="peers fxw-nw pos-r iphone-notification">
+            <div class="peer bdR">
+                <div class="layers h-100">
+                    {% for service in services %}
+                    <a href="{% url namespace|add:':settings_notification' service_id=service.notification_service.id %}">
+                        <div class="layer w-100 fxg-1 scrollable pos-r">
+                            <div class="peers fxw-nw ai-c p-20 bdB {% if service.notification_service.id == selected_service.id %}bgc-blue-50{% else %}bgc-white{% endif %} bgcH-grey-50 cur-p">
+                                {% if service.setting_value == 0 %}
+                                <div class="peer"><i class="{{ service.notification_service.icon }} c-red-500"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{{ service.notification_service.name }}</h6>
+
+                                    <small class="lh-1 c-red-500">{% trans "Disabled" %}</small>
+                                </div>
+                                {% else %}
+                                <div class="peer"><i class="{{ service.notification_service.icon }} c-green-500"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{{ service.notification_service.name }}</h6>
+
+                                    <small class="lh-1 c-green-500">{% trans "Enabled" %}</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Settings -->
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bd bgc-white">
+                    <div class="layers">
+                        <div class="layer w-100">
+                            <!-- Notification settings -->
+                            <form action="{% url namespace|add:':settings_notification' service_id=selected_service.id %}" method="post" role="form">
+                                {% csrf_token %}
+                                <div class="col-md-6 offset-md-3">
+                                    <div class="row pt-20">
+                                        <strong>{% trans "Notify me about..." %}</strong>
+                                    </div>
+                                    <div class="row pt-20">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="col-md-12 mb-3">
+                                                    <input type="radio" name="setting_value" value="2" class="m-5" {% if setting_value == 2 %} checked {% endif %}><strong>{% trans "All Notifications" %}</strong><br>
+                                                    <p>
+                                                        {% trans "Enables notifications for system updates, payment reminders and campaign information." %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-20">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="col-md-12 mb-3">
+                                                    <input type="radio" name="setting_value" value="1" class="m-5" {% if setting_value == 1 %} checked {% endif %}><strong>{% trans "System Notifications" %}</strong><br>
+                                                    <p>
+                                                        {% trans "Enables notifications only for system updates and payment reminders." %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-20">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="col-md-12 mb-3">
+                                                    <input type="radio" name="setting_value" value="0" class="m-5" {% if setting_value == 0 or None %} checked {% endif %}><strong>{% trans "No Notifications" %}</strong><br>
+                                                    <p>
+                                                        {% trans "Disables all notifications. If payment periods expire you will need to re-activate your current payment plan under: <i>settings > plan </i>." %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-20 pb-20">
+                                        <button role='submit' class="btn btn-primary">{% trans "Save" %}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

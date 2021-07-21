@@ -1,0 +1,15 @@
+{% extends "nchat/base/unauthorized_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+        <h4 class="fw-300 c-grey-900 mB-40">{% trans "Register" %}</h4>
+        <form action="" method="post" role="form">
+            {% csrf_token %}
+
+             {% include 'forms/default_form.html' with form=registration_form %}
+
+
+            <div class="form-group"><button class="btn btn-primary">{% trans "Register" %}</button></div>
+        </form>
+{% endblock %}

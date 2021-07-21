@@ -1,0 +1,35 @@
+{% autoescape off %}
+Thank you for signing up {{ user.username }},
+
+You will soon have access to the most powerfull tool you will ever use in order to interact with your
+customers.
+
+Whether it is to gather feedback on your products, stay in touch with existing customer or reach out to brand new ones,
+ChatQuest will be sure to help your brand succeed.
+
+Please click on the link below to confirm your registration and get started:
+
+<a href="https://{{ domain }}{% url namespace|add:':activate' uidb64=uid token=token %}">Activate My Account!</a>
+
+If the above link does not appear please try pasting the below url into your browser:
+
+https://{{ domain }}{% url namespace|add:':activate' uidb64=uid token=token %}
+
+=================================================
+
+{{user.username}}にお申し込みいただきありがとうございます。
+
+すぐにあなたがあなたと対話するためにこれまで使用する最も強力なツールにアクセスできるようになります
+顧客。
+
+製品に関するフィードバックを収集するか、既存の顧客と連絡を取り合うか、新しい顧客に連絡するか、
+ChatQuestは、ブランドの成功を支援します。
+
+登録を確認して開始するには、以下のリンクをクリックしてください。
+
+<a href="https://{{ domain }}{% url namespace|add:':activate' uidb64=uid token=token %}">私のアカウントを有効にしてください！</a>
+
+上記のリンクが表示されない場合は、ブラウザに次のURLを貼り付けてください。
+
+https://{{ domain }}{% url namespace|add:':activate' uidb64=uid token=token %}
+{% endautoescape %}

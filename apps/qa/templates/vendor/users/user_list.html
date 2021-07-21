@@ -1,0 +1,278 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load to_string %}
+
+{% block content %}
+
+<div class="row" style="height: 85vh;">
+    <!-- Listing of all questionnaires with their status -->
+    <div class="col-md-3 ml-5" >
+        <div class="peers fxw-nw pos-r iphone-userlist-padding">
+            <div class="peer bdR qa-word-break iphone-userlist-width" >
+                <div class="layers h-100">
+                    <div class="bdB layer w-100">
+                        <input type="text" placeholder="{% trans 'Search Users'%}..." name="userSearch" id="userSearch"
+                               class="form-constrol p-15 bdrs-0 w-100 bdw-0">
+                    </div>
+                    <div id="userList" class="layer w-100 fxg-1 scrollable pos-r" style="height: 75vh;">
+                        <div class="infinite-container">
+                        {% for user in end_users %}
+                            <div class="infinite-item">
+                                <a href="{% url namespace|add:':user_list' end_user_id=user.id %}">
+                                    <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                        <div class="peer"><i class="fa fa-3x fa-user-circle-o w-3r h-3r bdrs-50p" aria-hidden="true"></i></div>
+                                        <div class="peer peer-greed pL-20">
+                                            <h6 class="mB-0 lh-1 fw-400">{{ user.get_full_name }}</h6><small class="lh-1 c-green-500">{% trans "Last activity" %}: {{ user.update_dt }}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        {% if end_users.has_next %}
+                        <a class="infinite-more-link" href="?page={{ end_users.next_page_number }}">More</a>
+                    {% endif %}
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if form %}
+    <!-- selected user profile -->
+    <div class="col-md-8 ">
+        <div class="card layer h-100 w-100 fxg-1 scrollable pos-r">
+            <!--<div class="card-header">-->
+            <!--{% trans "User Profile" %}-->
+            <!--</div>-->
+            <div class="card-body">
+
+                <!-- General User Statistics -->
+                <div class="row gap-20">
+                    <div class="peer iphone-usericon"><img src="https://randomuser.me/api/portraits/men/3.jpg" alt="" class="w-6r h-6r bdrs-50p"></div>
+
+                    <div class="col-md-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Completed Questionnaires" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">{{ statistics.completed }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Received Questionnaires" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash2"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">{{ statistics.received }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="layers bd bgc-white p-20">
+                            <div class="layer w-100 mB-10">
+                                <h6 class="lh-1">{% trans "Claimed Coupons" %}</h6>
+                            </div>
+                            <div class="layer w-100">
+                                <div class="peers ai-sb fxw-nw">
+                                    <div class="peer peer-greed"><span id="sparklinedash3"></span></div>
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">{{ statistics.claimed }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pt-20">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="peers pT-20 mT-20 bdT fxw-nw@lg+ jc-sb ta-c gap-10">
+                            <div class="peer iphone-qa-rate">
+                                <div class="easy-pie-chart" data-size="80" data-percent="{{ statistics.complete_rate }}" data-bar-color="#f44336"><span></span></div>
+                                <h6 class="fsz-sm">{% trans "Questionnaire Completion Rate" %}</h6>
+                            </div>
+                            <div class="peer iphone-cp-rate">
+                                <div class="easy-pie-chart" data-size="80" data-percent="{{ statistics.claim_rate }}" data-bar-color="#2196f3"><span></span></div>
+                                <h6 class="fsz-sm">{% trans "Coupon Claim Rate" %}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Specific User Information -->
+                <div class="row pt-20">
+                    <!-- User Profile Information -->
+                    <div class="col-md-6">
+                        <div class="bd bgc-white">
+                            <div class="layers">
+                                <div class="layer w-100">
+                                    <div class="bgc-light-blue-500 c-white p-20">
+                                        <div class="peers ai-c jc-sb gap-20">
+                                            <div class="peer peer-greed">
+                                                <h6>{{ end_user.update_dt }}</h6>
+                                                <p class="mB-0">{% trans "User Report" %}</p>
+                                            </div>
+                                            <div class="peer">
+                                                <h4 class="text-right">
+                                                    {{ end_user.first_name }} {{ end_user.last_name }}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive p-10">
+                                        <div class="">
+                                            <form class="container" action="{% url namespace|add:':settings_profile' %}" method="post" role="form">
+                                                {% csrf_token %}
+                                                {% for hidden_field in form.hidden_fields %}
+                                                {{ hidden_field }}
+                                                {% endfor %}
+
+                                                {% if form.non_field_errors %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {% for error in form.non_field_errors %}
+                                                    {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                <div class="row">
+                                                    <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                        {% include 'forms/default_form_field.html' with field=form.first_name %}
+                                                    </div>
+                                                    <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                         {% include 'forms/default_form_field.html' with field=form.last_name %}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                        {% include 'forms/default_form_field.html' with field=form.prefecture %}
+                                                    </div>
+                                                     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                         {% include 'forms/default_form_field.html' with field=form.zip_code %}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                        {% include 'forms/default_form_field.html' with field=form.email %}
+                                                    </div>
+                                                     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                         {% include 'forms/default_form_field.html' with field=form.tel1 %}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                        {% include 'forms/default_form_field.html' with field=form.birth_date %}
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        {% include 'forms/default_form_field.html' with field=form.gender %}
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Respondent List-->
+                    <div class="col-md-6">
+                        <div class="bd bgc-white">
+                            <div class="layers">
+                                <div class="layer w-100">
+                                    <div class="peers fxw-nw pos-r">
+                                        <div class="peer bdR col">
+                                            <div class="layers h-50">
+                                                <div class="bdB layer w-100"><input type="text" placeholder="{% trans 'Search Questionnaires'%}..." name="questionnaireSearch" id="questionnaireSearch"
+                                                                                    class="form-constrol p-15 bdrs-0 w-100 bdw-0"></div>
+                                                <div id="qaList" class="layer w-100 fxg-1 scrollable pos-r">
+                                                    {% for questionnaire in questionnaires %}
+                                                    <a href="{% url namespace|add:':questionnaire_summary' questionnaire_id=questionnaire.questionnaire.id %}">
+                                                        {% if questionnaire.questionnaire.state|to_string == 'Completed' %}
+                                                        <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                                            <div class="peer"><i class="fa fa-2x fa-wpforms c-green-500"></i></div>
+                                                            <div class="peer peer-greed pL-20">
+                                                                <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.questionnaire.name }}</h6><small class="lh-1 c-green-500">{% trans questionnaire.questionnaire.status %}</small>
+                                                            </div>
+                                                        </div>
+                                                        {% elif questionnaire.questionnaire.state|to_string == 'Running' %}
+                                                        <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                                            <div class="peer"><i class="fa fa-2x fa-flask c-blue-500" aria-hidden="true"></i></div>
+                                                            <div class="peer peer-greed pL-20">
+                                                                <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.questionnaire.name }}</h6><small class="lh-1 c-amber-500">{% trans questionnaire.questionnaire.status %}</small>
+                                                            </div>
+                                                        </div>
+                                                        {% else %}
+                                                        <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                                            <div class="peer"><i class="fa fa-2x fa-flask c-grey-500" aria-hidden="true"></i></div>
+                                                            <div class="peer peer-greed pL-20">
+                                                                <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.questionnaire.name }}</h6><small class="lh-1 c-grey-500">{% trans questionnaire.questionnaire.status %}</small>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block append_js_on_tail %}
+<!--<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>-->
+<script src="{% static 'core/assets/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'core/assets/js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'core/assets/js/infinite.min.js' %}"></script>
+<script>
+$(document).ready(function(){
+  $("#userSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#userList > div > div > a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+$(document).ready(function(){
+  $("#questionnaireSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#qaList > a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+<script>
+var infinite = new Waypoint.Infinite({
+  element: $('.infinite-container')[0],
+  context: document.getElementById('userList'),
+});
+  </script>
+{% endblock %}

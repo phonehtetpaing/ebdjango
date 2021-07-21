@@ -1,0 +1,35 @@
+{% extends "base/common_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <h4 class="card-title">登録内容はお間違いないでしょうか？</h4>
+        <ul class="list-icons">
+            <li><i class="fa fa-check text-info"></i> 登録対象：{{new_vendor_branch.name}}</li>
+            <li><i class="fa fa-check text-info"></i> ユーザ名：{{end_user.first_name}}</li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4">
+        <div class="button-list">
+            <form method="post" action="{% url namespace|add:':registration_line_update' %}" class="form-signin" id="form1">
+                {% csrf_token %}
+                <input type="hidden" name="tmp_entry_id" value="{{tmp_entry_id}}" />
+                <input type="hidden" name="end_user_id" value="{{end_user.id}}" />
+                <input type="hidden" name="is_register" value="1" />
+                <button class="btn btn-info m-b-10 m-l-5" type="submit">{% trans "btn_yes" %}</button>
+            </form>
+            <form method="post" action="{% url namespace|add:':registration_line_update' %}" class="form-signin" id="form2">
+                {% csrf_token %}
+                <input type="hidden" name="tmp_entry_id" value="{{tmp_entry_id}}" />
+                <input type="hidden" name="end_user_id" value="{{end_user.id}}" />
+                <input type="hidden" name="is_register" value="0" />
+                <button class="btn btn-danger m-b-10 m-l-5" type="submit">{% trans "btn_no" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

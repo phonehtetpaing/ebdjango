@@ -1,0 +1,99 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{event.name|default:""}} {% trans "lbl_reservation_detail"%}</h4>
+                <div class="p-20">
+                    <div class="table-responsive">
+                        <div class="col-md-10">
+                        <div class="card">
+                            <table class="table table-sm table-bordered">
+                                <tr>
+                                    <th>{% trans "tbl_title_event_category"%}</th>
+                                    <td>{{event.event_category.name|default:""}}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% trans "tbl_title_description"%}</th>
+                                    <td>{{event.description|default:""}}</td>
+                                </tr>
+                                {% if not event.is_gcal_set %}
+                                <tr>
+                                    <th>Date</th>
+                                    <td>{{ event.start_dt|date:"Y-m-d"}} {{ event.start_dt|date:"H:i" }} - {{ event.end_dt|date:"H:i" }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        </div>
+
+                        {% if event_reservations %}
+                        <div class="card">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "tbl_title_reservation_dt"%}</th>
+                                    <th>{% trans "tbl_title_user"%}</th>
+                                    {% if event.is_gcal_set %}
+                                    <th></th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reservation in event_reservations %}
+                                    {% if event.id == reservation.event.id%}
+                                    <tr>
+                                        <td>{{ reservation.regist_dt }}</td>
+                                        <td>
+                                            <a href="{% url namespace|add:':user_detail' end_user_id=reservation.end_user.id %}">
+                                                {{ reservation.end_user.last_name }} {{ reservation.end_user.first_name }}
+                                            </a>
+                                        </td>
+                                        {% if event.is_gcal_set %}
+                                        <td>
+                                            {% if reservation.gcal_url%}
+                                            <button type="button" class="btn btn-success btn-rounded m-b-10 m-l-5">
+                                                <a href="{{ reservation.gcal_url }}" target="_blank">Google Calendar</a>
+                                            </button>
+                                            {% endif %}
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if event_reservations.has_other_pages %}
+            <ul class="pagination pagination-sm">
+                {% if event_reservations.has_previous %}
+                <li><a href="?page={{ event_reservations.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in event_reservations.paginator.page_range %}
+                {% if event_reservations.number == i %}
+                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if event_reservations.has_next %}
+                <li><a href="?page={{ event_reservations.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

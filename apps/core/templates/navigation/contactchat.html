@@ -1,0 +1,25 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Sidebar navigation-->
+<nav class="sidebar-nav">
+    <ul id="sidebarnav">
+        <li class="nav-devider"></li>
+        <li> <a  href="{% url namespace|add:':dashboard_index' %}" aria-expanded="false"><i class="fa fa-wpforms"></i><span class="hide-menu">{% trans "nav_dashboard"%}</span></a></li>
+        <li> <a  href="{% url namespace|add:':analytics_index' %}" aria-expanded="false"><i class="fa fa-bar-chart"></i><span class="hide-menu">{% trans "nav_analytics"%}</span></a></li>
+
+        <li> <a class="has-arrow  " data-toggle="collapse" href="#messaging" aria-expanded="false"><i class="fa fa-comments"></i><span class="hide-menu">{% trans "nav_message"%}</span></a>
+            <ul id="messaging" aria-expanded="false" class="collapse">
+                <li><a href="{% url namespace|add:':block_message' %}">{% trans "Scenario"%}</a></li>
+            </ul>
+        </li>
+        <li> <a  href="{% url namespace|add:':files' %}" aria-expanded="false"><i class="fa fa-files-o"></i><span class="hide-menu">{% trans "Files"%}</span></a></li>
+        <li> <a class="has-arrow  " data-toggle="collapse" href="#settings" aria-expanded="false"><i class="fa fa-cog"></i><span class="hide-menu">{% trans "lbl_settings"%}</span></a>
+            <ul id="settings" aria-expanded="false" class="collapse">
+                <li><a href="{% url namespace|add:':settings_style_index' %}"><i class="fa fa-paint-brush"></i> {% trans "lbl_style"%}</a></li>
+                <li><a href="{% url namespace|add:':setting_vendor_index' %}"><i class="fa fa-building-o"></i> {% trans "nav_account"%}</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<!-- End Sidebar navigation -->

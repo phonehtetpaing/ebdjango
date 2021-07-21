@@ -1,0 +1,70 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<script type="text/javascript">
+function copy(target){
+  let range = document.createRange();
+  let span = document.getElementById(target);
+  range.selectNodeContents(span);
+
+  let selection = document.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  document.execCommand('copy');
+  alert('{% trans "message_copied" %}');
+}
+</script>
+<main class="main-content bgc-grey-100">
+    <div id="mainContent">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="headline-main">
+                        <h1 class="headline-main__headline">{% trans "screen_created_once_url_description_1" %}</h1>
+                        <p class="headline-main__text">{% trans "screen_created_once_url_description_2" %}</p>
+                    </div>
+                    <div class="bdrs-3 ov-h bgc-white bd">
+                        <div class="pos-r">
+                            <div class="bd bgc-white">
+                                <div class="layers">
+                                    <div class="layer w-100">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead></thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="fw-600">{% trans "screen_created_once_url_description_3" %}</span>
+                                                            <div class="c-grey-600">
+                                                                <span id="copyTarget" class="c-grey-700" style="word-break: break-all;">
+                                                                <small class="fw-600 c-grey-700">{{base_url}}meeting/input/{{once_url_info.template_url_key}}/</small>
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="peer">
+                                                                <a href="#" onclick="copy('copyTarget')" data-toggle="tooltip" data-placement="top" data-original-title='{% trans "menu_clipboard_copy" %}'>
+                                                                    <img class="w-2r bdrs-50p" src='{% static "core/images/icon_clipboard_copy.png" %}'>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

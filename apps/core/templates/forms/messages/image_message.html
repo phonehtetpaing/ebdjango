@@ -1,0 +1,41 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+{% load get_url_file_name %}
+
+{% block message_header %}
+    <i class="ti-image" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<div class="message-img-thumbnail vertical-align">
+    {% if message.payload %}
+        <img src="{{ message.payload }}">
+    {% else %}
+        <i class="fa fa-camera fa-5x text-center" aria-hidden="true"></i><span class=" text-center">{% trans 'No Image Found' %}</span>
+    {% endif %}
+</div>
+<div class="bubble-white">
+    <div class="form-group">
+        <div class="d-flex justify-content-center">
+            <div class="btn btn-primary btn-fill btn-wd mt-3" onclick="(openModal(type='image', node=this))">{% trans "Select Image" %}</div>
+            <input class="input-child message-img-input" id="ImageSendMessage_original_content_url_0_{{ message_counter }}" name="ImageSendMessage_original_content_url_0_{{ message_counter }}" hidden>
+        </div>
+<!--        <div class="d-flex justify-content-center">-->
+<!--            <label for="ImageSendMessage_original_content_url_0_{{ message_counter }}">{% trans "Select file." %}</label>-->
+<!--            <select class="input-child message-img-input" id="ImageSendMessage_original_content_url_0_{{ message_counter }}" name="ImageSendMessage_original_content_url_0_{{ message_counter }}">-->
+<!--                {% for file in files %}-->
+<!--                <option value="{{ file.upload.url }}"{% if message.payload == file.upload.url %} selected{% endif %}>{{ file.pretty_name }}</option>-->
+<!--                {% empty %}-->
+<!--                    {% if message.payload %}-->
+<!--                    <option value="{{ message.payload }}" selected >{{ message.payload|get_url_file_name }}</option>-->
+<!--                    {% else %}-->
+<!--                    <option value="{{ message.payload }}" selected >{% trans "Please upload files through the files screen first." %}</option>-->
+<!--                    {% endif %}-->
+<!--                {% endfor %}-->
+<!--            </select>-->
+<!--        </div>-->
+    </div>
+</div>
+
+{% endblock %}

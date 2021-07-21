@@ -1,0 +1,22 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8 mw-66 bg-white mx-auto mt-40 px-40 py-20 shadow p-3 mb-5 bg-white rounded">
+        <!-- Title -->
+        <h1 class="mt-4">{{ title }}</h1>
+        <!-- Author -->
+        <p class="lead" style="color: #349bf4">{% trans "by" %} Peace Factory</p>
+        <hr>
+        <!-- Date/Time -->
+        <p>{% trans "Posted on" %}: {{ schedule_dt }}</p>
+        <hr>
+        <!-- Body -->
+        <p class="lead">{{ body }}</p>
+    </div></div>
+</div>
+
+{% endblock %}

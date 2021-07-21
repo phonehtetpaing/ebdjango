@@ -1,0 +1,35 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+    <div class="form-group bubble-white" style="margin: 0 !important">
+        <div class="col-md-12">
+            <div class="row form-group">
+                <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_form_title' %}" name="FormSendMessage_{{ message_counter }}" value="{{ message.title }}" maxlength="1000" required>
+                <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_form_memo' %}" name="FormSendMessage_{{ message_counter }}" value="{{ message.memo }}" maxlength="1000" required>
+            </div>
+            <div class="row form-group">
+                <select class="input-child form-check-label form-inline" name="FormSendMessage_{{ message_counter }}">
+                    <option value="todo" {% if message.todo %}selected{% endif %}> {%trans "lbl_form_todo_option" %}</option>
+                </select>
+            </div>
+            <div class="form-questions">
+                {% for child in message.payload %}
+                <div class="row form-question" data-form-child-id='{{ forloop.counter }}'>
+                    <input type="text" class="form-control col-md-3 border-input input-child" placeholder="{% trans 'Attribute' %}" name="FormSendMessage_{{ message_counter }}" value="{{ child.attribute }}" maxlength="1000" required>
+                    <input type="text" class="form-control col-md-9 border-input input-child" placeholder="{% trans 'placeholder_form_question' %}" name="FormSendMessage_{{ message_counter }}" value="{{ child.question }}" maxlength="1000" required>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-center mt-3">
+                    <button type='button' class='add-form-child message-bubble bubble-dashed'>+ {% trans "lbl_add_form_question" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

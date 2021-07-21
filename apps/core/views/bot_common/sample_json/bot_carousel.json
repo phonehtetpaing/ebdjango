@@ -1,0 +1,35 @@
+{
+    "elements": [
+            {
+                "title": "titleMessage",
+                "url":  "https://sushitimes.co/",
+                "image_url": "https://sushitimes.co/wp-content/uploads/2017/09/sushilogo-1.png",
+                "subtitle": "some small message",
+                "buttons": [
+                    {
+                        "type": "url",
+                        "title": "button_title",
+                        "data": "https://sushitimes.co/"
+                    },
+                    {
+                        "type": "url",
+                        "title": "button_title",
+                        "data": "https://sushitimes.co/"
+                    }
+                ]
+            },
+            {
+                "title": "titleMessage",
+                "url":  "https://sushitimes.co/",
+                "image_url": "https://sushitimes.co/wp-content/uploads/2017/09/sushilogo-1.png",
+                "subtitle": "some small message",
+                "buttons": [
+                    {
+                        "type": "url",
+                        "title": "button_title",
+                        "data": "https://sushitimes.co/"
+                    }
+                ]
+            }
+        ]
+}

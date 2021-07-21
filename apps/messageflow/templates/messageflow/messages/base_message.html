@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load widget_tweaks %}
+
+<div class="row pl-20 pt-20 base_message">
+    <div class="col-md-12 p-0">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex flex-row justify-content-between">
+                    <div>
+                        <!-- todo this message.id isn't working -->
+                        {{ message.id }}
+                        {% render_field message.name hidden="true" value=message.id.value %}
+                        {% render_field message.type hidden="true" %}
+
+                    </div>
+                    <div>
+                        <label class="px-10 m-0"><i class="ti-angle-up"></i></label>
+                        <label class="px-10 m-0"><i class="ti-angle-down"></i></label>
+                        <label class="px-10 m-0"><i class="ti-close"></i></label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for hidden_field in message.hidden_fields %}
+                  {{ hidden_field }}
+                {% endfor %}
+                <input type="hidden" name="message_set-{{message_counter}}-display_order" id="id_message_set-{{message_counter}}-display_order" value="{{message.display_order.value}}">
+                <input hidden type="checkbox" name="message_set-{{message_counter}}-DELETE" id="id_message_set-{{message_counter}}-DELETE">
+
+                {% if message.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {% for error in message.non_field_errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% block message_contents %}
+                    {{ message_contents }}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>

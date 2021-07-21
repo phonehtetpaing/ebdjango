@@ -1,0 +1,129 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-title">
+            <h4>{% trans "lbl_auto_message"%}</h4>
+
+        </div>
+        <div class="card-body">
+            <ul id="step1" class="nav nav-tabs customtab2" role="tablist">
+                {% for condition in message_list %}
+                <li class="nav-item"> <a class="nav-link {% if condition.tab_id == 1 %} active {% endif %}" data-toggle="tab" href="#condition-{{ condition.tab_id }}" role="tab"><span class="hidden-sm-up"><i class="ti-{{ condition.tab_id }}"></i></span> <span class="hidden-xs-down">{{ condition.tab_name }}</span></a> </li>
+                {% endfor %}
+            </ul>
+            <!-- Tab panes -->
+
+            <div class="tab-content tabcontent-border">
+                {% for condition in message_list %}
+                <div class="tab-pane {% if condition.tab_id == 1 %} active {% endif %}" id="condition-{{ condition.tab_id }}" role="tabpanel">
+                    <form id="condition-{{ condition.tab_id }}-selection" action="{% url namespace|add:':auto_message_delete'%}" method="post" role="form">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-hover ">
+                                <thead>
+                                <tr>
+                                    <th class="align-middle"><input type="checkbox" name="select_all" id="select_all_{{ condition.tab_id }}" value="all"></th>
+                                    <th id="step2">{% trans "tbl_title_day"%}</th>
+                                    <th id="step3">{% trans "tbl_title_time"%}</th>
+                                    <th id="step4">{% trans "tbl_title_title"%}</th>
+                                    <th id="step5">{% trans "tbl_title_status"%}</th>
+                                    <th id="step6"><a href="{% url namespace|add:':auto_message_add' auto_message_condition_id=condition.tab_id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-plus" aria-hidden="true"></i> {% trans "btn_new" %}</a></th>
+                                    <th id="step10"><button type="submit" class="btn badge badge-danger btn-fill btn-wd" onclick="return confirm('{% trans 'dia-erase-confirm' %}')"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</button></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for auto_message in condition.messages %}
+                                <tr>
+                                    <td class="align-middle"><input type="checkbox" name="select_item" value={{ auto_message.id }}></td>
+                                    <td>
+                                        {% if auto_message.trigger_days_num %}
+                                        {{ auto_message.trigger_days_num }}
+                                        {% if auto_message.is_trigger_after %}
+                                        {% trans "lbl_trigger_after"%}
+                                        {% else %}
+                                        {% trans "lbl_trigger_before"%}
+                                        {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ auto_message.trigger_time|default:"" }}</td>
+                                    <td>{{ auto_message.title_name|default:"" }}</td>
+                                    <td>
+                                        {% if auto_message.message_status.name == "draft" %}
+                                        {% trans "lbl_status_draft"%}
+                                        {% elif auto_message.message_status.name == "pending" %}
+                                        {% trans "lbl_status_pending"%}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a id="step7" href="{% url namespace|add:':auto_message_detail' auto_message_id=auto_message.id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;{% trans "btn_edit" %}</a>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            {% if auto_message.message_status.name == "draft" %}
+                                            <a id="step8" href="{% url namespace|add:':auto_message_active' auto_message_id=auto_message.id %}" onclick="return confirm('{% trans 'dia-active-confirm' %}')" class="btn badge badge-dark btn-fill btn-wd"><i class="fa fa-plus-circle" aria-hidden="true"></i> {% trans "btn_active" %}</a>
+                                            {% elif auto_message.message_status.name == "pending" %}
+                                            <a id="step8" href="{% url namespace|add:':auto_message_inactive' auto_message_id=auto_message.id %}" onclick="return confirm('{% trans 'dia-inactive-confirm' %}')" class="btn badge badge-light btn-fill btn-wd"><i class="fa fa-minus-circle" aria-hidden="true"></i> {% trans "btn_inactive" %}</a>
+                                            {% endif %}
+                                            <button id="step9" type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only"></span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a href="{% url namespace|add:':auto_message_test' auto_message_id=auto_message.id %}" class="dropdown-item"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp;{% trans "btn_test" %}</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if condition.messages.has_other_pages %}
+                        <ul class="pagination pagination-sm">
+                            {% if condition.messages.has_previous %}
+                            <li><a href="?page{{condition.tab_id}}={{ condition.messages.previous_page_number }}">&laquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in condition.messages.paginator.page_range %}
+                            {% if condition.messages.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% else %}
+                            <li><a href="?page{{condition.tab_id}}={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if condition.messages.has_next %}
+                            <li><a href="?page{{condition.tab_id}}={{ condition.messages.next_page_number }}">&raquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script src='{% static "core/assets/js/intro/automessage-list-intro.js" %}'></script>
+
+{% endblock content %}
+{% block append_js_on_tail %}
+<script>
+    $('[id^="select_all"]').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        checkboxes.prop('checked', $(this).is(':checked'));
+    });
+</script>
+{% endblock %}

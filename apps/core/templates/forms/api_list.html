@@ -1,0 +1,41 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load get_url_file_name %}
+
+{% for api in api_list %}
+
+    {% if api.type == 'textsendmessage' %}
+    {% include 'forms/messages/text_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'imagesendmessage' %}
+    {% include 'forms/messages/image_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'filesendmessage' %}
+    {% include 'forms/messages/file_message.html' with message=api message_counter=forloop.counter files=files %}
+
+    {% elif api.type == 'carouselsendmessage' %}
+    {% include 'forms/messages/carousel_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'quickreplysendmessage'%}
+    {% include 'forms/messages/quickreply_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'waitsendmessage' %}
+    {% include 'forms/messages/wait_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'tagsendmessage' %}
+    {% include 'forms/messages/tag_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'todosendmessage' %}
+    {% include 'forms/messages/todo_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'inputsendmessage' %}
+    {% include 'forms/messages/input_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'formsendmessage' %}
+    {% include 'forms/messages/form_message.html' with message=api message_counter=forloop.counter %}
+
+    {% elif api.type == 'gotomessage' %}
+    {% include 'forms/messages/goto_message.html' with message=api message_counter=forloop.counter %}
+
+    {% endif %}
+{% endfor %}

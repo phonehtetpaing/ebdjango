@@ -1,0 +1,24 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+                <div class="form-inline horizontal-align bubble-white">
+                    <input type="text" class="form-control border-input input-child mb-2 mr-sm-2 mb-sm-0" placeholder="{% trans 'placeholder_todo_question' %}" name="InputSendMessage_{{ message_counter }}" value="{{ api.payload.question }}" maxlength="1000" required>
+                    <!-- maybe insert some validation for things like email? -->
+                    <select class="input-child" name="InputSendMessage_{{ message_counter }}">
+                        <option value="email"{% if message.payload.attribute == 'email' %} selected{% endif %}>{% trans "tbl_title_email" %}</option>
+                        <option value="tel1"{% if message.payload.attribute == 'tel1' %} selected{% endif %}>{% trans "lbl_tel" %}</option>
+                        <option value="address1"{% if message.payload.attribute == 'address1' %} selected{% endif %}>{% trans "lbl_address" %}</option>
+                        <option value="first_name"{% if message.payload.attribute == 'first_name' %} selected{% endif %}>{% trans "lbl_first_name" %}</option>
+                        <option value="last_name"{% if message.payload.attribute == 'last_name' %} selected{% endif %}>{% trans "lbl_last_name" %}</option>
+                        <option value="business_name"{% if message.payload.attribute == 'business_name' %} selected{% endif %}>{% trans "Business Name" %}</option>
+                        <option value="instagram_id"{% if message.payload.attribute == 'instagram_id' %} selected{% endif %}>{% trans "Instagram ID" %}</option>
+                    </select>
+                </div>
+
+{% endblock %}

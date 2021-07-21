@@ -1,0 +1,68 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load get_platform %}
+{% block content %}
+
+<!-- Trigger Conditions -->
+<div class="content">
+    <div class="row">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>{% trans "tbl_title_title"%}</th>
+                                <th>{% trans "tbl_title_sendtime"%}</th>
+                                <th>{% trans "tbl_title_usercount"%}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ message_history.admin_text }}</td>
+                                <td>{{ message_history.send_dt }}</td>
+                                <td>{{ message_history.send_user_count }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">
+                    <h4>User List </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>{% trans "tbl_title_id"%}</th>
+                                <th>{% trans "tbl_title_user_name"%}</th>
+                                <th>{% trans "tbl_title_registrationtime"%}</th>
+                                <th>{% trans "tbl_title_platform"%}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in user_list %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.last_name|default:'' }} {{ user.first_name|default:'' }}</td>
+                                <td>{{ user.regist_dt|default:'' }}</td>
+                                <td>{{ user.id | get_platform }}</td>
+                                <td> <a href="{% url namespace|add:':user_detail' end_user_id=user.id %}" class="badge badge-info btn-fill btn-wd"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;{% trans "btn_details" %}</a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

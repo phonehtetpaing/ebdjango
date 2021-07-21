@@ -1,0 +1,596 @@
+.marvel-device {
+    display: inline-block;
+    position: relative;
+    -webkit-box-sizing: content-box !important;
+    box-sizing: content-box !important;
+}
+.marvel-device .screen {
+    width: 100%;
+    position: relative;
+    height: 100%;
+    z-index: 3;
+    background: white;
+    display: block;
+    border-radius: 1em;
+    -webkit-box-shadow: 0 0 0 3em #111;
+    box-shadow: 0 0 0 3em #111;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.marvel-device .top-bar, .marvel-device .bottom-bar {
+    height: 3em;
+    background: black;
+    width: 100%;
+    display: block;
+}
+.marvel-device .middle-bar {
+    width: 3em;
+    height: 4em;
+    top: 0em;
+    left: 90em;
+    background: black;
+    position: absolute;
+}
+
+.marvel-device.ipad {
+    width: 576em;
+    height: 768em;
+    padding: 90em 25em;
+    background: #242324;
+    border-radius: 44em;
+}
+.marvel-device.ipad:before {
+    width: calc(100% - 8em);
+    height: calc(100% - 8em);
+    position: absolute;
+    content: '';
+    display: block;
+    top: 4em;
+    left: 4em;
+    border-radius: 40em;
+    background: #1e1e1e;
+}
+.marvel-device.ipad .camera {
+    background: #3c3d3d;
+    width: 10em;
+    height: 10em;
+    position: absolute;
+    top: 44em;
+    left: 50%;
+    margin-left: -5em;
+    border-radius: 100%}
+.marvel-device.ipad .top-bar, .marvel-device.ipad .bottom-bar {
+    display: none;
+}
+.marvel-device.ipad .home {
+    background: #242324;
+    border-radius: 36em;
+    width: 50em;
+    height: 50em;
+    position: absolute;
+    left: 50%;
+    margin-left: -25em;
+    bottom: 22em;
+}
+.marvel-device.ipad .home:after {
+    width: 15em;
+    height: 15em;
+    margin-top: -8em;
+    margin-left: -8em;
+    border: 1em solid rgba(255, 255, 255, 0.1);
+    border-radius: 4em;
+    position: absolute;
+    display: block;
+    content: '';
+    top: 50%;
+    left: 50%}
+.marvel-device.ipad.landscape {
+    height: 576em;
+    width: 768em;
+    padding: 25em 90em;
+}
+.marvel-device.ipad.landscape .camera {
+    left: calc(100% - 44em);
+    top: 50%;
+    margin-left: 0;
+    margin-top: -5em;
+}
+.marvel-device.ipad.landscape .home {
+    top: 50%;
+    left: 22em;
+    margin-left: 0;
+    margin-top: -25em;
+}
+
+.marvel-device.iphone-x {
+    width: 375em;
+    height: 812em;
+    padding: 26em;
+    background: #fdfdfd;
+    -webkit-box-shadow: inset 0 0 11em 0 black;
+    box-shadow: inset 0 0 11em 0 black;
+    border-radius: 66em;
+}
+.marvel-device.iphone-x .overflow {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 66em;
+    overflow: hidden;
+}
+.marvel-device.iphone-x .shadow {
+    border-radius: 100%;
+    width: 90em;
+    height: 90em;
+    position: absolute;
+    background: radial-gradient(ellipse at center,  rgba(0, 0, 0, 0.6) 0%,  rgba(255, 255, 255, 0) 60%);
+}
+.marvel-device.iphone-x .shadow--tl {
+    top: -20em;
+    left: -20em;
+}
+.marvel-device.iphone-x .shadow--tr {
+    top: -20em;
+    right: -20em;
+}
+.marvel-device.iphone-x .shadow--bl {
+    bottom: -20em;
+    left: -20em;
+}
+.marvel-device.iphone-x .shadow--br {
+    bottom: -20em;
+    right: -20em;
+}
+.marvel-device.iphone-x:before {
+    width: calc(100% - 10em);
+    height: calc(100% - 10em);
+    position: absolute;
+    top: 5em;
+    content: '';
+    left: 5em;
+    border-radius: 61em;
+    background: black;
+    z-index: 1;
+}
+.marvel-device.iphone-x .inner-shadow {
+    width: calc(100% - 20em);
+    height: calc(100% - 20em);
+    position: absolute;
+    top: 10em;
+    overflow: hidden;
+    left: 10em;
+    border-radius: 56em;
+    -webkit-box-shadow: inset 0 0 15em 0 rgba(255, 255, 255, 0.66);
+    box-shadow: inset 0 0 15em 0 rgba(255, 255, 255, 0.66);
+    z-index: 1;
+}
+.marvel-device.iphone-x .inner-shadow:before {
+    -webkit-box-shadow: inset 0 0 20em 0 #FFFFFF;
+    box-shadow: inset 0 0 20em 0 #FFFFFF;
+    width: 100%;
+    height: 116%;
+    position: absolute;
+    top: -8%;
+    content: '';
+    left: 0;
+    border-radius: 200em / 112em;
+    z-index: 2;
+}
+.marvel-device.iphone-x .screen {
+    border-radius: 40em;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.marvel-device.iphone-x .top-bar, .marvel-device.iphone-x .bottom-bar {
+    width: 100%;
+    position: absolute;
+    height: 8em;
+    background: rgba(0, 0, 0, 0.1);
+    left: 0;
+}
+.marvel-device.iphone-x .top-bar {
+    top: 80em;
+}
+.marvel-device.iphone-x .bottom-bar {
+    bottom: 80em;
+}
+.marvel-device.iphone-x .volume, .marvel-device.iphone-x .volume:before, .marvel-device.iphone-x .volume:after, .marvel-device.iphone-x .sleep {
+    width: 3em;
+    background: #b5b5b5;
+    position: absolute;
+}
+.marvel-device.iphone-x .volume {
+    left: -3em;
+    top: 116em;
+    height: 32em;
+}
+.marvel-device.iphone-x .volume:before {
+    height: 62em;
+    top: 62em;
+    content: '';
+    left: 0;
+}
+.marvel-device.iphone-x .volume:after {
+    height: 62em;
+    top: 140em;
+    content: '';
+    left: 0;
+}
+.marvel-device.iphone-x .sleep {
+    height: 96em;
+    top: 200em;
+    right: -3em;
+}
+.marvel-device.iphone-x .camera {
+    width: 6em;
+    height: 6em;
+    top: 9em;
+    border-radius: 100%;
+    position: absolute;
+    left: 154em;
+    background: #0d4d71;
+}
+.marvel-device.iphone-x .speaker {
+    height: 6em;
+    width: 60em;
+    left: 50%;
+    position: absolute;
+    top: 9em;
+    margin-left: -30em;
+    background: #171818;
+    border-radius: 6em;
+}
+.marvel-device.iphone-x .notch {
+    position: absolute;
+    width: 210em;
+    height: 30em;
+    top: 26em;
+    left: 108em;
+    z-index: 4;
+    background: black;
+    border-bottom-left-radius: 24em;
+    border-bottom-right-radius: 24em;
+}
+.marvel-device.iphone-x .notch:before, .marvel-device.iphone-x .notch:after {
+    content: '';
+    height: 8em;
+    position: absolute;
+    top: 0;
+    width: 8em;
+}
+.marvel-device.iphone-x .notch:after {
+    background: radial-gradient(circle at bottom left,  transparent 0,  transparent 70%,  black 70%,  black 100%);
+    left: -8em;
+}
+.marvel-device.iphone-x .notch:before {
+    background: radial-gradient(circle at bottom right,  transparent 0,  transparent 70%,  black 70%,  black 100%);
+    right: -8em;
+}
+.marvel-device.iphone-x.landscape {
+    height: 375em;
+    width: 812em;
+}
+.marvel-device.iphone-x.landscape .top-bar, .marvel-device.iphone-x.landscape .bottom-bar {
+    width: 8em;
+    height: 100%;
+    top: 0;
+}
+.marvel-device.iphone-x.landscape .top-bar {
+    left: 80em;
+}
+.marvel-device.iphone-x.landscape .bottom-bar {
+    right: 80em;
+    bottom: auto;
+    left: auto;
+}
+.marvel-device.iphone-x.landscape .volume, .marvel-device.iphone-x.landscape .volume:before, .marvel-device.iphone-x.landscape .volume:after, .marvel-device.iphone-x.landscape .sleep {
+    height: 3em;
+}
+.marvel-device.iphone-x.landscape .inner-shadow:before {
+    height: 100%;
+    width: 116%;
+    left: -8%;
+    top: 0;
+    border-radius: 112em / 200em;
+}
+.marvel-device.iphone-x.landscape .volume {
+    bottom: -3em;
+    top: auto;
+    left: 116em;
+    width: 32em;
+}
+.marvel-device.iphone-x.landscape .volume:before {
+    width: 62em;
+    left: 62em;
+    top: 0;
+}
+.marvel-device.iphone-x.landscape .volume:after {
+    width: 62em;
+    left: 140em;
+    top: 0;
+}
+.marvel-device.iphone-x.landscape .sleep {
+    width: 96em;
+    left: 200em;
+    top: -3em;
+    right: auto;
+}
+.marvel-device.iphone-x.landscape .camera {
+    left: 9em;
+    bottom: 154em;
+    top: auto;
+}
+.marvel-device.iphone-x.landscape .speaker {
+    width: 6em;
+    height: 60em;
+    left: 9em;
+    top: 50%;
+    margin-top: -30em;
+    margin-left: 0;
+}
+.marvel-device.iphone-x.landscape .notch {
+    height: 210em;
+    width: 30em;
+    left: 26em;
+    bottom: 108em;
+    top: auto;
+    border-top-right-radius: 24em;
+    border-bottom-right-radius: 24em;
+    border-bottom-left-radius: 0;
+}
+.marvel-device.iphone-x.landscape .notch:before, .marvel-device.iphone-x.landscape .notch:after {
+    left: 0;
+}
+.marvel-device.iphone-x.landscape .notch:after {
+    background: radial-gradient(circle at bottom right,  transparent 0,  transparent 70%,  black 70%,  black 100%);
+    bottom: -8em;
+    top: auto;
+}
+.marvel-device.iphone-x.landscape .notch:before {
+    background: radial-gradient(circle at top right,  transparent 0,  transparent 70%,  black 70%,  black 100%);
+    top: -8em;
+}
+
+.message-block {
+    background: #EFEEEE;
+    border: 5px solid #EFEEEE;
+    border-radius: 20px 20px 20px 20px;
+}
+.message-bubble {
+    border: 1px solid #EFEEEE;
+    border-radius: 20px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.option-bubble {
+    position: static;
+    border: 2px solid #EFEEEE;
+    border-radius: 20px 20px 20px 20px;
+}
+.option-bubble .bubble-content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.quick-reply {
+    padding: 5px 5px 5px 5px;
+}
+
+.bubble-input {
+    border: 1px solid #0083ff;
+    border-radius: 20px 20px 20px 20px;
+    overflow-x: visible;
+    overflow-y: visible;
+    padding: 5px 10px 5px 10px;
+}
+
+.bubble-white {
+    background: white;
+}
+.bubble-dashed {
+    border: 1px dashed black;
+}
+.bubble-border-blue {
+    border: 1px solid #0083ff;
+}
+
+.btn-circular {
+    background-color:#efeeee;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+/* horizontal scrolling container */
+
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+.scrolling-wrapper .item {
+  display: inline-block;
+}
+.scrolling-wrapper {
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+.scrolling-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sliders */
+.range-slider {
+  margin: 10px 0 0 0%;
+  width: 100%;
+}
+.range-slider__range {
+  -webkit-appearance: none;
+  width: calc(100% - (73px));
+  height: 10px;
+  border-radius: 5px;
+  background: #d7dcdf;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+.range-slider__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2c3e50;
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+.range-slider__range::-webkit-slider-thumb:hover, .range-slider__range:active::-webkit-slider-thumb {
+  background: #1abc9c;
+}
+.range-slider__range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 50%;
+  background: #2c3e50;
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+.range-slider__range::-moz-range-thumb:hover, .range-slider__range:active::-moz-range-thumb {
+  background: #1abc9c;
+}
+.range-slider__range:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #1abc9c;
+}
+.range-slider__value {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  color: #fff;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 3px;
+  background: #2c3e50;
+  padding: 5px 10px;
+  margin-left: 8px;
+  white-space:nowrap;
+}
+.range-slider__value:after {
+  position: absolute;
+  top: 8px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-right: 7px solid #2c3e50;
+  border-bottom: 7px solid transparent;
+  content: "";
+}
+::-moz-range-track {
+  background: #d7dcdf;
+  border: 0;
+}
+input::-moz-focus-inner, input::-moz-focus-outer {
+  border: 0;
+}
+
+
+
+// TODO WIP
+.message-bubble-carousel {
+    background: white;
+    border: 1px solid #EFEEEE;
+    border-radius: 20px 20px 20px 20px;
+}
+.message-bubble-carousel .message-bubble {
+    border: 1px solid #EFEEEE;
+    border-radius: 20px 20px 20px 20px;
+}
+
+.message-bubble .widgets {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+}
+.message-bubble .widgets li {
+    list-style-type: none;
+}
+.widget-icon {
+    position: absolute;
+    background: white;
+    height:30px;
+    width:30px;
+    border: 1px solid #EFEEEE;
+    border-radius: 50px;
+}
+.widget-icon i {
+    position: relative;
+    top: 25%;
+    left: 25%;
+}
+
+.message-img-thumbnail {
+    background: white;
+    width: 100%;
+    height: auto;
+    max-height: 20em;
+    border: 2px solid #EFEEEE;
+    border-radius: 20px 20px 0px 0px;
+}
+.message-img-thumbnail > img {
+    width: 100%;
+    height: auto;
+    max-height: 20em;
+    border: 1px solid #EFEEEE;
+    border-radius: 20px 20px 0px 0px;
+}
+
+/* alignment */
+.anchor {
+    position: relative;
+}
+.vertical-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.horizontal-align {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.horizontal-align>* {
+    flex-grow: 1;
+    min-width: 50px;
+}
+
+.horizontal-scroll {
+    overflow-x: auto;
+}
+
+/* Temporary code to workaround a regression in Bootstap 4.0alpha6,
+    remove this code when Bootstrap is updated with a new release. */
+.form-control::-webkit-input-placeholder {
+  color: #999;
+}
+
+.form-control::-moz-placeholder {
+  color: #999;
+}
+
+.form-control:-ms-input-placeholder {
+  color: #999;
+}
+
+.form-control::placeholder {
+  color: #999;
+}

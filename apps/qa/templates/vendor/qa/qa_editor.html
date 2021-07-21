@@ -1,0 +1,449 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load to_string %}
+{% load qr_code %}
+
+{% block content %}
+
+<div class="row" style="height: 85vh;">
+    <!-- Listing of all questionnaires with their status -->
+    <div class="col-md-3 ml-5">
+        <div class="peers fxw-nw pos-r">
+            <div class="peer bdR qa-word-break iphone-list-height">
+                <div class="layers h-100">
+                    <div class="p-20 bgc-grey-100 layer w-100">
+                        <div class="btn-group" role="group">
+                            <button type="button" id="modalToggle" class="btn btn-danger bdrs-2 mR-3 cur-p">
+                                {% trans "New Questionnaire" %}
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop2" type="button" class="btn cur-p bgc-white no-after dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ti-more-alt"></i>
+                                </button>
+                                <ul class="dropdown-menu fsz-sm" aria-labelledby="btnGroupDrop2">
+                                    <li>
+                                        {% if selected_questionnaire %}
+                                        <a href="{% url namespace|add:':questionnaire_delete' questionnaire_id=selected_questionnaire.id %}" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-trash mR-10"></i>
+                                            <span>{% trans "Delete" %}</span></a>
+                                        {% else %}
+                                        <a class="d-b td-n pY-5 pX-10 bgcH-black c-grey-200"><i class="ti-trash mR-10"></i>
+                                            <span>{% trans "Delete" %}</span></a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bdB layer w-100"><input type="text" placeholder="{% trans 'Search Questionnaires'%}..." name="questionnaireSearch" id="questionnaireSearch"
+                                                        class="form-constrol p-15 bdrs-0 w-100 bdw-0"></div>
+                    <div id="qaList" class="infinite-container layer w-100 fxg-1 scrollable pos-r" style="height: 70vh;">
+                        {% for questionnaire in questionnaires %}
+
+                        {% if questionnaire.status|to_string == 'Running' %}
+                        <div class="infinite-item">
+                            <a href="{% url namespace|add:':questionnaire_edit' questionnaire_id=questionnaire.id %}">
+                                <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                    <div class="peer"><i class="fa fa-2x fa-flask c-blue-500" aria-hidden="true"></i></div>
+                                    <div class="peer peer-greed pL-20">
+                                        <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.name }}</h6><small class="lh-1 c-amber-500">{% trans questionnaire.status %}</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% elif questionnaire.status|to_string == 'Draft' %}
+                        <div class="infinite-item">
+                            <a href="{% url namespace|add:':questionnaire_edit' questionnaire_id=questionnaire.id %}">
+                                <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                    <div class="peer"><i class="fa fa-2x fa-flask c-grey-500" aria-hidden="true"></i></div>
+                                    <div class="peer peer-greed pL-20">
+                                        <h6 class="mB-0 lh-1 fw-400">{{ questionnaire.name }}</h6><small class="lh-1 c-grey-500">{% trans questionnaire.status %}</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% endfor %}
+                        <div class="loading" style="display: none;">Loading...</div>
+                    </div>
+                    {% if questionnaires.has_next %}
+                    <a class="infinite-more-link" href="?page={{ questionnaires.next_page_number }}" hidden>More</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QA Editor -->
+    {% if selected_questionnaire and selected_questionnaire.status|to_string == 'Draft' %}
+    <div class="col-md-8">
+        <div class="peers fxw-nw pos-r">
+            <div class="peer bdR qa-ipad qa-iphone">
+                <div class="layers h-100">
+
+                    <div class="p-20 bgc-grey-100 layer qa-box" style="width:900px;">
+                        <div class="row iphone-qa-qrcord">
+                            <div class="col-md-5">
+                                <div class="row bgc-red-300 bdrs-2 iphone-margin-bottom" style="color: white; margin-right: 5px; padding: 5px;">
+                                    {% qr_from_text questionnaire_url size="T" %}
+                                    <p style="font-weight: bold;">{% trans "Scan me to test this questionnaire."%} </p>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="row bgc-blue-300 bdrs-2" style="color: white; padding: 10px 15px 15px 15px;">
+                                    <p style="font-weight: bold;">{% trans "Embed this code into your desired page"%}</p>
+                                    {{ widget_embed_code }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" form="questionnaire_form" class="btn btn-danger bdrs-2 mR-3 cur-p qa-submit-btn" style="margin-top: 10px;">
+                                    {% trans "Finish & Save" %}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layer fxg-1 scrollable pos-r qa-width" style="margin-right: 150px;">
+                        <div class="p-15 w-100 ">
+                            <form id="questionnaire_form" action="{% url namespace|add:':questionnaire_edit' questionnaire_id=selected_questionnaire.id %}" method="post" role="form">
+                                {% csrf_token %}
+                                <!-- for form errors -->
+                                {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field }}
+                                {% endfor %}
+
+                                {% if form.non_field_errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                <!-- questionaire greeting message -->
+                                <div class="row qtop" id="q0" onMouseOver="show('autohide0')" onMouseOut="hide('autohide0')">
+                                    <div class="col-md-10 offset-md-1">
+                                        <div class="card">
+                                            <div class="card-header">
+
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        {% include 'forms/default_form_field.html' with field=form.name %}
+                                                    </div>
+                                                    <div class="row">
+                                                        {% include 'forms/default_form_field.html' with field=form.intro %}
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            {% include 'forms/default_form_field.html' with field=form.valid_from %}
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            {% include 'forms/default_form_field.html' with field=form.valid_until %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-footer">
+                                                <!-- question toolbar -->
+                                                <div class="row autohide0 d-flex justify-content-center">
+                                                    <div class="btn-group"  role="group" aria-label="Second group">
+                                                        <button type="button" class="btn btn-secondary pl-5 add-question"><i class="ti-plus"></i> {% trans "Add a question" %}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="question_container">
+                                    {% for question in questionnaire_questions %}
+
+                                    {% if question.question.type.name|to_string == 'text' %}
+                                    {% include 'forms/question_text.html' with question=question types=question_types %}
+                                    {% elif question.question.type.name|to_string == 'option' %}
+                                    {% include 'forms/question_option.html' with question=question types=question_types %}
+                                    {% elif question.question.type.name|to_string == 'registration' %}
+                                    {% include 'forms/question_registration.html' with question=question types=question_types %}
+                                    {% elif question.question.type.name|to_string == 'multioption' %}
+                                    {% include 'forms/question_multi_option.html' with question=question types=question_types %}
+                                    {% endif %}
+
+                                    {% endfor %}
+                                </div>
+                                <!-- questionaire closing message -->
+                                <div class="row">
+                                    <div class="col-md-10 offset-md-1">
+                                        <div class="card">
+                                            <div class="card-header">
+                                            </div>
+
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        {% include 'forms/default_form_field.html' with field=form.outro %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% elif selected_questionnaire %}
+    <div class="col-md-8">
+        <div class="peers fxw-nw pos-r">
+            <div class="col-md-5 p-20">
+                <div class="row bgc-red-300 bdrs-2" style="color: white; margin-right: 5px; padding: 5px;">
+                    {% qr_from_text questionnaire_url size="T" %}
+                    <p style="font-weight: bold;">{% trans "Scan me to test this questionnaire."%} </p>
+                </div>
+            </div>
+            <br class="col-md-5 p-20">
+            <div class="row bgc-blue-300 bdrs-2" style="color: white; padding: 10px 15px 15px 15px;">
+                {{ widget_embed_code }}
+                <p style="font-weight: bold;">{% trans "Embed this code into your desired page"%}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+
+{% with "vendor/wizard/qa_wizard.html" as wizard %}
+{% include wizard with templates=templates %}
+{% endwith %}
+
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!--editor note these have to be re-loaded after bootstrapjs because of bugs in the framework-->
+<script type="text/javascript" src='{% static "qa/js/vendor.js" %}'></script>
+<script type="text/javascript" src='{% static "qa/js/bundle.js" %}'></script>
+<!-- Search filter -->
+<script>
+$(document).ready(function(){
+  $("#questionnaireSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#qaList > a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+<!-- New Questionnaire Wizard -->
+<script type="text/javascript">
+$(function () {
+  var current_step = 0;
+  var last_step = 1;
+  var progress_bar = 0;
+  var percent_per_Step = 100;
+
+  var reset_wizzard = function () {
+    current_step = 0;
+    progress_bar = 0;
+    $('#modal').modal('hide');
+  }
+
+  $('#modalToggle').click(function() {
+    $('#modal').modal({
+      backdrop: 'static'
+    });
+
+    current_step +=1;
+    var nextPanel = '#myTab a[href="#Panel'+current_step+'"]';
+    progress_bar = "" + current_step * percent_per_Step + "%";
+
+    $('.progress-bar').css('width', progress_bar);
+    $(nextPanel).tab('show');
+  });
+
+  $('#continue').click(function (e) {
+    e.preventDefault();
+
+    if (current_step >= last_step) {
+        var formData = {
+          campaign_name: $('#campaignName').val(),
+        }
+        var selected_option = $('input[name=qa_template]:checked').val();
+        document.location.href = '/{{namespace}}/questionnaire/add/'+ selected_option + '/';
+
+        reset_wizzard();
+    }
+
+    current_step +=1;
+    var nextPanel = '#myTab a[href="#Panel'+current_step+'"]';
+    progress_bar = "" + current_step * percent_per_Step + "%";
+
+    $('.progress-bar').css('width', progress_bar);
+    $(nextPanel).tab('show');
+  });
+})
+</script>
+<!--Questionnaire Question Edit script-->
+<script type="text/javascript">
+$(function(){
+    // Questionnaire Question Options
+    $(document).on('click', '.add-question', function(){ addQuestion.bind($(this))(); });
+    $(document).on('click', '.ti-angle-up', function(){ moveUp.bind($(this))(); });
+    $(document).on('click', '.ti-angle-down', function(){ moveDown.bind($(this))(); });
+    $(document).on('change', '.question_type', function(e){ typeChange.bind($(this))(e); });
+    $(document).on('click', '.remove-option', function(){ removeOption.bind($(this))(); });
+    $(document).on('click', '.add-option', function(){ addOption.bind($(this))(); });
+
+    $(document).on("click", ".ti-trash", function(){
+        if(!confirm(gettext('dia-erase-confirm'))){
+            return false;
+        } else {
+            $(this).closest(".qtop").remove();
+            questionRefresh();
+        }
+    });
+});
+
+function questionRefresh() {
+    var questions = $(".qtop");
+    $.each(questions,function(i,child) {
+        var question_id = i;
+        orderChange.bind($(this))(question_id);
+    });
+}
+
+function orderChange(qid) {
+    // get current question div
+    var currentQuestionDiv = $(this).closest('.qtop');
+    // qtop id is actually display order
+    var currId = currentQuestionDiv.attr('id').substr(1);
+
+    // update div id
+    currentQuestionDiv.attr('id', 'q'+qid);
+
+    // update title text
+    currentQuestionDiv.find("h2").text('Q'+qid+'.');
+
+    // update autoHide
+    var oldAutohideId = 'autohide'+currId;
+    var newAutohideId = 'autohide'+qid;
+
+    var autoHides = currentQuestionDiv.find('.'+oldAutohideId);
+    autoHides.removeClass(oldAutohideId);
+    autoHides.addClass(newAutohideId);
+
+    currentQuestionDiv.attr("onMouseOver", "show('autohide" + qid + "')");
+    currentQuestionDiv.attr("onMouseOut", "hide('autohide" + qid + "')");
+
+    // find hidden formfield and update value
+    input_to_find = "_display_order";
+    currentQuestionDiv.find("input[name*=" + input_to_find + "]").attr("value", qid);
+}
+
+function typeChange(e) {
+    // get current question id
+    var currentQuestionDiv = $(this).closest('.qtop');
+    var qorder = currentQuestionDiv.attr('id').substr(1);
+
+    // get questionnaire question id
+    input_to_find = "_id";
+    var qid = currentQuestionDiv.find("input[name*=" + input_to_find + "]").val();
+
+    // get desired template
+    var selectedType = e.target.value;
+    if (selectedType == 'multioption') {
+        getQuestionTemplate(currentQuestionDiv, qid, qorder, 4);
+    }
+    else if (selectedType == 'registration') {
+        getQuestionTemplate(currentQuestionDiv, qid, qorder, 3);
+    }
+    else if (selectedType == 'option') {
+        getQuestionTemplate(currentQuestionDiv, qid, qorder, 2);
+    } else {
+        getQuestionTemplate(currentQuestionDiv, qid, qorder, 1);
+    }
+}
+
+function moveUp() {
+    $(this).closest('.qtop').insertBefore($(this).closest('.qtop').prev('.qtop'));
+    questionRefresh();
+}
+
+function moveDown() {
+    $(this).closest('.qtop').next('.qtop').insertBefore($(this).closest('.qtop'));
+    questionRefresh();
+}
+
+// add a new question to the questionnaire
+function addQuestion(){
+    var question_num = $("#question_container").children().length;
+    question_num++;
+    var originElement = $(this);
+    $.ajax({
+        url: '{% url namespace|add:':questionnaire_question_template' %}',
+        data: {'question_id': -question_num, 'display_id': question_num, 'type_id': 1},
+        dataType: 'json',
+        success: function (data) {
+          var html_template = data.template;
+          if (question_num > 1) {
+            $(html_template).insertAfter(originElement.closest('.qtop'));
+          } else {
+            $(html_template).appendTo($("#question_container"));
+          }
+          questionRefresh();
+        }
+      });
+}
+
+function getQuestionTemplate(questionDiv, question_id, display_order, type_id) {
+    var originElement = $(this);
+    $.ajax({
+        url: '{% url namespace|add:':questionnaire_question_template' %}',
+        data: {'question_id': question_id, 'display_id': display_order, 'type_id': type_id},
+        dataType: 'json',
+        success: function (data) {
+          var html_template = data.template;
+          questionDiv.replaceWith(html_template);
+          questionRefresh();
+        }
+      });
+}
+
+function removeOption() {
+    $(this).closest(".question_option_element").remove();
+}
+
+function addOption() {
+    var previous_option = $(this).parent().parent().parent().prevAll("div.question_option_element:first")
+    var new_option = previous_option.clone();
+    $(new_option).find('input').val('')
+    $(new_option).insertAfter(previous_option);
+}
+
+
+
+</script>
+<script>
+var infinite = new Waypoint.Infinite({
+  element: $('.infinite-container')[0],
+  context: document.getElementById('qaList'),
+});
+</script>
+
+
+{% endblock %}

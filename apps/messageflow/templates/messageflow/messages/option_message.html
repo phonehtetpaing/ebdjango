@@ -1,0 +1,24 @@
+{% extends "messageflow/messages/base_message.html" %}
+{% load i18n %}
+{% load to_string %}
+{% load message_utils %}
+
+{% block message_contents %}
+
+<textarea name="message_set-{{message_counter}}-json_content"
+          id="id_message_set-{{message_counter}}-json_content"
+          rows="5"
+          class="form-control input-child border-input bubble-input bubble-border-blue expand"
+          placeholder=" "
+          maxlength="2000"
+          required="">{{ message.json_content.value }}</textarea>
+
+<small class="form-text text-muted">{% trans "Maximum 2000 characters." %}</small>
+<div id="message_set-{{message_counter}}-option_list" class='vertical-align form-group'>
+    {% for option in message.options.value|to_dictionary %}
+    {% include 'messageflow/messages/option_message_option.html' with option_id=forloop.counter option=option message_counter=message_counter message_blocks=message_blocks %}
+    {% endfor %}
+</div>
+<button type='button' class='btn btn-outline-info add-message-option'>+ {% trans "Add Option" %}</button>
+
+{% endblock %}

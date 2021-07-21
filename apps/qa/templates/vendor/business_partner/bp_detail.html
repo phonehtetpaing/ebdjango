@@ -1,0 +1,184 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+<div class="masonry-item col-md-8" style="position: absolute; left: 0%; top: 20px;">
+    <div class="bgc-white p-20 bd bp-width-ipad margin-left-ipad"><h6 class="c-grey-900">{% trans "lbl_bp_editor" %}</h6>
+        <div class="mT-30">
+            {% if bp %}
+            <form class="container" action="{% url namespace|add:':bp_edit' bp_id=bp.id %}" method="post" role="form">
+            {% else %}
+            <form class="container" action="{% url namespace|add:':bp_add' %}" method="post" role="form">
+            {% endif %}
+                 {% csrf_token %}
+                <div class="form-group row">
+                    <label for="bp_name" class="col-sm-2 col-form-label">{% trans "lbl_bp_tag_name" %}</label>
+                    <div class="col-sm-10">
+                        <div>
+                            {% for bp_tag in bp_tags%}
+                            <input id="bp_tag_{{bp_tag.id}}" type="checkbox" name="bp_tag" value="{{bp_tag.cd}}" {% if bp_tag.cd in bp.tag_csv %}checked{% endif%}>
+                            <label for="bp_tag_{{bp_tag.id}}">{{bp_tag.name}}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="bp_name" class="col-sm-2 col-form-label">{% trans "lbl_bp_name" %}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="name" value="{{bp.name}}" class="form-control" id="bp_name" placeholder="{% trans "lbl_bp_name_placeholder" %}" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="bp_short_name" class="col-sm-2 col-form-label">{% trans "lbl_bp_short_name" %}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="short_name" value="{{bp.short_name}}" class="form-control" id="bp_short_name" placeholder="{% trans "lbl_bp_short_name_placeholder" %}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="bp_name_kana" class="col-sm-2 col-form-label">{% trans "lbl_bp_name_kana" %}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="name_kana" value="{{bp.name_kana}}" class="form-control" id="bp_name_kana" placeholder="{% trans "lbl_bp_name_kana_placeholder" %}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="col-sm-2 col-form-label">{% trans "lbl_bp_email" %}</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="email" value="{{bp.email}}" class="form-control" id="email" placeholder="test@test.com">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_bp_zip_code" %}</label>
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="zip_code_1" value="{{bp_detail.zip_code.0}}" class="form-control" placeholder="123">
+                    </div>
+                    -
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="zip_code_2" value="{{bp_detail.zip_code.1}}" class="form-control" placeholder="4567">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="bp_prefecture" class="col-sm-2 col-form-label">{% trans "lbl_bp_prefecture" %}</label>
+                    <div class="col-2 col-md-4 col-lg-3 col-xl-3">
+                        <select id="bp_prefecture" class="form-control" name="prefecture">
+                            <option value="" {% if bp.prefecture == "" %}selected{% endif %}>{% trans "都道府県" %}</option>
+                            <option value="北海道" {% if bp.prefecture == "北海道" %}selected{% endif %}>{% trans "北海道" %}</option>
+                            <option value="青森県" {% if bp.prefecture == "青森県" %}selected{% endif %}>{% trans "青森県" %}</option>
+                            <option value="岩手県" {% if bp.prefecture == "岩手県" %}selected{% endif %}>{% trans "岩手県" %}</option>
+                            <option value="宮城県" {% if bp.prefecture == "宮城県" %}selected{% endif %}>{% trans "宮城県" %}</option>
+                            <option value="秋田県" {% if bp.prefecture == "秋田県" %}selected{% endif %}>{% trans "秋田県" %}</option>
+                            <option value="山形県" {% if bp.prefecture == "山形県" %}selected{% endif %}>{% trans "山形県" %}</option>
+                            <option value="福島県" {% if bp.prefecture == "福島県" %}selected{% endif %}>{% trans "福島県" %}</option>
+                            <option value="茨城県" {% if bp.prefecture == "茨城県" %}selected{% endif %}>{% trans "茨城県" %}</option>
+                            <option value="栃木県" {% if bp.prefecture == "栃木県" %}selected{% endif %}>{% trans "栃木県" %}</option>
+                            <option value="群馬県" {% if bp.prefecture == "群馬県" %}selected{% endif %}>{% trans "群馬県" %}</option>
+                            <option value="埼玉県" {% if bp.prefecture == "埼玉県" %}selected{% endif %}>{% trans "埼玉県" %}</option>
+                            <option value="千葉県" {% if bp.prefecture == "千葉県" %}selected{% endif %}>{% trans "千葉県" %}</option>
+                            <option value="東京都" {% if bp.prefecture == "東京都" %}selected{% endif %}>{% trans "東京都" %}</option>
+                            <option value="神奈川県" {% if bp.prefecture == "神奈川県" %}selected{% endif %}>{% trans "神奈川県" %}</option>
+                            <option value="新潟県" {% if bp.prefecture == "新潟県" %}selected{% endif %}>{% trans "新潟県" %}</option>
+                            <option value="富山県" {% if bp.prefecture == "富山県" %}selected{% endif %}>{% trans "富山県" %}</option>
+                            <option value="石川県" {% if bp.prefecture == "石川県" %}selected{% endif %}>{% trans "石川県" %}</option>
+                            <option value="福井県" {% if bp.prefecture == "福井県" %}selected{% endif %}>{% trans "福井県" %}</option>
+                            <option value="山梨県" {% if bp.prefecture == "山梨県" %}selected{% endif %}>{% trans "山梨県" %}</option>
+                            <option value="長野県" {% if bp.prefecture == "長野県" %}selected{% endif %}>{% trans "長野県" %}</option>
+                            <option value="岐阜県" {% if bp.prefecture == "岐阜県" %}selected{% endif %}>{% trans "岐阜県" %}</option>
+                            <option value="静岡県" {% if bp.prefecture == "静岡県" %}selected{% endif %}>{% trans "静岡県" %}</option>
+                            <option value="愛知県" {% if bp.prefecture == "愛知県" %}selected{% endif %}>{% trans "愛知県" %}</option>
+                            <option value="三重県" {% if bp.prefecture == "三重県" %}selected{% endif %}>{% trans "三重県" %}</option>
+                            <option value="滋賀県" {% if bp.prefecture == "滋賀県" %}selected{% endif %}>{% trans "滋賀県" %}</option>
+                            <option value="京都府" {% if bp.prefecture == "京都府" %}selected{% endif %}>{% trans "京都府" %}</option>
+                            <option value="大阪府" {% if bp.prefecture == "大阪府" %}selected{% endif %}>{% trans "大阪府" %}</option>
+                            <option value="兵庫県" {% if bp.prefecture == "兵庫県" %}selected{% endif %}>{% trans "兵庫県" %}</option>
+                            <option value="奈良県" {% if bp.prefecture == "奈良県" %}selected{% endif %}>{% trans "奈良県" %}</option>
+                            <option value="和歌山県" {% if bp.prefecture == "和歌山県" %}selected{% endif %}>{% trans "和歌山県" %}</option>
+                            <option value="鳥取県" {% if bp.prefecture == "鳥取県" %}selected{% endif %}>{% trans "鳥取県" %}</option>
+                            <option value="島根県" {% if bp.prefecture == "島根県" %}selected{% endif %}>{% trans "島根県" %}</option>
+                            <option value="岡山県" {% if bp.prefecture == "岡山県" %}selected{% endif %}>{% trans "岡山県" %}</option>
+                            <option value="広島県" {% if bp.prefecture == "広島県" %}selected{% endif %}>{% trans "広島県" %}</option>
+                            <option value="山口県" {% if bp.prefecture == "山口県" %}selected{% endif %}>{% trans "山口県" %}</option>
+                            <option value="徳島県" {% if bp.prefecture == "徳島県" %}selected{% endif %}>{% trans "徳島県" %}</option>
+                            <option value="香川県" {% if bp.prefecture == "香川県" %}selected{% endif %}>{% trans "香川県" %}</option>
+                            <option value="愛媛県" {% if bp.prefecture == "愛媛県" %}selected{% endif %}>{% trans "愛媛県" %}</option>
+                            <option value="高知県" {% if bp.prefecture == "高知県" %}selected{% endif %}>{% trans "高知県" %}</option>
+                            <option value="福岡県" {% if bp.prefecture == "福岡県" %}selected{% endif %}>{% trans "福岡県" %}</option>
+                            <option value="佐賀県" {% if bp.prefecture == "佐賀県" %}selected{% endif %}>{% trans "佐賀県" %}</option>
+                            <option value="長崎県" {% if bp.prefecture == "長崎県" %}selected{% endif %}>{% trans "長崎県" %}</option>
+                            <option value="熊本県" {% if bp.prefecture == "熊本県" %}selected{% endif %}>{% trans "熊本県" %}</option>
+                            <option value="大分県" {% if bp.prefecture == "大分県" %}selected{% endif %}>{% trans "大分県" %}</option>
+                            <option value="宮崎県" {% if bp.prefecture == "宮崎県" %}selected{% endif %}>{% trans "宮崎県" %}</option>
+                            <option value="鹿児島県" {% if bp.prefecture == "鹿児島県" %}selected{% endif %}>{% trans "鹿児島県" %}</option>
+                            <option value="沖縄県" {% if bp.prefecture == "沖縄県" %}selected{% endif %}>{% trans "沖縄県" %}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="address1" class="col-sm-2 col-form-label">{% trans "lbl_address1" %}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="address1" value="{{bp.address1}}" class="form-control" id="address1" placeholder="{% trans "lbl_bp_address1_placeholder" %}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="address2" class="col-sm-2 col-form-label">{% trans "lbl_address2" %}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="address2" value="{{bp.address2}}" class="form-control" id="address2" placeholder="{% trans "lbl_bp_address2_placeholder" %}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_bp_tel1" %}</label>
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel1_1" value="{{bp_detail.tel1.0}}" class="form-control" placeholder="090">
+                    </div>
+                    -
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel1_2" value="{{bp_detail.tel1.1}}" class="form-control" placeholder="1234">
+                    </div>
+                    -
+                   <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel1_3" value="{{bp_detail.tel1.2}}" class="form-control" placeholder="5678">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_bp_tel2" %}</label>
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel2_1" value="{{bp_detail.tel2.0}}" class="form-control" placeholder="090">
+                    </div>
+                    -
+                   <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel2_2" value="{{bp_detail.tel2.1}}" class="form-control" placeholder="1234">
+                    </div>
+                    -
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="tel2_3" value="{{bp_detail.tel2.2}}" class="form-control" placeholder="5678">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_bp_fax" %}</label>
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="fax1" value="{{bp_detail.fax.0}}" class="form-control" placeholder="03">
+                    </div>
+                    -
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="fax2" value="{{bp_detail.fax.1}}" class="form-control" placeholder="1234">
+                    </div>
+                    -
+                    <div class="col-2 col-md-3 col-lg-2 col-xl-2">
+                        <input type="text" name="fax3" value="{{bp_detail.fax.2}}" class="form-control" placeholder="5678">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_bp_memo" %}</label>
+                    <div class="col-sm-8">
+                        <textarea name="memo" class="form-control" placeholder="{% trans "lbl_bp_memo_placeholder" %}">{{bp.memo}}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">{% trans "btn_bp_submit" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

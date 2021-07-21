@@ -1,0 +1,30 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+{% load get_url_file_name %}
+
+{% block message_header %}
+<i class="ti-files" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<div class="bubble-white">
+    <div class="form-group" style="margin: 0;">
+        <div class="d-flex align-items-center flex-column">
+            <div class="mb-100 p-10 input-child" id="file_upload_name_{{ message_counter }}" name="file_upload_name_{{ message_counter }}">
+                {% if message.payload %}
+                    {{ message.payload|get_url_file_name }}
+                {% else %}
+                    {% trans "No File Selected"%}
+                {% endif %}
+            </div>
+
+            <label for="HiddenFileUpload_{{ message_counter }}" class="btn btn-info btn-fill btn-wd input-child p-2" id="file_upload_buttton_{{ message_counter }}" name="file_upload_buttton_{{ message_counter }}" onclick="selectFile({{ message_counter }})">
+                {% trans 'Upload' %} <i class="ti-plus"></i>
+            </label>
+            <input type="text" class="input-child p-2" id="FileSendMessage_{{ message_counter }}" name="FileSendMessage_{{ message_counter }}" value="{{ message.payload }}" hidden/>
+            <input type="file" class="input-child p-2" id="HiddenFileUpload_{{ message_counter }}" name="HiddenFileUpload_{{ message_counter }}" onchange="uploadFile({{ message_counter }})" hidden/>
+        </div>
+    </div>
+</div>
+{% endblock %}

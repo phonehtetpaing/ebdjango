@@ -1,0 +1,16 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="fa fa-flag" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+                <div class="form-inline horizontal-align bubble-white">
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_question' %}" name="TodoSendMessage_{{ message_counter }}" value="{{ message.payload.question }}" maxlength="1000" required>
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_title' %}" name="TodoSendMessage_{{ message_counter }}" value="{{ message.payload.title }}" maxlength="1000" required>
+                    <input type="text" class="form-control border-input input-child" placeholder="{% trans 'placeholder_todo_memo' %}" name="TodoSendMessage_{{ message_counter }}" value="{{ message.payload.memo }}" maxlength="1000" required>
+                </div>
+
+{% endblock %}

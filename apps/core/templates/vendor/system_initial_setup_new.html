@@ -1,0 +1,179 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load is_event_reservation_exist %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-title">
+                <h4>Create Vendor</h4>
+            </div>
+            <div class="content">
+                <form action="{% url namespace|add:':system_initial_setup_add' %}" method="post" role="form">
+                   {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Vendor</h4>
+                                </div>
+                                <div class="content">
+                                    <div class="form-group">
+                                        <label>Code</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="cd" value="{{vendor_code}}" readonly>
+                                        <label>Company Name</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="company_name" value="" required>
+                                        <label>Facebook URL</label>
+                                        <input type="text" class="form-control border-input" placeholder="fbms_access_url_part" name="fbms_access_url_part" value="{{fbms_access_url_part}}" readonly>
+                                        <input type="text" class="form-control border-input" placeholder="fbms_verify_token" name="fbms_verify_token" value="{{fbms_verify_token}}" readonly>
+                                        <input type="text" class="form-control border-input" placeholder="Access Token" name="fbms_access_token" value="">
+                                        <label>LINE URL</label>
+                                        <input type="text" class="form-control border-input" placeholder="line_access_url_part" name="line_access_url_part" value="{{line_access_url_part}}" readonly>
+                                        <input type="text" class="form-control border-input" placeholder="Access Token" name="line_access_token" value="">
+                                        <input type="text" class="form-control border-input" placeholder="Channel Secret" name="line_verify_token" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Branch</h4>
+                                </div>
+                                <div class="content">
+                                    <div class="form-group">
+                                        <label>Code</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="branch_cd" value="{{vendor_branch_code}}" readonly>
+                                        <label>Branch Name</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="branch_name" value="{{vendor_branch_name}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Auto Message Condition</h4>
+                                </div>
+                                <div class="content">
+                                    <div class="form-group">
+                                        {% for auto_message_type in auto_message_types %}
+                                            <label>{{ auto_message_type.name }}</label>
+                                            {% if auto_message_type.name == "Registration Date" %}
+                                                <input type="text" class="form-control border-input" placeholder="" name="ac_{{auto_message_type.id}}" value="{{default_registration_dt_name}}" required>
+                                            {% else %}
+                                                <input type="text" class="form-control border-input" placeholder="" name="ac_{{auto_message_type.id}}" value="" required>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">First Name</label>
+                                            <input type="text" id="firstName" name="first_name" class="form-control" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group has-danger">
+                                            <label class="control-label">Last Name</label>
+                                            <input type="text" id="lastName" name="last_name" class="form-control form-control-danger" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-1">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="text" class="form-control" name="email" id="email" class="validate[required,custom[onlyLetter],length[0,100]] feedback-input" placeholder="IDを入力してください" required="required">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-1">
+                                        <div class="form-group">
+                                            <label>Password (*Copy before saving)</label>
+                                            <input type="text" class="form-control" name="password" id="password" class="validate[required,custom[email]] feedback-input" placeholder="パスワードを入力してください" value="{{password}}" required="required">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Public URL</h4>
+                                </div>
+                                <div class="content">
+                                    <div class="form-group">
+                                        <label>Facebook Messenger</label>
+                                        <input type="text" class="form-control border-input" placeholder="https://m.me/12345678901233" name="fbms_public_url" value="{{vendor.fbms_public_url|default:''}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>LINE</label>
+                                        <input type="text" class="form-control border-input" placeholder="https://line.me/R/ti/p/%12341234" name="line_public_url" value="{{vendor.line_public_url|default:''}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>OEM</h4>
+                                </div>
+                                <div class="content">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        {% if oem_admin_flg %}
+                                            <input type="text" class="form-control border-input" placeholder="" name="oem_service_url" value="{{namespace|default:''}}" readonly>
+                                        {% else %}
+                                            <input type="text" class="form-control border-input" placeholder="" name="oem_service_url" value="{{vendor.oem_service_url|default:''}}">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <label class="control-label">Auto Reply Template</label>
+                                <select class="form-control custom-select" name="template_id">
+                                    <option value="">-----</option>
+                                    {% for vendor in vendors %}
+                                        <option value="{{vendor.id}}">{{vendor.company_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <a href="{% url namespace|add:':system_initial_setup_list' %}" class="btn btn-md btn-danger">{% trans "btn_back" %}</a>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <button type="submit" class="save btn btn-md btn-success">{% trans "btn_save" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

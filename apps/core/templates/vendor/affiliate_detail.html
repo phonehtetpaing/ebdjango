@@ -1,0 +1,69 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load get_affiliate_url %}
+{% load i18n %}
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+        {% if affiliate.id == 0 %}
+            <form action="{% url namespace|add:':affiliate_add'%}" method="post" role="form">
+        {% else %}
+            <form action="{% url namespace|add:':affiliate_edit' affiliate_id=affiliate.id %}" method="post" role="form">
+        {% endif %}
+        {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <h3>{% trans "title_affiliate_detail"%}</h3>
+                        <div class="content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>{% trans "lbl_affiliate_name"%}</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="name" value="{{ affiliate.name|default:'' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>{% trans "lbl_affiliate_tag_name"%}</label>
+                                        <input type="text" class="form-control border-input" placeholder="" name="tag_name" value="{{ affiliate.tag_name|default:'' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            {% if affiliate.url_part %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>{% trans "lbl_affiliate_fbms_url"%}</label>
+                                        <input id="copyTargetFBMS" type="text" class="form-control border-input" placeholder=" "
+                                               name="affiliate_fbms_url" value="{{ affiliate.id | get_affiliate_fbms_url }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>{% trans "lbl_affiliate_line_url"%}</label>
+                                        <input id="copyTargetLINE" type="text" class="form-control border-input" placeholder=" "
+                                               name="affiliate_line_url" value="{{ affiliate.id | get_affiliate_line_url }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="{% url namespace|add:':affiliate_list' %}" class="btn btn-secondary btn-fill btn-wd">{% trans "btn_back" %}</a>
+                <button type="submit" class="btn btn-info btn-fill btn-wd"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans "btn_save" %}</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,115 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block left_nav %}
+
+<style>
+    #filterform label {
+        margin-right: 0.25rem
+    }
+    #filterform input {
+        margin-right: 0.75rem
+    }
+</style>
+        <form id="filterform" method="get">
+                    <div class="bg-white p-10 border rounded">
+                        <div class="col-md-12 py-20">
+                            <div class="pb-10">
+                                {{ filter_form.plan_name.label_tag }}
+                                {% render_field filter_form.plan_name class="form-control" %}
+                            </div>
+                            <div class="pb-10">
+                                {{ filter_form.status.label_tag }}
+                                {% render_field filter_form.status class="form-control" %}
+                            </div>
+                        </div>
+                        <div class="col-md-12 py-20 mb-10 border rounded">
+                            {{ filter_form.amount.label_tag }}
+                            {% render_field filter_form.amount class="form-control" %}
+                        </div>
+                        <div class="col-md-12 py-20 mb-10 border rounded">
+                            {{ filter_form.regist_dt.label_tag }}
+                            {% render_field filter_form.regist_dt class="form-control" %}
+                        </div>
+                        <div class="col-md-12 py-20 mb-20 border rounded">
+                            {{ filter_form.expiration_dt.label_tag }}
+                            {% render_field filter_form.expiration_dt class+="form-control" %}
+                        </div>
+                        <div class="col-md-12 py-20 d-flex align-items-start flex-column">
+                                <button class="btn btn-rounded btn-info w-100" type="submit">
+                                    {% trans "lbl_search" %}
+                                </button>
+                        </div>
+                    </div>
+                </form>
+
+
+{% endblock %}
+
+ {% block body %}
+
+    <!-- Main content-->
+        <div class="card">
+            <div class="card-header">
+                {% trans "Transaction History" %}
+            </div>
+            <div class="card-body py-20 text-capitalize">
+                <!-- filter form -->
+
+                <div class="table-responsive">
+                <table class="table table-bordered">
+                            <tr>
+                                <th>{{ filter_form.regist_dt.label_tag }}</th>
+                                <th>{{ filter_form.plan_name.label_tag }}</th>
+                                <th>{{ filter_form.expiration_dt.label_tag }}</th>
+                                <th>{% trans 'Account' %}:</th>
+                                <th>{{ filter_form.amount.label_tag }}</th>
+                            </tr>
+                            {% for payment in filtered_payment_history %}
+                            <tr class="text-monospace">
+                                <td>{{ payment.regist_dt|date:"Y-m-d"  }}</td>
+                                <td>{{ payment.plan_name }}</td>
+                                <td>{{ payment.expiration_dt|date:"Y-m-d"  }}</td>
+                                <td>{% if payment.from_business == user_business %}{{ payment.to_business }}
+                                    {% else %}{{ payment.from_business }}{% endif %}</td>
+                                <td>
+                                    <div class="d-flex justify-content-between">
+                                        <span>{% if payment.from_business == user_business %}-
+                                        {% else %}+ {% endif %}¥</span><span>{{ payment.amount }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                </div>
+                {% if filtered_payment_history.has_other_pages %}
+                        <ul class="pagination pagination-sm">
+                            {% if filtered_payment_history.has_previous %}
+                            <li><a href="?page={{ filtered_payment_history.previous_page_number }}">&laquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in filtered_payment_history.paginator.page_range %}
+                                {% if i == filtered_payment_history.number %}
+                                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                {% elif i >= filtered_payment_history.number|add:'-5' and i <= filtered_payment_history.number|add:'5' %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if filtered_payment_history.has_next %}
+                            <li><a href="?page={{ filtered_payment_history.next_page_number }}">&raquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+            </div>
+        </div>
+
+
+{% endblock %}

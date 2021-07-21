@@ -1,0 +1,115 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+{% if senbay_user.is_active == 0 %}
+<div class="row">
+  <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row pt-20">
+                  <a href="{{senbay_login_url}}">
+                    <img class="pos-a centerXY" src='{% static "qa/images/senbay/btn_google_signin_dark_normal_web.png" %}'>
+                  </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<main class="main-content bgc-grey-100">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    <div id="mainContent">
+        <div class="headline-main">
+            <h1 class="headline-main_headline">{% trans "screen_team_description_1" %}</h1>
+            <p class="headline-main_text">{% trans "screen_team_description_2" %}</p>
+        </div>
+        <form method="post" action="{% url namespace|add:':reservation_update_settings' %}">
+        {% csrf_token %}
+            <div class="row gap-20 masonry pos-r" style="position: relative; height: 1086px;">
+                <div class="masonry-sizer col-md-10"></div>
+                <div class="masonry-item col-md-10" style="position: absolute; left: 10%; top: 364px;">
+                    <div class="bgc-white p-20 bd">
+                        <div class="mT-30">
+                            {% comment %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_select_google_calendar" %}</label>
+                                <div class="col-sm-10">
+                                    <p>
+                                        <a href="{{senbay_login_url}}">
+                                            <strong>{% trans "lbl_change_google_calendar" %}</strong><br>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                            {% endcomment %}
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_google_calendar" %}</label>
+                                <div class="col-sm-10">
+                                    <small class="form-text text-muted">{% trans "screen_team_description_4" %}</small>
+                                    <p>
+                                        <select name="select_google_calendar">
+                                            {% for calendar in calendar_list %}
+                                            <option value="{{calendar.id}}" {% if calendar.id == account.google_calender_linked_name %} selected {% endif %}> {{calendar.summary}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_notice_google_mail" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "screen_notice_description_3" %}</small>
+                                                    <input type="radio" name="mail_link_flag" value="0" {% if account.mail_link_flag == False %} checked {% elif account.mail_link_flag == "0" %} checked {% endif %} > {% trans "notice_no" %}
+                                                    <input type="radio" name="mail_link_flag" value="1" {% if account.mail_link_flag == True %} checked {% elif account.mail_link_flag == "1" %} checked {% endif %} > {% trans "notice_yes" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_notice_slack" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "screen_notice_description_4" %}</small>
+                                                    <input type="radio" name="slack_link_flag" value="0" {% if account.slack_link_flag == False %} checked {% elif account.slack_link_flag == "0" %} checked {% endif %} onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "notice_no" %}
+                                                    <input type="radio" name="slack_link_flag" value="1" {% if account.slack_link_flag == True %} checked {% elif account.slack_link_flag == "1" %} checked {% endif %} onclick="checkRadioSelectedMeetingTimesFlag('inline');" > {% trans "notice_yes" %}
+                                                    <span id="text_slack_mail_address">
+                                                        <input type="email" class="form-control" name="slack_mail_address" placeholder={% trans "placeholder_slack_mail_address" %} value="{{account.slack_mail_address}}" >
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary">{% trans "save_button" %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+{% endif %}
+{% endblock %}

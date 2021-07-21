@@ -1,0 +1,75 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load is_event_exist %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card">
+            <form id="deleteform" action="{% url namespace|add:':event_category_delete'%}" method="post" role="form">
+                {% csrf_token %}
+                <div class="card-title">
+                    <h4>{% trans "lbl_event_catagory"%}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="align-middle"><input type="checkbox" name="select_all" id="select_all" value="all"></th>
+                                <th>{% trans "tbl_title_category"%}</th>
+                                <th>{% trans "tbl_title_public"%}</th>
+                                <th>{% trans "tbl_title_description"%}</th>
+                                <th><a href="{% url namespace|add:':event_category_add' %}" class="btn btn-info btn-fill btn-wd {% if event_categories|length > 3 %} disabled {% endif %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans "btn_new" %}</a></th>
+                                <th><button type="submit" class="btn btn-danger btn-fill btn-wd"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</button></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for event_category in event_categories %}
+                            <tr>
+                                <td class="align-middle"><input type="checkbox" name="select_item" value={{ event_category.id }} {% if event_category.id|is_event_exist %} disabled {% endif %}></td>
+                                <td>{{ event_category.name|default:"" }}</td>
+                                <td>{% if event_category.is_public %}Yes{% else %}No{% endif %}</td>
+                                <td>{{ event_category.description|default:"" }}</td>
+                                <td> <a href="{% url namespace|add:':event_category_detail' event_category_id=event_category.id %}" class="btn btn-info btn-fill btn-wd"><i class="fa fa-pencil" aria-hidden="true"></i> {% trans "btn_edit" %}</a></td>
+                                <td> <a href="{% url namespace|add:':event_list' event_category_id=event_category.id %}" class="btn btn-secondary btn-fill btn-wd">{% trans "btn_event_list" %}</a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if event_categories.has_other_pages %}
+                <ul class="pagination pagination-sm">
+                    {% if event_categories.has_previous %}
+                    <li><a href="?page={{ event_categories.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in event_categories.paginator.page_range %}
+                    {% if event_categories.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if event_categories.has_next %}
+                    <li><a href="?page={{ event_categories.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block append_js_on_tail %}
+<script>
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        checkboxes.not(":disabled").prop('checked',  $(this).is(':checked'));
+    });
+</script>
+{% endblock %}

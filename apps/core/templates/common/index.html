@@ -1,0 +1,41 @@
+{% extends "base/common_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="content col-md-4 mx-auto">
+        <div class="card">
+            <div class="card-content">
+                <form method="post" action="{{ user_login }}" class="form-signin" id="form1">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8 offset-2">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" name="username" id="name"
+                                       class="validate[required,custom[onlyLetter],length[0,100]] feedback-input"
+                                       placeholder="IDを入力してください" required="required">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-2">
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" name="password" id="password"
+                                       class="validate[required,custom[email]] feedback-input"
+                                       placeholder="パスワードを入力してください" required="required">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 offset-2">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "btn_login" %}</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

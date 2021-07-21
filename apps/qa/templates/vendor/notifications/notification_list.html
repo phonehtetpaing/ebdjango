@@ -1,0 +1,42 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+    <div style="height: 90vh; max-height: 100vh; width: 100vw;">
+    <div class="col-lg-8 bg-white mx-auto mt-40 pb-20 shadow p-0 bg-white rounded ">
+        <div class="card-header">{% trans "Notifications" %}:</div>
+        <ul class="h-75 scrollable ovY-a pos-r lis-n p-0 m-0 fsz-sm ps">
+
+            {% for item in notifications %}
+
+            <li><a href="{% url namespace|add:':notification_detail' item.notification.id %}" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
+                <div class="peer peer-greed"><span><span {% if not item.seen %}class="fw-900"{% endif %}{% if item.seen %}class="fw-500"{% endif %}>{{item.notification.title}}</span>
+                    </span>
+                    <p class="m-0">
+                        <small class="fsz-xs">{{item.notification.schedule_dt}}</small>
+                    </p>
+                </div>
+                <div class="float-right">
+                    {% if item.notification.priority is 1 %}<i class="c-blue-500 ti-info-alt"></i>{% endif %}
+                    {% if item.notification.priority is 2 %}<i class="c-red-500 ti-alert"></i>{% endif %}
+                </div>
+            </a></li>
+
+            {% endfor %}
+
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; right: 0px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+            </div>
+        </ul></div></div>
+    </div></div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="custom-file">
+    <input type="{{ widget.type }}"
+           class="custom-file-input"
+           id="{{ widget.name }}"
+           name="{{ widget.name }}"
+           onchange="myFunction()"
+    >
+    <label class="custom-file-label" id="{{ widget.name }}-label" for="{{ widget.name }}">{% trans 'Choose image file...' %}</label>
+</div>
+<script>
+    function myFunction() {
+        label = document.querySelector("#{{ widget.name }}-label");
+        fileName = document.querySelector("#{{ widget.name }}").value.replace(/^.*\\/, "");
+        label.innerText=fileName;
+    }
+</script>
+<style>
+    .custom-file-input ~ .custom-file-label::after {
+    content: "{% trans 'Browse' %}";
+}
+</style>
