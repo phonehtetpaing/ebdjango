@@ -1,0 +1,203 @@
+{% extends "mailroom/editor/editor.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block message_head %}
+    <style>
+        #id_filter_all {
+          list-style-type: none;
+          padding: 20px;
+        }
+        #id_filter_all li {
+        }
+        #clear-input {
+            border: 1px solid #ced4da;
+        }
+        .form-group{
+            margin: 0px !important;
+        }
+    </style>
+    {{ message_form.media }}
+{% endblock %}
+
+{% block editor_content %}
+<div class="col-md-12 pl-20 pr-0 h-100">
+    <div class="card">
+        <div class="card-header">
+            {% trans "Direct Message Editor" %}
+        </div>
+        <div class="card-body p-0 pb-5">
+    <form id="mailroom_form" action="{% url namespace|add:':mailroom:direct_message_edit' message_id=1 %}" method="post" role="form">
+        <!-- Email recipients -->
+        <div class="row m-0 pt-20">
+            <div hidden class="col-md-12 m-0 px-20" id="recipient_display" style="margin-top: -2px !important; margin-bottom: 6px !important; margin-left: -2px !important;">
+                <!-- Javascript inserts email recipients here -->
+            </div>
+        </div>
+        <div class="row m-0 p-0">
+            <input hidden type="text" name="email_recipients" id="email_recipients">
+        </div>
+        <div class="row m-0 p-0">
+            <div class="col-md-12 px-20">
+                {% include 'mailroom/forms/input_form_field.html' with field=message_form.recipients %}
+                <div hidden id="bad_email_list" style="color: #f44336 !important; font-size: 80%; margin-top: 4px !important;"></div>
+            </div>
+
+        </div>
+        <div class="row m-0">
+            <div class="col-md-12 px-20" id="autocomplete_display" style="position: relative">
+                <!-- Javascript inserts email recipients here -->
+            </div>
+        </div>
+        <div class="row m-0 pt-20">
+            <div class="col-md-12 px-20">
+                {% include "mailroom/editor/message_contents.html" %}
+            </div>
+        </div>
+    </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script type="text/javascript">
+    let emailContacts = {{ email_contacts|safe|default:"''" }};
+    let emailRecipients = [];
+    let emailMatches = [];
+    let inputAddable = true;
+    let bad_email_address_list = [];
+    let re = /\S+@\S+\.\S+/;
+    const badEmailDisplay = document.querySelector("#bad_email_list");
+    const recipientInput = document.querySelector("#id_recipients");
+    const hiddenRecipientsInput = document.querySelector("#email_recipients");
+    const recipientDisplay = document.querySelector("#recipient_display");
+    const autocompleteDisplay = document.querySelector("#autocomplete_display");
+    const clearInputButton = document.querySelector("#clear-input");
+
+    recipientInput.focus();
+
+    const validateEmail = (email) => {
+        var re = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        return re.test(email);
+    }
+
+    const debounce = (fn, time) => {
+        let timeout;
+
+        return function() {
+            const functionCall = () => fn.apply(this, arguments);
+
+            clearTimeout(timeout);
+            timeout = setTimeout(functionCall, time);
+        }
+    }
+
+    const refreshEmailAddresses = () => {
+        recipientDisplay.innerHTML = emailRecipients.map((e, i) => '<a class="btn btn-secondary px-3 py-1 m-2 text-white" onclick="removeEmailAddress(' + i + ')">' + e + '  <i class="ti-close i-circle""></i></a>').join('');
+        if (emailRecipients.length > 0) {
+            recipientDisplay.hidden = false;
+        } else {
+            recipientDisplay.hidden = true;
+        }
+
+        if (!inputAddable) {
+            recipientInput.setAttribute("style", "text-decoration: line-through;");
+        } else {
+            recipientInput.setAttribute("style", "text-decoration: ;");
+        }
+        hiddenRecipientsInput.value = emailRecipients;
+        recipientInput.focus();
+    }
+
+    const addEmailAddress = (address) => {
+        emailRecipients.push(address);
+        refreshEmailAddresses();
+    }
+
+    const addEmailFromButton = (address) => {
+        inputAddable = false;
+        addEmailAddress(address);
+    }
+
+    const addEmailFromInput = (address) => {
+        if (inputAddable) {
+           addEmailAddress(address);
+        }
+        refreshEmailAddresses();
+    }
+
+    const removeEmailAddress = (id) => {
+        emailRecipients.splice(id, 1);
+        refreshEmailAddresses();
+    }
+
+    clearInputButton.onclick = () => {
+            recipientInput.value = "";
+            inputAddable = true;
+            recipientInput.setAttribute("style", "text-decoration: ;");
+            autocompleteDisplay.innerHTML = "";
+            recipientInput.focus();
+    };
+
+    recipientInput.addEventListener("keydown", (key_pressed) => {
+        if (key_pressed.code === 'Comma' || key_pressed.code === 'Space' || key_pressed.code === 'Enter') {
+            key_pressed.preventDefault();
+            bad_email_address_list = [];
+            cleanInput = recipientInput.value.split(/[;,\s]+/).map(e => e.trim()).filter((e) => e != "");
+            inputAddable = true;
+            if(cleanInput.length > 0){
+                for(let i = 0; i < cleanInput.length; i++) {
+                    if (re.test(cleanInput[i])) {
+                        addEmailFromInput(cleanInput[i]);
+                    } else {
+                        bad_email_address_list.push(cleanInput[i]);
+                    }
+                }
+            }
+            if (bad_email_address_list.length > 0){
+                badEmailDisplay.hidden = false;
+            } else {
+                badEmailDisplay.hidden = true;
+            }
+            badEmailDisplay.innerHTML = "The following appear to be invalid email addresses: " + bad_email_address_list.join(' ');
+            recipientInput.value = "";
+        } else if (key_pressed.code === 'Escape') {
+            recipientInput.value = "";
+        }
+        recipientInput.focus();
+    });
+
+    recipientInput.addEventListener("input", () => {
+        if (!recipientInput.value) {
+            inputAddable = true;
+            recipientInput.setAttribute("style", "text-decoration: ;");
+            autocompleteDisplay.innerHTML = "";
+        }
+    });
+
+    recipientInput.addEventListener("keyup", debounce(() => {
+        emailMatches = [];
+        autocompleteDisplay.innerHTML = "";
+        if (recipientInput.value.length >= 1 && recipientInput.value !== "@") {
+            let regex = new RegExp( recipientInput.value.toLowerCase() );
+            for( let i = 0; i < emailContacts.length; i++ )
+            if (emailContacts[i].match(regex)) {
+                emailMatches.push(emailContacts[i]);
+            }
+        }
+
+        autocompleteDisplay.innerHTML = emailMatches.map((e) => '<a class="btn btn-info px-5 py-1 m-2 text-white" onclick="addEmailFromButton(\[\'' + e + '\'\]);">' + e + ' <i class="ti-plus i-circle"></i></a>').join('');
+
+    }, 500));
+
+    let retrieved_email_recipients = {{ email_recipients|safe }} ;
+    if (retrieved_email_recipients.length > 0){
+        let split_email_recipients = retrieved_email_recipients[0].split(',').map(e => e.trim()).filter((e) => e != "");
+        for (let i = 0; i < split_email_recipients.length; i++) {
+            addEmailAddress(split_email_recipients[i]);
+        }
+    }
+
+</script>
+{% endblock %}

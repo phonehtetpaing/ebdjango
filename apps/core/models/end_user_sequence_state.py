@@ -19,4 +19,4 @@ class EndUserSequenceState(models.Model):
         permissions = ()
 
     def __str__(self):
-        return self.cd
+        return str(self.id)

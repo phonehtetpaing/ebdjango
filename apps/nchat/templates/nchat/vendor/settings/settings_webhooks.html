@@ -1,0 +1,110 @@
+{% extends "nchat/base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-20">
+    <div class="card mb-40">
+        <div class="card-header">
+            {% trans "Webhook Settings" %}
+        </div>
+        <div class="card-body">
+            <div class="row m-0 p-0">
+                <div class="col-md-10 offset-md-1">
+                    <div class="row m-0">
+                        <div class="col-md-12 d-flex justify-content-end p-0">
+                            <div>
+                                <button type="submit" form="settings_form" class="btn btn-danger ma-submit-btn" data-formatting="class pull-right">{% trans "Save" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                <div class="row m-0">
+                <form id="settings_form" class="m-0 p-0 col-md-12" action="{% url namespace|add:':settings_webhooks' %}" method="post" role="form">
+                    {% csrf_token %}
+                    {% include 'forms/default_form_field.html' with field=settings_form.line_channel_secret %}
+                    {% include 'forms/default_form_field.html' with field=settings_form.line_channel_access_token %}
+                </form>
+            </div>
+            {% if bot_list_length > 0 %}
+            <div class="row m-0 mt-15">
+                <div class="col-md-12 m-0 p-0">
+                    {% trans 'Line Webhook URL for' %}
+                    <select id="botSelector" onchange="robotSelected()">
+                        {% if bot_list_length > 1 %}
+                            <option selected disabled>{% trans 'Choose Bot' %}</option>
+                        {% endif %}
+                        {% for bot in bot_list %}
+                            <option value="{{ bot.id }}">{{ bot.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {% trans ' ' %}:<br>
+                </div>
+            </div>
+            <div class="row m-0 mb-15">
+                <div class="col-md-12 m-0 p-0 pt-5">
+                    <div>
+                       <small class="text-muted">({% if bot_list_length > 1 %}{% trans 'select a bot, then copy the following line and paste it into Line settings' %}{% else %}{% trans 'copy the following line and paste it into Line settings' %}{% endif %})</small>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" id="copyButton" type="button" onclick=copyWebhookURL() {% if bot_list_length > 1 %}disabled{% endif %}>{% trans "Copy" %}</button>
+                        </div>
+                        {% if bot_list_length is 1 %}
+                            {% with bot_list|first as bot %}
+                                <input type="text" class="form-control bg-white" value="https://{{ request.get_host }}{% url namespace|add:':line_webhook' access_url_part=line_access_url_part %}{{ bot.id }}/" aria-describedby="button-addon1" id="webhookURL" readonly>
+                            {% endwith %}
+                        {% else %}
+                                <input type="text" class="form-control bg-white" value="{% trans 'no bot selected' %}" aria-describedby="button-addon1" id="webhookURL" readonly disabled >
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="row m-0 mt-15 mb-15">
+                <div class="col-md-12 m-0 p-0">
+                    <a href="{% url namespace|add:':messageflow:bot_list' base_template='blank' %}">{% trans 'Create a bot then return to this configuration page for your Line webhook URL.' %}</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script>
+    let webhookURL = document.getElementById("webhookURL");
+    let botSelector = document.getElementById("botSelector")
+    let copyButton = document.getElementById("copyButton");
+
+    function copyWebhookURL() {
+        console.log("script is running")
+        webhookURL.select();
+        webhookURL.setSelectionRange(0, 99999); /*For mobile devices*/
+        document.execCommand("copy");
+        // alert("Copied the text: " + copyText.value);
+    }
+
+    function robotSelected() {
+        let baseString = "https://{{ request.get_host }}{% url namespace|add:':line_webhook' access_url_part=line_access_url_part %}";
+        let botId = botSelector.options[botSelector.selectedIndex].value;
+        webhookURL.value = baseString + botId + "/";
+        webhookURL.disabled = false;
+        copyButton.disabled = false;
+    }
+</script>
+{% endblock %}
+{% load widget_tweaks %}

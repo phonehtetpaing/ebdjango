@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -34,12 +35,24 @@ def list(request):
     end_users = EndUser.objects.filter(vendor_branch_id=user_obj["vendor_branch"].id, is_delete=0)
     user_filter = UserFilter(request.GET, queryset=end_users, request=request)
 
+    filtered_qs = user_filter.qs
+    paginator = Paginator(filtered_qs, settings.RESULTS_PER_PAGE)
+    page = request.GET.get('page', 1)
+
+    try:
+        filtered_users = paginator.page(page)
+    except PageNotAnInteger:
+        filtered_users = paginator.page(1)
+    except EmptyPage:
+        filtered_users = paginator.page(paginator.num_pages)
+
     context = {
         "title": "User List",
         "path": ["User List"],
-        "end_users": end_users,
+        "end_user_count": end_users.count(),
         "tag_users": tag_users,
-        "filter": user_filter,
+        "filter_form": user_filter.form,
+        "filtered_users": filtered_users,
         "namespace": user_obj["service_namespace"]
     }
 

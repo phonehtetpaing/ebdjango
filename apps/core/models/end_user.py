@@ -36,6 +36,7 @@ class EndUser(models.Model):
     regist_dt = models.DateTimeField('regist datetime', null=True, auto_now_add=True)
     update_dt = models.DateTimeField('update datetime', null=True, auto_now=True)
     is_delete = models.BooleanField('delete flg', default=0)
+    subscribed = models.BooleanField('subscribe flg', default=1)
 
     class Meta:
         verbose_name = "EndUser"
@@ -48,6 +49,8 @@ class EndUser(models.Model):
         """
         Returns the first_name plus the last_name, with a space in between.
         """
+        if not self.first_name and not self.last_name:
+            return u'%s %s' % ('Anonymous User', self.id)
         full_name = u'%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
 
@@ -68,7 +71,7 @@ class EndUser(models.Model):
             return attribute_dict
 
         attribute_dict = self.get_attribute_json()
-        return attribute_dict[key]
+        return attribute_dict.get(key)
 
     def set_attribute_json(self, key, value):
         """
@@ -79,3 +82,18 @@ class EndUser(models.Model):
         self.attribute_json = json.dumps(attribute_dict)
         self.save()
 
+    @property
+    def business_name(self):
+        return self.get_attribute_json('business_name')
+
+    @business_name.setter
+    def business_name(self, value):
+        self.set_attribute_json('business_name', value)
+
+    @property
+    def instagram_id(self):
+        return self.get_attribute_json('instagram_id')
+
+    @instagram_id.setter
+    def instagram_id(self, value):
+        self.set_attribute_json('instagram_id', value)

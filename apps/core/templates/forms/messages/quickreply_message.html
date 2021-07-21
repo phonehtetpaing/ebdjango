@@ -1,0 +1,43 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+{% load to_string %}
+
+{% block message_header %}
+    <i class="ti-comments" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<textarea rows="5" class="form-control input-child border-input bubble-border-blue expand"
+                          placeholder=" " name="QuickReplySendMessage_question_{{ message_counter }}"
+                          maxlength="160" required="">{{ message.question }}</textarea>
+                <div class='vertical-align form-group' style="margin: 0;">
+                    <div class='quick-replies'>
+                        {% for reply in message.payload %}
+                        <div class='quick-reply anchor' data-quickreply-child-id='{{ forloop.counter }}'>
+                            <input type='text' class='bubble-input input-child' maxlength='20' value='{{ reply.title }}' placeholder='Enter Reply Text' name='QuickReplySendMessage_title_{{ message_counter }}'>
+                            <div class='option-bubble bubble-white'>
+                                <div class='bubble-content'>
+                                    <div class='horizontal-align'>
+                                        <select class='input-child' name="QuickReplySendMessage_action_goto_{{ message_counter }}">
+                                            <optgroup label="{% trans 'option_label_system' %}">
+                                                <option value="none"{% if reply.payload|to_string == 'none' or reply.payload|to_string == '' %} selected{% endif %}>{% trans "option_continue" %}</option>
+                                                <option value="__event_GET_STARTED"{% if reply.payload|to_string == '__event_GET_STARTED' %} selected{% endif %}>{% trans "option_event_registration" %}</option>
+                                            </optgroup>
+
+                                            <optgroup label="{% trans 'option_label_blocks' %}">
+                                                {% for block in message_blocks %}
+                                                <option value="{{ block.id }}"{% if reply.payload|to_string == block.id|to_string %} selected{% endif %}>{{ block.admin_text }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type='button' class='add-quickreply-child message-bubble bubble-dashed'>+ {% trans "lbl_add_quickreply" %}</button>
+                </div>
+
+{% endblock %}

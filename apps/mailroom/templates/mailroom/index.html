@@ -1,0 +1,82 @@
+{% extends "mailroom/base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block head %}
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<link href='{% static "froala_editor/css/froala_editor.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+<link href='{% static "froala_editor/css/froala_style.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+<script type="text/javascript" src='{% static "froala_editor/js/froala_editor.min.js" %}'></script>
+<style>
+.form-group {
+    margin: 0px !important;
+}
+</style>
+{{ message_form.media }}
+{% endblock %}
+{% block mailroom_contents %}
+{% if trigger_form and message_form %}
+<form id="mailroom_form" action="{% url namespace|add:':mailroom:ma_edit' trigger_id=selected_trigger.id %}" method="post"
+      role="form">
+    <div class="email-wrapper row h-100 scrollable">
+        <div class="email-content col">
+            <!-- Trigger Type Row -->
+            <div class="row m-0 pt-20 px-20">
+                <div class="col-md-12 p-0">
+                    <label for="triggertype" class="m-0">{% trans "Trigger Type" %}</label>
+                    <select id="triggertype" name="triggertype">
+                        <option value="opt">{% trans "Time Event Based" %}</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Trigger Time Row -->
+            <div class="row m-0 pt-20 px-20">
+                <div class="col-md-3 m-0 p-0">
+                    {% include 'forms/default_form_field.html' with field=trigger_form.days %}
+                </div>
+                <div class="col-md-3 m-0 px-20">
+                    {% include 'forms/default_form_field.html' with field=trigger_form.hours %}
+                </div>
+                <div class="col-md-6 m-0 p-0">
+                    {% include 'forms/default_form_field.html' with field=trigger_form.trigger_type %}
+                </div>
+            </div>
+            <div class="row m-0 p-20">
+                <div class="email-content-wrapper col m-0 p-0">
+                        {% csrf_token %}
+                        <!-- for form errors -->
+                        {% for hidden_field in message_form.hidden_fields %}
+                        {{ hidden_field }}
+                        {% endfor %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <!-- Email recipients -->
+                    {% if False %}
+                        <div class="m-0">
+                            {% include 'forms/default_form_field.html' with field=message_form.recipients %}
+                        </div>
+                    {% endif %}
+                        <!--Email subject-->
+                        <div class="m-0">
+                            {% include 'forms/default_form_field.html' with field=message_form.subject %}
+                        </div>
+                        <!--Email contents-->
+                        <div class="m-0">
+
+                            {% include 'forms/default_form_field.html' with field=message_form.message_text %}
+                        </div>
+                        <button type="submit" form="mailroom_form" class="btn btn-danger ma-submit-btn">
+                            {% trans "Save" %}
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}

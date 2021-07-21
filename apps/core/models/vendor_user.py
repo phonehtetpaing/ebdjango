@@ -30,3 +30,12 @@ class VendorUser(models.Model):
 
     def __str__(self):
         return self.last_name
+
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+        if not self.first_name and not self.last_name:
+            return u'%s %s' % ('Anonymous User', self.id)
+        full_name = u'%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()

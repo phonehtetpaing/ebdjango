@@ -11,6 +11,13 @@ class VisibleTodoManager(models.Manager):
         return super().get_queryset().exclude(todo_action_status=excluded_status)
 
 
+class VisisblePendingTodoManager(models.Manager):
+    def get_queryset(self):
+        hidden_status = TodoActionStatus.objects.filter(name='Hidden').first()
+        completed_status = TodoActionStatus.objects.filter(name='DONE').first()
+        return super().get_queryset().exclude(todo_action_status=hidden_status).exclude(todo_action_status=completed_status)
+
+
 class Todo(models.Model):
     """ End User Story History """
     vendor_branch = models.ForeignKey(VendorBranch, verbose_name='vendor_branch',
@@ -27,6 +34,7 @@ class Todo(models.Model):
 
     objects = models.Manager()  # The default manager.
     visible = VisibleTodoManager()  # visible-specific manager.
+    visible_pending = VisisblePendingTodoManager()
 
     class Meta:
         verbose_name = "Todo"

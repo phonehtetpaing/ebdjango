@@ -1,0 +1,52 @@
+{% extends base_template %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="card m-20">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">{% trans "Profile"%}</div>
+            <div class="col">{% trans "Registration Date"%}</div>
+            <div class="col">{% trans "Gender"%}</div>
+            <div class="col">{% trans "Birthday"%}</div>
+            <div class="col">{% trans "Email"%}</div>
+        </div>
+
+    </div>
+    <div class="card-body">
+        {% for item in object_list %}
+        <a href="{% url namespace|add:':messageflow:user_edit' base_template=args.base_template user_id=item.id %}">
+            <div class="row border-bottom align-items-baseline py-5" style="box-sizing:border-box;">
+                <div class="col">
+                    {% if user.profile_pic_url %}
+                    <img class="img-fluid rounded-circle" style="max-width: 40px;" src="{{ user.profile_pic_url }}" alt="user profile picture"/>
+                    {% else %}
+                    <img class="img-fluid rounded-circle" style="max-width: 40px;" src="https://api.adorable.io/avatars/100/{{ item.id }}" alt="user profile picture"/>
+                    {% endif %}
+                    {{ item.get_full_name }}
+                </div>
+                <div class="col">
+                    {{ item.regist_dt|default:"-" }}
+                </div>
+                <div class="col">
+                    {% if item.gender == "Male" %}{% trans 'Male' %}{% elif item.gender == "Female" %}{% trans 'Female' %}{% else %}-{% endif %}
+                </div>
+                <div class="col">
+                    {{ item.birth_day|default:"-" }}
+                </div>
+                <div class="col">
+                    {{ item.email|default:"-" }}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="">
+            <div>
+                {% trans "No Data" %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

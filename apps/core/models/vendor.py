@@ -3,6 +3,11 @@ from django.db import models
 from apps.core.models.service import Service
 
 
+def vendor_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/vendor_branch_<id>/<filename>
+    return 'vendor_{0}/avatar/{1}'.format(instance.id, filename)
+
+
 class Vendor(models.Model):
     """ Vendor ( Client Company Information )"""
     service = models.ForeignKey(Service, verbose_name='Service', related_name='%(class)s_service', null=True, on_delete=models.CASCADE)
@@ -10,7 +15,7 @@ class Vendor(models.Model):
     company_name = models.CharField('company name', null=True, max_length=256)
     company_name_kana = models.CharField('company name kana', null=True, max_length=256)
     company_url = models.CharField('company web site url', null=True, max_length=2048)
-    picture_url = models.CharField('picture url', null=True, max_length=2024)
+    picture_url = models.ImageField('picture url', null=True, max_length=2024, upload_to=vendor_directory_path)
     fbms_access_url_part = models.CharField('FB Messaneger Access URL', null=True, max_length=2048)
     fbms_access_token = models.CharField('FB Access Token', null=True, max_length=2048)
     fbms_verify_token = models.CharField('FB Verify Token', null=True, max_length=256)
@@ -35,16 +40,3 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.cd
-
-class Preset(models.Model):
-    """ Vendor Color theme"""
-    preset_url = models.CharField('Preset CSS URL', null=False, max_length=1024)
-    preset_name = models.CharField('Preset CSS File name', null=False, max_length=1024)
-    preset_css = models.CharField('ContactChat CSS', null=True, max_length=1024)
-
-    class Meta:
-        verbose_name = "Preset"
-        permissions = ()
-
-    def __str__(self):
-        return self.preset_name

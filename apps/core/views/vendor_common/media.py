@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 
-from apps.core.models.document import Document
+from apps.core.models.file import File
 
 
 def document_view(request, access_url=None):

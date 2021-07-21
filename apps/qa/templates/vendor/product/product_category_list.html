@@ -1,0 +1,76 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="col-md-10">
+    <div class="bdrs-3 ov-h bgc-white bd">
+        <div class="bgc-deep-purple-500 ta-c p-20">
+            <h5 class="c-white">{% trans "lbl_product_category_list" %}</h5>
+        </div>
+        <div class="pos-r">
+            <a href="{% url namespace|add:':pc_edit' %}">
+                <button type="button" class="mT-nv-50 pos-a r-10 t-2 btn cur-p bdrs-50p p-0 w-3r h-3r btn-warning">
+                    <i class="ti-plus"></i>
+                </button>
+            </a>
+            <div class="pos-r">
+                <div class="bd bgc-white">
+                    <div class="layers">
+                        <div class="layer w-100">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans "col_p_category_name" %}</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for pc in product_categories %}
+                                        <tr>
+                                            <td>{{pc.name}}</td>
+                                            <td></td>
+                                            <td>
+                                                <div class="peer">
+                                                    <a href="{% url namespace|add:':pc_edit' pc_id=pc.id %}" data-toggle="tooltip" data-placement="top">
+                                                        <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_edit.png" %}'>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="peer">
+                                                    <a href="#" data-toggle="modal" data-target="#deleteModal_{{pc.id}}">
+                                                        <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_garbage_can.png" %}'>
+                                                    </a>
+                                                    <div class="modal fade" id="deleteModal_{{pc.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header"><h5 class="modal-title" id="deleteModalLabel">{% trans "lbl_modal_title_delete_confirm" %}</h5></div>
+                                                                <div class="modal-body">{% trans "lbl_modal_body_delete_confirm" %}</div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "close_button" %}</button>
+                                                                    <a href="{% url namespace|add:':pc_delete' pc_id=pc.id %}">
+                                                                        <button type="button" class="btn btn-primary">{% trans "delete_button" %}</button>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

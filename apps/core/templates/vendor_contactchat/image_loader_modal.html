@@ -1,0 +1,164 @@
+{% load i18n %}
+
+<div class="mp-modal-background" style="display: none;">
+  <div class="mp-modal">
+      <div class="mp-modal-header">
+          <span>{% trans 'Select Image' %}</span>
+          <span class="mp-modal-close mp-modal-close-x">&times;</span>
+      </div>
+      <div class="mp-modal-body">
+          <div class="mp-modal-image-holder">
+          </div>
+      </div>
+      <div class="mp-modal-footer">
+          <span>
+              <label for="modalFileInput">
+                  <div class="btn btn-primary btn-fill btn-wd">{% trans 'Upload Image' %}</div>
+              </label>
+              <input type="file" id="modalFileInput" style="display: none;">
+              <div class="btn btn-primary btn-fill btn-wd" id="loadMoreImages">{% trans 'Load More Images' %}</div>
+              <div class="btn btn-info btn-fill btn-wd" id="chooseImagesButton">{% trans 'Choose Image' %}</div>
+              <div class="mp-modal-close btn btn-info btn-fill btn-wd" >{% trans 'Cancel' %}</div>
+          </span>
+      </div>
+  </div>
+</div>
+
+<script>
+    const numImagesLoaded = 15;
+    const modal = document.querySelector(".mp-modal-background");
+    const imageContainer = document.querySelector(".mp-modal-image-holder")
+    let imageList = [];
+    let selectedImages = [];
+    let lastVisibleImage = numImagesLoaded;
+    let rootNode;
+    let hiddenInputNode;
+    let imageDisplayNode;
+    const selectedImagesLength = 1;
+
+    const modalFileInput = document.querySelector('#modalFileInput');
+    modalFileInput.addEventListener('change', event => {
+        connectToApi(mode="upload", fileField=modalFileInput)
+    })
+
+    document.querySelector('#loadMoreImages').addEventListener('click', event => {
+        if (lastVisibleImage <= imageList.length) {
+            lastVisibleImage += numImagesLoaded;
+            renderImageDisplay();
+        }
+    })
+
+    function openModal(type, node) {
+        imageList = [];
+        selectedImages = [];
+        if (type === "image") { rootNode = node.closest(".message-base-body"); }
+        if (type === "carousel" ) { rootNode = node.closest(".message-bubble"); }
+        hiddenInputNode = rootNode.querySelector(".message-img-input");
+        connectToApi(mode="download");
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    document.querySelectorAll(".mp-modal-close").forEach(element => {
+        element.addEventListener('click', closeModal)
+    })
+
+    let chooseImagesButton = document.querySelector("#chooseImagesButton");
+    chooseImagesButton.addEventListener('click', event => {
+        modal.style.display = "none";
+        let selectedImageNumber = parseInt(selectedImages[0]);
+        let selectedImage = imageList[selectedImageNumber];
+        hiddenInputNode.value = selectedImage;
+        let ev = document.createEvent('Event');
+        ev.initEvent('change', true, false);
+        hiddenInputNode.dispatchEvent(ev);
+    })
+
+    function connectToApi(mode, fileField) {
+        const controller = new AbortController();
+        const url = "{% url 'api:file_api' %}"
+        const csrftoken = getCookie('csrftoken');
+        let formData = new FormData();
+        formData.append("mode", mode)
+        if (fileField) {
+            formData.append("files", fileField.files[0])
+        }
+        const options = {
+            method: 'POST',
+            headers: { "X-CSRFToken": csrftoken },
+            signal: controller.signal,
+            body: formData,
+        };
+        const promise = fetch(url, options);
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        promise
+            .then(response => response.json()).then(data => processDownloadedFileList(data))
+            .catch(error => alert("{% trans 'There was a connection error. Please try again.' %}"));
+    }
+
+    function processDownloadedFileList(data) {
+        data["files"].forEach((file) => {
+            appendImageList(file=file, mediaUrl=data["mediaUrl"], method=data["method"])
+        })
+    }
+
+    function appendImageList(file, mediaUrl, method) {
+        let url = mediaUrl + file;
+        if (method === "push") {
+            imageList.push(url)
+        }
+        if (method === "unshift") {
+            imageList.unshift(url);
+            lastVisibleImage++;
+            for (let i = 0; i < selectedImages.length; i++) {
+                let incrementedSelection = parseInt(selectedImages[i]) + 1;
+                selectedImages[i] = incrementedSelection.toString();
+            }
+        }
+        renderImageDisplay();
+    }
+
+    function renderImageDisplay() {
+        imageContainer.innerHTML = '';
+        for (let i = 0; i < lastVisibleImage && i < imageList.length; i++) {
+            let image = document.createElement('img');
+            image.src = imageList[i];
+            let imageWrapper = document.createElement('div');
+            imageWrapper.appendChild(image);
+            imageWrapper.classList.add("mp-modal-image");
+            imageWrapper.setAttribute('id', i);
+            if (selectedImages.includes(i.toString())) {
+                imageWrapper.classList.add("selected");
+                imageWrapper.dataset.number = selectedImages.indexOf(i.toString()) + 1;
+            }
+            imageWrapper.addEventListener('click', event => {
+                if (selectedImages.includes(event.currentTarget.id)) {
+                    selectedImages.splice(selectedImages.indexOf(event.currentTarget.id), 1);
+                } else {
+                    selectedImages.push(event.currentTarget.id);
+                    if (selectedImages.length > selectedImagesLength) {
+                        selectedImages.shift();
+                    }
+                }
+                renderImageDisplay();
+            })
+            imageContainer.appendChild(imageWrapper);
+        }
+    }
+
+    function getCookie(name) {
+        if (!document.cookie) {
+            return null;
+        }
+        const xsrfCookies = document.cookie.split(';')
+            .map(c => c.trim())
+            .filter(c => c.startsWith(name + '='));
+        if (xsrfCookies.length === 0) {
+            return null;
+        }
+        return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+    }
+</script>

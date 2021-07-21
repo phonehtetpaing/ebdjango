@@ -1,0 +1,486 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<script type="text/javascript">
+function checkRadioSelectedTermFlag(disp) {
+   document.getElementById('select_custom_term_time').style.display = disp;
+}
+
+function checkRadioSelectedMeetingTimesFlag(disp) {
+   document.getElementById('text_custom_meeting_times').style.display = disp;
+}
+
+function checkRadioDayOfWeekDisplay(disp) {
+   document.getElementById('checkbox_day_of_week_display').style.display = disp;
+}
+
+function checkRadioMovingTimesDisplayFlag(disp) {
+   document.getElementById('select_plan_moving_times').style.display = disp;
+}
+
+window.onload = function() {
+    var selected_term_flag_check = '{{template.selected_term_flag}}';
+    if(selected_term_flag_check != '4'){
+        document.getElementById('select_custom_term_time').style.display = "none";
+    }else{
+        document.getElementById('select_custom_term_time').style.display = "inline";
+    }
+
+    var selected_meeting_times_flag_check = '{{template.selected_meeting_times_flag}}';
+    if(selected_meeting_times_flag_check != '0'){
+        document.getElementById('text_custom_meeting_times').style.display = "none";
+    }else{
+        document.getElementById('text_custom_meeting_times').style.display = "inline";
+    }
+
+    var day_of_week_display_flag_check = '{{template.day_of_week_display_flag}}';
+    if(day_of_week_display_flag_check == '1' || day_of_week_display_flag_check == 'True'){
+        document.getElementById('checkbox_day_of_week_display').style.display = "inline";
+    }else{
+        document.getElementById('checkbox_day_of_week_display').style.display = "none";
+    }
+
+    var moving_times_display_flag_check = '{{template.moving_times_display_flag}}';
+    if(moving_times_display_flag_check == '1' || moving_times_display_flag_check == 'True'){
+        document.getElementById('select_plan_moving_times').style.display = "inline";
+    }else{
+        document.getElementById('select_plan_moving_times').style.display = "none";
+    }
+}
+</script>
+<main class="main-content bgc-grey-100">
+    <div id="mainContent">
+        <div class="headline-main">
+        {% if mode == "once" %}
+            <h1 class="headline-main__headline">{% trans "lbl_url_create" %}</h1>
+            <p class="headline-main__text">{% trans "screen_url_create_description_1" %}</p>
+        {% else %}
+            {% if template_id is None %}
+            <h1 class="headline-main__headline">{% trans "lbl_template_add" %}</h1>
+            <p class="headline-main__text">{% trans "screen_template_add_description_1" %}</p>
+            {% else %}
+            <h1 class="headline-main__headline">{% trans "lbl_template_edit" %}</h1>
+            <p class="headline-main__text">{% trans "screen_template_edit_description_1" %}</p>
+            {% endif %}
+        {% endif %}
+        </div>
+
+    {% if mode == "once" %}
+        <form method="post" name="template_form" action="{% url namespace|add:':reservation_template_create_once' %}">
+    {% else %}
+        {% if template_id is None %}
+        <form method="post" name="template_form" action="{% url namespace|add:':reservation_template_add' %}">
+        {% else %}
+        <form method="post" name="template_form" action="{% url namespace|add:':reservation_template_edit' template_id=template_id %}">
+        {% endif %}
+    {% endif %}
+        {% csrf_token %}
+            <div class="row gap-20 masonry pos-r" style="position: relative; height: 1086px;">
+                <div class="masonry-sizer col-md-10"></div>
+                <div class="masonry-item col-md-10" style="position: absolute; left: 10%; top: 364px;">
+                    <div class="bgc-white p-20 bd">
+                        <div class="mT-30">
+                            {% if mode != "once" %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_template_name" %}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="template_name" placeholder={% trans "placeholder_template_name" %} value="{{template.template_name}}" required maxlength='{% trans "validation_max_size_20" %}'>
+                                    <small class="form-text text-muted">{% trans "lbl_template_name_description_1" %}</small>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_category" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <input type="radio" name="category_flag" value="1" {% if template_id is None %} checked {% else %} {% if template.category_flag == "1" %} checked {% endif %} {% endif %} required> {% trans "category_kind_visit" %}　
+                                                    <input type="radio" name="category_flag" value="2" {% if template.category_flag == "2" %} checked {% endif %}required> {% trans "category_kind_come" %}　
+                                                    <input type="radio" name="category_flag" value="3" {% if template.category_flag == "3" %} checked {% endif %}required> {% trans "category_kind_lunch" %}
+                                                    {% if account.lunch_start_time == "21" %}10:00
+                                                    {% elif account.lunch_start_time == "22" %}10:30
+                                                    {% elif account.lunch_start_time == "23" %}11:00
+                                                    {% elif account.lunch_start_time == "24" %}11:30
+                                                    {% elif account.lunch_start_time == "25" %}12:00
+                                                    {% elif account.lunch_start_time == "26" %}12:30
+                                                    {% elif account.lunch_start_time == "27" %}13:00
+                                                    {% elif account.lunch_start_time == "28" %}13:30
+                                                    {% elif account.lunch_start_time == "29" %}14:00
+                                                    {% endif %}
+                                                    {% trans "lbl_between" %}
+                                                    {% if account.lunch_end_time == "21" %}10:00
+                                                    {% elif account.lunch_end_time == "22" %}10:30
+                                                    {% elif account.lunch_end_time == "23" %}11:00
+                                                    {% elif account.lunch_end_time == "24" %}11:30
+                                                    {% elif account.lunch_end_time == "25" %}12:00
+                                                    {% elif account.lunch_end_time == "26" %}12:30
+                                                    {% elif account.lunch_end_time == "27" %}13:00
+                                                    {% elif account.lunch_end_time == "28" %}13:30
+                                                    {% elif account.lunch_end_time == "29" %}14:00
+                                                    {% endif %}　
+                                                    <input type="radio" name="category_flag" value="4" {% if template.category_flag == "4" %} checked {% endif %}required> {% trans "category_kind_dinner" %}
+                                                    {% if account.dinner_start_time == "35" %}17:00
+                                                    {% elif account.dinner_start_time == "36" %}17:30
+                                                    {% elif account.dinner_start_time == "37" %}18:00
+                                                    {% elif account.dinner_start_time == "38" %}18:30
+                                                    {% elif account.dinner_start_time == "39" %}19:00
+                                                    {% elif account.dinner_start_time == "40" %}19:30
+                                                    {% elif account.dinner_start_time == "41" %}20:00
+                                                    {% elif account.dinner_start_time == "42" %}20:30
+                                                    {% elif account.dinner_start_time == "43" %}21:00
+                                                    {% elif account.dinner_start_time == "44" %}21:30
+                                                    {% elif account.dinner_start_time == "45" %}22:00
+                                                    {% elif account.dinner_start_time == "46" %}22:30
+                                                    {% elif account.dinner_start_time == "47" %}23:00
+                                                    {% endif %}
+                                                    {% trans "lbl_between" %}
+                                                    {% if account.dinner_end_time == "35" %}17:00
+                                                    {% elif account.dinner_end_time == "36" %}17:30
+                                                    {% elif account.dinner_end_time == "37" %}18:00
+                                                    {% elif account.dinner_end_time == "38" %}18:30
+                                                    {% elif account.dinner_end_time == "39" %}19:00
+                                                    {% elif account.dinner_end_time == "40" %}19:30
+                                                    {% elif account.dinner_end_time == "41" %}20:00
+                                                    {% elif account.dinner_end_time == "42" %}20:30
+                                                    {% elif account.dinner_end_time == "43" %}21:00
+                                                    {% elif account.dinner_end_time == "44" %}21:30
+                                                    {% elif account.dinner_end_time == "45" %}22:00
+                                                    {% elif account.dinner_end_time == "46" %}22:30
+                                                    {% elif account.dinner_end_time == "47" %}23:00
+                                                    {% endif %}　
+                                                    <input type="radio" name="category_flag" value="5" {% if template.category_flag == "5" %} checked {% endif %}required> {% trans "category_kind_others" %}　
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_time_range" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "screen_template_add_description_2" %}</small>
+                                                    <input type="radio" name="selected_term_flag" value="1" {% if template_id is None %} checked {% else %} {% if template.selected_term_flag == "1" %} checked {% endif %} {% endif %} required onclick="checkRadioSelectedTermFlag('none');" > {% trans "time_range_kind_all" %}　
+                                                    <input type="radio" name="selected_term_flag" value="2" {% if template.selected_term_flag == "2" %} checked {% endif %}required onclick="checkRadioSelectedTermFlag('none');" > {% trans "time_range_kind_am" %}　
+                                                    <input type="radio" name="selected_term_flag" value="3" {% if template.selected_term_flag == "3" %} checked {% endif %}required onclick="checkRadioSelectedTermFlag('none');" > {% trans "time_range_kind_pm" %}　
+                                                    <input type="radio" name="selected_term_flag" value="4" {% if template.selected_term_flag == "4" %} checked {% endif %}required onclick="checkRadioSelectedTermFlag('inline');" > {% trans "time_range_kind_custom" %}
+                                                    <span id="select_custom_term_time">
+                                                        <select name="custom_term_start_time">
+                                                            <option value="11" {% if template.custom_term_start_time == "11" %} selected {% endif %}>05:00</option>
+                                                            <option value="12" {% if template.custom_term_start_time == "12" %} selected {% endif %}>05:30</option>
+                                                            <option value="13" {% if template.custom_term_start_time == "13" %} selected {% endif %}>06:00</option>
+                                                            <option value="14" {% if template.custom_term_start_time == "14" %} selected {% endif %}>06:30</option>
+                                                            <option value="15" {% if template.custom_term_start_time == "15" %} selected {% endif %}>07:00</option>
+                                                            <option value="16" {% if template.custom_term_start_time == "16" %} selected {% endif %}>07:30</option>
+                                                            <option value="17" {% if template.custom_term_start_time == "17" %} selected {% endif %}>08:00</option>
+                                                            <option value="18" {% if template.custom_term_start_time == "18" %} selected {% endif %}>08:30</option>
+                                                            <option value="19" {% if template.custom_term_start_time == "19" %} selected {% endif %}>09:00</option>
+                                                            <option value="20" {% if template.custom_term_start_time == "20" %} selected {% endif %}>09:30</option>
+                                                            {% if template.custom_term_start_time is None %}
+                                                            <option value="21" selected>10:00</option>
+                                                            {% else %}
+                                                            <option value="21" {% if template.custom_term_start_time == "21" %} selected {% endif %}>10:00</option>
+                                                            {% endif %}
+                                                            <option value="22" {% if template.custom_term_start_time == "22" %} selected {% endif %}>10:30</option>
+                                                            <option value="23" {% if template.custom_term_start_time == "23" %} selected {% endif %}>11:00</option>
+                                                            <option value="24" {% if template.custom_term_start_time == "24" %} selected {% endif %}>11:30</option>
+                                                            <option value="25" {% if template.custom_term_start_time == "25" %} selected {% endif %}>12:00</option>
+                                                            <option value="26" {% if template.custom_term_start_time == "26" %} selected {% endif %}>12:30</option>
+                                                            <option value="27" {% if template.custom_term_start_time == "27" %} selected {% endif %}>13:00</option>
+                                                            <option value="28" {% if template.custom_term_start_time == "28" %} selected {% endif %}>13:30</option>
+                                                            <option value="29" {% if template.custom_term_start_time == "29" %} selected {% endif %}>14:00</option>
+                                                            <option value="30" {% if template.custom_term_start_time == "30" %} selected {% endif %}>14:30</option>
+                                                            <option value="31" {% if template.custom_term_start_time == "31" %} selected {% endif %}>15:00</option>
+                                                            <option value="32" {% if template.custom_term_start_time == "32" %} selected {% endif %}>15:30</option>
+                                                            <option value="33" {% if template.custom_term_start_time == "33" %} selected {% endif %}>16:00</option>
+                                                            <option value="34" {% if template.custom_term_start_time == "34" %} selected {% endif %}>16:30</option>
+                                                            <option value="35" {% if template.custom_term_start_time == "35" %} selected {% endif %}>17:00</option>
+                                                            <option value="36" {% if template.custom_term_start_time == "36" %} selected {% endif %}>17:30</option>
+                                                            <option value="37" {% if template.custom_term_start_time == "37" %} selected {% endif %}>18:00</option>
+                                                            <option value="38" {% if template.custom_term_start_time == "38" %} selected {% endif %}>18:30</option>
+                                                            <option value="39" {% if template.custom_term_start_time == "39" %} selected {% endif %}>19:00</option>
+                                                            <option value="40" {% if template.custom_term_start_time == "40" %} selected {% endif %}>19:30</option>
+                                                            <option value="41" {% if template.custom_term_start_time == "41" %} selected {% endif %}>20:00</option>
+                                                            <option value="42" {% if template.custom_term_start_time == "42" %} selected {% endif %}>20:30</option>
+                                                            <option value="43" {% if template.custom_term_start_time == "43" %} selected {% endif %}>21:00</option>
+                                                            <option value="44" {% if template.custom_term_start_time == "44" %} selected {% endif %}>21:30</option>
+                                                            <option value="45" {% if template.custom_term_start_time == "45" %} selected {% endif %}>22:00</option>
+                                                            <option value="46" {% if template.custom_term_start_time == "46" %} selected {% endif %}>22:30</option>
+                                                            <option value="47" {% if template.custom_term_start_time == "47" %} selected {% endif %}>23:00</option>
+                                                        </select>
+                                                        {% trans "lbl_between" %}
+                                                        <select name="custom_term_end_time">
+                                                            <option value="11" {% if template.custom_term_end_time == "11" %} selected {% endif %}>05:00</option>
+                                                            <option value="12" {% if template.custom_term_end_time == "12" %} selected {% endif %}>05:30</option>
+                                                            <option value="13" {% if template.custom_term_end_time == "13" %} selected {% endif %}>06:00</option>
+                                                            <option value="14" {% if template.custom_term_end_time == "14" %} selected {% endif %}>06:30</option>
+                                                            <option value="15" {% if template.custom_term_end_time == "15" %} selected {% endif %}>07:00</option>
+                                                            <option value="16" {% if template.custom_term_end_time == "16" %} selected {% endif %}>07:30</option>
+                                                            <option value="17" {% if template.custom_term_end_time == "17" %} selected {% endif %}>08:00</option>
+                                                            <option value="18" {% if template.custom_term_end_time == "18" %} selected {% endif %}>08:30</option>
+                                                            <option value="19" {% if template.custom_term_end_time == "19" %} selected {% endif %}>09:00</option>
+                                                            <option value="20" {% if template.custom_term_end_time == "20" %} selected {% endif %}>09:30</option>
+                                                            <option value="21" {% if template.custom_term_end_time == "21" %} selected {% endif %}>10:00</option>
+                                                            <option value="22" {% if template.custom_term_end_time == "22" %} selected {% endif %}>10:30</option>
+                                                            <option value="23" {% if template.custom_term_end_time == "23" %} selected {% endif %}>11:00</option>
+                                                            <option value="24" {% if template.custom_term_end_time == "24" %} selected {% endif %}>11:30</option>
+                                                            <option value="25" {% if template.custom_term_end_time == "25" %} selected {% endif %}>12:00</option>
+                                                            <option value="26" {% if template.custom_term_end_time == "26" %} selected {% endif %}>12:30</option>
+                                                            <option value="27" {% if template.custom_term_end_time == "27" %} selected {% endif %}>13:00</option>
+                                                            <option value="28" {% if template.custom_term_end_time == "28" %} selected {% endif %}>13:30</option>
+                                                            <option value="29" {% if template.custom_term_end_time == "29" %} selected {% endif %}>14:00</option>
+                                                            <option value="30" {% if template.custom_term_end_time == "30" %} selected {% endif %}>14:30</option>
+                                                            <option value="31" {% if template.custom_term_end_time == "31" %} selected {% endif %}>15:00</option>
+                                                            <option value="32" {% if template.custom_term_end_time == "32" %} selected {% endif %}>15:30</option>
+                                                            <option value="33" {% if template.custom_term_end_time == "33" %} selected {% endif %}>16:00</option>
+                                                            <option value="34" {% if template.custom_term_end_time == "34" %} selected {% endif %}>16:30</option>
+                                                            <option value="35" {% if template.custom_term_end_time == "35" %} selected {% endif %}>17:00</option>
+                                                            <option value="36" {% if template.custom_term_end_time == "36" %} selected {% endif %}>17:30</option>
+                                                            <option value="37" {% if template.custom_term_end_time == "37" %} selected {% endif %}>18:00</option>
+                                                            <option value="38" {% if template.custom_term_end_time == "38" %} selected {% endif %}>18:30</option>
+                                                            {% if template.custom_term_end_time is None %}
+                                                            <option value="39" selected>19:00</option>
+                                                            {% else %}
+                                                            <option value="39" {% if template.custom_term_end_time == "39" %} selected {% endif %}>19:00</option>
+                                                            {% endif %}
+                                                            <option value="40" {% if template.custom_term_end_time == "40" %} selected {% endif %}>19:30</option>
+                                                            <option value="41" {% if template.custom_term_end_time == "41" %} selected {% endif %}>20:00</option>
+                                                            <option value="42" {% if template.custom_term_end_time == "42" %} selected {% endif %}>20:30</option>
+                                                            <option value="43" {% if template.custom_term_end_time == "43" %} selected {% endif %}>21:00</option>
+                                                            <option value="44" {% if template.custom_term_end_time == "44" %} selected {% endif %}>21:30</option>
+                                                            <option value="45" {% if template.custom_term_end_time == "45" %} selected {% endif %}>22:00</option>
+                                                            <option value="46" {% if template.custom_term_end_time == "46" %} selected {% endif %}>22:30</option>
+                                                            <option value="47" {% if template.custom_term_end_time == "47" %} selected {% endif %}>23:00</option>
+                                                        </select>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_meeting_times" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <input type="radio" name="selected_meeting_times_flag" value="30" {% if template_id is None %} checked {% else %} {% if template.selected_meeting_times_flag == "30" %} checked {% endif %} {% endif %} required onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "meeting_time_kind_30" %}　
+                                                    <input type="radio" name="selected_meeting_times_flag" value="45" {% if template.selected_meeting_times_flag == "45" %} checked {% endif %}required onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "meeting_time_kind_45" %}　
+                                                    <input type="radio" name="selected_meeting_times_flag" value="60" {% if template.selected_meeting_times_flag == "60" %} checked {% endif %}required onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "meeting_time_kind_60" %}　
+                                                    <input type="radio" name="selected_meeting_times_flag" value="90" {% if template.selected_meeting_times_flag == "90" %} checked {% endif %}required onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "meeting_time_kind_90" %}　
+                                                    <input type="radio" name="selected_meeting_times_flag" value="120" {% if template.selected_meeting_times_flag == "120" %} checked {% endif %}required onclick="checkRadioSelectedMeetingTimesFlag('none');" > {% trans "meeting_time_kind_120" %}　
+                                                    <input type="radio" name="selected_meeting_times_flag" value="0" {% if template.selected_meeting_times_flag == "0" %} checked {% endif %}required onclick="checkRadioSelectedMeetingTimesFlag('inline');" > {% trans "meeting_time_kind_custom" %}
+                                                    <span id="text_custom_meeting_times"><input type="number" name="custom_meeting_times" {% if template.selected_meeting_times_flag == "0" %} value={{template.custom_meeting_times}}  {% else %} value=1 {% endif %} placeholder={% trans "placeholder_meeting_time_kind_custom" %} min='{% trans "validation_min_number_1" %}' max='{% trans "validation_max_number_999" %}' style="width:80px;" required>{% trans "lbl_minutes" %}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    {% if mode == "once" %}
+                                    <button type="submit" class="btn btn-primary">{% trans "create_once_url_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_once' %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                    {% else %}
+                                        {% if template_id is None %}
+                                    <button type="submit" class="btn btn-primary">{% trans "add_template_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_new' %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                        {% else %}
+                                    <button type="submit" class="btn btn-primary">{% trans "edit_template_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_edit' template_id=template.id %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bgc-gray p-20 bd">
+                        <div class="mT-30">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_template_notification" %}</label>
+                                <div class="form-group">
+                                    <small class="form-text text-muted">{% trans "lbl_template_notification_description_1" %}</small>
+                                    <small class="form-text text-muted">{% trans "lbl_template_notification_description_2" %}</small>
+                                    <textarea name="notification" class="form-control" placeholder={% trans "placeholder_template_notification" %} rows="10" maxlength='{% trans "validation_max_size_500" %}'>{{template.notification}}</textarea>
+                                </div>
+                            </div>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_company_name_required" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "lbl_template_company_name_required_description_1" %}</small>
+                                                    <input type="radio" name="company_name_required_flag" value="0" {% if template_id is None %} checked {% else %} {% if template.company_name_required_flag == False %} checked {% endif %} {% endif %} required> {% trans "company_name_required_kind_no" %}　
+                                                    <input type="radio" name="company_name_required_flag" value="1" {% if template.company_name_required_flag == True %} checked {% endif %}required> {% trans "company_name_required_kind_yes" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_day_of_week_display" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <input type="radio" name="day_of_week_display_flag" value="0" {% if template_id is None %} checked {% else %} {% if template.day_of_week_display_flag == False %} checked {% endif %} {% endif %} required onclick="checkRadioDayOfWeekDisplay('none');" > {% trans "day_of_week_display_kind_no" %}　
+                                                    <input type="radio" name="day_of_week_display_flag" value="1" {% if template.day_of_week_display_flag == True %} checked {% endif %}required onclick="checkRadioDayOfWeekDisplay('inline');" > {% trans "day_of_week_display_kind_yes" %}
+                                                </label>
+                                                <span id="checkbox_day_of_week_display">
+                                                    <p>
+                                                        <input name="day_of_week_display_monday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_monday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_monday_flag" id="is_mon_enabled" {% if template.day_of_week_display_monday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_monday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_tuesday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_tuesday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_tuesday_flag" id="is_tue_enabled" {% if template.day_of_week_display_tuesday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_tuesday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_wednesday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_wednesday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_wednesday_flag" id="is_wed_enabled" {% if template.day_of_week_display_wednesday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_wednesday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_thursday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_thursday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_thursday_flag" id="is_thu_enabled" {% if template.day_of_week_display_thursday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_thursday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_friday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_friday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_friday_flag" id="is_fri_enabled" {% if template.day_of_week_display_friday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_friday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_saturday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_saturday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_saturday_flag" id="is_sat_enabled" {% if template.day_of_week_display_saturday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_saturday" %}</label>　{% endif %}
+                                                        <input name="day_of_week_display_sunday_flag" type="hidden" value="0">
+                                                        {% if account.adjustable_sunday_flag == True %}<input type="checkbox" value="1" name="day_of_week_display_sunday_flag" id="is_sun_enabled" {% if template.day_of_week_display_sunday_flag == True %} checked {% endif %}> <label>{% trans "lbl_day_of_week_kind_sunday" %}</label>{% endif %}
+                                                    </p>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_national_holiday_display" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "lbl_template_national_holiday_display_description_1" %}</small>
+                                                    <input type="radio" name="national_holiday_display_flag" value="0" {% if template_id is None %} checked {% else %} {% if template.national_holiday_display_flag == False %} checked {% endif %} {% endif %} required> {% trans "national_holiday_display_kind_no" %}　
+                                                    <input type="radio" name="national_holiday_display_flag" value="1" {% if template.national_holiday_display_flag == True %} checked {% endif %}required> {% trans "national_holiday_display_kind_yes" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_moving_times_display" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "lbl_template_moving_times_display_description_1" %}<br/>{% trans "lbl_template_moving_times_display_description_2" %}</small>
+                                                    <input type="radio" name="moving_times_display_flag" value="0" {% if template_id is None %} checked {% else %} {% if template.moving_times_display_flag == False %} checked {% endif %} {% endif %} required onclick="checkRadioMovingTimesDisplayFlag('none');" > {% trans "moving_times_display_kind_no" %}　
+                                                    <input type="radio" name="moving_times_display_flag" value="1" {% if template.moving_times_display_flag == True %} checked {% endif %}required onclick="checkRadioMovingTimesDisplayFlag('inline');" > {% trans "moving_times_display_kind_yes" %}
+                                                </label>
+                                                <span id="select_plan_moving_times">
+                                                    <br/>
+                                                    <label class="radio-inline">
+                                                        {% trans "lbl_before_plan" %}　
+                                                        <input type="radio" name="before_plan_moving_times" value="0" {% if template_id is None %} checked {% else %} {% if template.before_plan_moving_times == "0" %} checked {% endif %} {% endif %} required> {% trans "moving_times_kind_no" %}　
+                                                        <input type="radio" name="before_plan_moving_times" value="30" {% if template.before_plan_moving_times == "30" %} checked {% endif %}required> {% trans "moving_times_kind_30" %}　
+                                                        <input type="radio" name="before_plan_moving_times" value="60" {% if template.before_plan_moving_times == "60" %} checked {% endif %}required> {% trans "moving_times_kind_60" %}　
+                                                        <input type="radio" name="before_plan_moving_times" value="90" {% if template.before_plan_moving_times == "90" %} checked {% endif %}required> {% trans "moving_times_kind_90" %}<br/>
+                                                        {% trans "lbl_after_plan" %}　
+                                                        <input type="radio" name="behind_plan_moving_times" value="0" {% if template_id is None %} checked {% else %} {% if template.behind_plan_moving_times == "0" %} checked {% endif %} {% endif %} required> {% trans "moving_times_kind_no" %}　
+                                                        <input type="radio" name="behind_plan_moving_times" value="30" {% if template.behind_plan_moving_times == "30" %} checked {% endif %}required> {% trans "moving_times_kind_30" %}　
+                                                        <input type="radio" name="behind_plan_moving_times" value="60" {% if template.behind_plan_moving_times == "60" %} checked {% endif %}required> {% trans "moving_times_kind_60" %}　
+                                                        <input type="radio" name="behind_plan_moving_times" value="90" {% if template.behind_plan_moving_times == "90" %} checked {% endif %}required> {% trans "moving_times_kind_90" %}
+                                                   </label>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{% trans "lbl_template_explain_sentences" %}</label>
+                                <div class="form-group">
+                                    <small class="form-text text-muted">{% trans "lbl_template_explain_sentences_description_1" %}</small>
+                                    <textarea name="explain_sentences" class="form-control" placeholder={% trans "placeholder_template_explain_sentences" %} rows="10" maxlength='{% trans "validation_max_size_500" %}'>{{template.explain_sentences}}</textarea>
+                                </div>
+                            </div>
+                            <hr>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">{% trans "lbl_template_calender_public" %}</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <div class="col-xs-9">
+                                                <label class="radio-inline">
+                                                    <small class="form-text text-muted">{% trans "lbl_template_calender_public_description_1" %}</small>
+                                                    <input type="radio" name="calender_public_flag" value="1" {% if template_id is None %} checked {% else %} {% if template.calender_public_flag == True %} checked {% endif %} {% endif %} required> {% trans "calender_public_kind_yes" %}　
+                                                    <input type="radio" name="calender_public_flag" value="0" {% if template.calender_public_flag == False %} checked {% endif %}required> {% trans "calender_public_kind_no" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <hr>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    {% if mode == "once" %}
+                                    <button type="submit" class="btn btn-primary">{% trans "create_once_url_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_once' %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                    {% else %}
+                                        {% if template_id is None %}
+                                    <button type="submit" class="btn btn-primary">{% trans "add_template_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_new' %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                        {% else %}
+                                    <button type="submit" class="btn btn-primary">{% trans "edit_template_button" %}</button>
+                                    <a href="{% url namespace|add:':reservation_template_edit' template_id=template.id %}">
+                                        <button type="button" class="btn cur-p btn-outline-primary">{% trans "clear_button" %}</button>
+                                    </a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div style="margin-top:100px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+{% endblock %}

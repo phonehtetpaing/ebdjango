@@ -52,10 +52,18 @@ def get_end_user_vendor_info(request_path):
     print('request path is: ', request_path)
     path_list = request_path.split("/")
 
+    service = Service.objects.filter(name=path_list[1]).first()
+    print('service: ', service)
+    print('vendor path: ', path_list[3])
+    vendor = Vendor.objects.filter(service_id=service.id, contactchat_access_url_part=path_list[3]).first()
+    print('vendor: ', vendor)
     try:
         service = Service.objects.filter(name=path_list[1]).first()
+        print(service)
         vendor = Vendor.objects.filter(service_id=service.id, contactchat_access_url_part=path_list[3]).first()
+        print(vendor)
         vendor_branch = VendorBranch.objects.filter(vendor_id=vendor.id).first()
+        print(vendor_branch)
 
         end_user_dict = {
             "service_id": service.id,

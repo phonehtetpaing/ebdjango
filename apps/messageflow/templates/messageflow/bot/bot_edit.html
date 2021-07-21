@@ -1,0 +1,106 @@
+{% extends base_template %}
+{% load path_utils %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="card m-20">
+    <div class="card-header">{% trans 'Bot Edit' %}</div>
+        <div class="card-body">
+            <form action="" method="post" role="form">
+                {% csrf_token %}
+                <div class="row border-bottom mb-10 mx-10">
+                    <div class="col-3 mb-10 py-20">
+                        {{ bot_form.name.label }}: {{ bot_form.name }}
+                    </div>
+                    <div class="col-3 mb-10 py-20">
+                        {{ bot_form.is_active.label }}: {{ bot_form.is_active }}
+                    </div>
+                </div>
+                 <div class="row border-bottom mb-0 mx-10">
+                    <div class="col-4 mb-10 py-5 offset-md-4">
+                        {% trans 'The total weight for all scenarios needs to add up to 100.' %}
+                    </div>
+                </div>
+                <div class="row m-0 mb-10">
+                    <div class="col-12 px-20">
+                        {{ scenario_form.management_form }}
+                        {% for set in scenario_form %}
+                        <div class="row border-bottom py-20">
+                                {% for field in set %}
+                                {% if field.label != "Bot" and field.label != "Id" %}
+                                <div class="col-md-4 scenario-row">
+                                    {{ field.label }}: {{ field }}
+                                    {% for error in field.errors %}<br><span class="text-danger">{{ error|escape }}{% endfor %}</span>
+                                </div>
+
+                                {% endif %}
+                                {% endfor %}
+                        </div>
+                       {% endfor %}
+                    </div>
+                </div>
+                <div class="row border-bottom mb-20 mx-10">
+                    <div class="col-4 mb-10 py-5 offset-md-4">
+                        <span id="weightTotalDisplay" class="text-danger">{% trans 'Current total weight' %}: <span id="weightTotal">90</span></span>
+                    </div>
+                </div>
+                <div class="px-20">
+                <button type="submit" class="btn btn-info btn-fill btn-wd">{% trans 'Save' %}</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    weightInputs = document.querySelectorAll(".scenario-row input");
+    weightTotalDisplay = document.querySelector("#weightTotalDisplay");
+    weightTotalHTML = document.querySelector("#weightTotal");
+    submitButton = document.querySelector('button[type="submit"]')
+
+    for (let i = 0; i < weightInputs.length; i++){
+            weightInputs[i].addEventListener("input", function(){
+            calculateWeights();
+        });
+    }
+    calculateWeights();
+
+    function calculateWeights() {
+        totalWeight = 0;
+        for (let i = 0; i < weightInputs.length; i++) {
+            if(parseInt(weightInputs[i].value) > 0 && parseInt(weightInputs[i].value) <= 100){
+                totalWeight += parseInt(weightInputs[i].value);
+            }
+        }
+        setWeightTotalDisplay(totalWeight);
+        setSubmitButton(totalWeight);
+    }
+
+    function setWeightTotalDisplay(totalWeight) {
+        weightTotalHTML.innerHTML=totalWeight;
+        if (totalWeight === 100) {
+            weightTotalDisplay.className = "text-success"
+        } else {
+            weightTotalDisplay.className = "text-danger"
+        }
+    }
+
+    function setSubmitButton(totalWeight) {
+        weightTotalHTML.innerHTML=totalWeight;
+        if (totalWeight === 100) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    }
+
+    function cleanWeightInputs() {
+        for (let i = 0; i < weightInputs.length; i++) {
+            if (parseInt(weightInputs[i].value) > 0 && parseInt(weightInputs[i].value) <= 100){
+                totalWeight += parseInt(weightInputs[i].value);
+            }
+        }
+    }
+
+</script>
+{% endblock %}

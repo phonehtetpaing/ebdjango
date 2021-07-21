@@ -80,32 +80,32 @@
                 <ul class="navbar-nav my-lg-0">
                     <li class="nav-item dropdown">
                         <div id="help_tour" class="nav-link dropdown-toggle ">
-                            <a href="javascript:void(0);" onclick="startIntro();"><i class="fa fa-question-circle fa-2x" style="color:#ffcc66;" aria-hidden="true"></i></a>
+                            <a href="javascript:void(0);" onclick="startIntro();"><i class="fa fa-question-circle fa-2x" style="color:#ffcc66; margin: 1rem 0;" aria-hidden="true"></i></a>
                         </div>
                     </li>
 
                     <!-- Comment -->
                     <li class="nav-item dropdown">
-
-                        <a class="nav-link dropdown-toggle text-muted text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><label>{% trans "lbl_change_language"%}</label> <i class="fa fa-language"></i></a>
+                        <a class="nav-link dropdown-toggle text-muted text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <label style="margin: 0.75rem 0 0;">{% trans "lbl_change_language"%}<i class="fa fa-language" style="margin-left: 0.75rem"></i></label>
+                        </a>
                         <div class="dropdown-menu dropdown-menu-right animated zoomIn col-md-12">
                             <ul>
                                 <li>
                                     <div class="drop-title">{% trans "title_language"%}</div>
                                 </li>
+                                {% get_current_language as LANGUAGE_CODE %}
+                                {% get_available_languages as LANGUAGES %}
+                                {% get_language_info_list for LANGUAGES as languages %}
+                                {% for language in languages %}
                                 <li>
-                                    {% get_current_language as LANGUAGE_CODE %}
-                                    {% get_available_languages as LANGUAGES %}
-                                    {% get_language_info_list for LANGUAGES as languages %}
-                                    {% for language in languages %}
                                     <form name="{{ language.code }}" action="{% url 'set_language' %}" method="post">{% csrf_token %}
                                         <input name="next" type="hidden" value="{{ redirect_to }}" />
                                         <input name="language" type="hidden" value="{{ language.code }}" />
                                         <a href="javascript:document.{{ language.code }}.submit()"> {{ language.name_local }}</a>
                                     </form>
-                                    {% endfor %}
-
                                 </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </li>

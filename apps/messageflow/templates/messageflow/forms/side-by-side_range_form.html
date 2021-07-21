@@ -1,0 +1,76 @@
+{% load widget_tweaks %}
+
+<div class="form-group">
+    {{ field.label_tag }}
+
+    {% if field.field.widget.input_type == "radio" %}
+        {{ field }}
+    {% elif field.field.widget.input_type == "checkbox" %}
+        {% if field.errors %}
+            <div class="form-group form-inline form-control is-invalid" id="id_{{field.name}}">
+                {% for pk, choice in field.field.widget.choices %}
+                <div style="margin: 5px">
+                    {% if pk in values %}
+                    <label for="id_{{field.name}}_{{ forloop.counter0 }}">
+                        <input id="id_{{field.name}}_{{ forloop.counter0 }}" name="{{field.name}}" type="checkbox"
+                               value="{{pk}}" checked/>
+                        {{ choice }}
+                    </label>
+                    {% else %}
+                    <label for="id_{{field.name}}_{{ forloop.counter0 }}">
+                        <input id="id_{{field.name}}_{{ forloop.counter0 }}" name="{{field.name}}" type="checkbox"
+                               value="{{pk}}"/>
+                        {{ choice }}
+                    </label>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="invalid-feedback" style="display: block;">
+                {{ field.errors }}
+            </div>
+        {% else %}
+            <div class="form-group form-inline" id="id_{{field.name}}">
+                {% for pk, choice in field.field.widget.choices %}
+                <div style="margin: 5px">
+                    {% if pk in values %}
+                    <label for="id_{{field.name}}_{{ forloop.counter0 }}" class="block">
+                        <input id="id_{{field.name}}_{{ forloop.counter0 }}" name="{{field.name}}" type="checkbox"
+                               value="{{pk}}" checked/>
+                        {{ choice }}
+                    </label>
+                    {% else %}
+                    <label for="id_{{field.name}}_{{ forloop.counter0 }}" class="block">
+                        <input id="id_{{field.name}}_{{ forloop.counter0 }}" name="{{field.name}}" type="checkbox"
+                               value="{{pk}}"/>
+                        {{ choice }}
+                    </label>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+    <div class="row">
+        {% if form.is_bound %}
+            {% if field.errors %}
+                {% render_field field class+="side-by-side form-control is-invalid" %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% render_field field class+="side-by-side form-control is-valid" %}
+            {% endif %}
+        {% else %}
+        <div class="col-12 d-flex justify-content-between">
+            {% render_field field class+="side-by-side form-control" %}
+        </div>
+        {% endif %}
+        {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+    {% endif %}
+    </div>
+</div>

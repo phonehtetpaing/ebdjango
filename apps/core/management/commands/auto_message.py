@@ -52,7 +52,9 @@ def send_message():
         target_dt_range_gt_str = target_dt_range_gt.strftime('%Y-%m-%d') + " 00:00:00"
 
         # Get Target Auto Message Trigger Objects
-        auto_message_triggers = AutoMessageTrigger.objects.filter(trigger_time__range=(batch_start_time_lt, batch_start_time_gt)).all()
+        # Regardless of wether or not a sequence is in progress, if the trigger is deleted the sequence should stop.
+        # As such we ignore triggers with an is_delete status.
+        auto_message_triggers = AutoMessageTrigger.objects.filter(trigger_time__range=(batch_start_time_lt, batch_start_time_gt), is_delete=False).all()
         # auto_message_triggers = AutoMessageTrigger.objects.all()
         print("auto_message_triggers")
 

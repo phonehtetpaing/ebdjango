@@ -1,0 +1,103 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Sidebar navigation-->
+<div class="sidebar">
+    <div class="sidebar-inner">
+        <div class="sidebar-logo">
+            <div class="peers ai-c fxw-nw">
+                <div class="peer peer-greed"><a class="sidebar-link td-n" href="{% url namespace|add:':dashboard_index' %}">
+                    <div class="peers ai-c fxw-nw">
+                        <div class="peer peer-greed">
+                            <div class="logo" style="width:5vw;">
+                                <img class=" img-fluid" src='{% static "qa/images/chatquest-logo-w.png" %}' alt="">
+                            </div>
+                        </div>
+                        <!--<div class="peer peer-greed"><h5 class="lh-1 mB-0 logo-text">Chat Quest</h5></div>-->
+                    </div>
+                </a></div>
+                <div class="peer">
+                    <div class="mobile-toggle sidebar-toggle"><a href="" class="td-n"><i
+                            class="ti-arrow-circle-left"></i></a></div>
+                </div>
+            </div>
+        </div>
+        <ul class="sidebar-menu scrollable pos-r">
+            <li class="nav-item mT-30 active"><a class="sidebar-link" href="{% url namespace|add:':dashboard_index' %}"><span class="icon-holder"><i class="c-blue-500 ti-dashboard"></i> </span><span class="title">{% trans "Dashboard" %}</span></a></li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-orange-500 ti-layout-list-thumb"></i> </span>
+                <span class="title">{% trans "Questionnaires" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':questionnaire_list' %}">{% trans "Edit Questionnaires" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':questionnaire_summary' %}">{% trans "Summarize Questionnaires" %}</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':coupon_edit' %}"><span class="icon-holder"><i class="c-orange-500 ti-ticket"></i> </span><span class="title">{% trans "Coupons" %}</span></a></li>
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':ma_editor' %}"><span class="icon-holder"><i class="c-blue-500 ti-email"></i> </span><span class="title">{% trans "Slim MA" %}</span></a></li>
+
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':user_list' %}"><span class="icon-holder"><i class="c-blue-500 ti-user"></i> </span><span class="title">{% trans "Users" %}</span></a></li>
+
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-calendar"></i> </span>
+                <span class="title">{% trans "Reservations" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':reservation_template_list' %}">{% trans "Template List" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':reservation_schedule_now_list' %}">{% trans "Schedule List" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':reservation_account_detail' %}">{% trans "Account Settings" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':reservation_settings' %}">{% trans "Schedule Settings" %}</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-teal-500 ti-id-badge"></i> </span>
+                <span class="title">{% trans "BusinessPartner" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':bp_list' %}">{% trans "BP List" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':bp_tag_list' %}">{% trans "BP Tag" %}</a></li>
+                </ul>
+            </li>
+
+             <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-teal-500 ti-view-list-alt"></i> </span>
+                <span class="title">{% trans "ProductManagement" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':pc_list' %}">{% trans "ProductCategory" %}</a></li>
+                </ul>
+                 <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':ss_list' %}">{% trans "StockSpace" %}</a></li>
+                </ul>
+                 <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':product_list' %}">{% trans "Product" %}</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-teal-500 ti-harddrives"></i> </span>
+                <span class="title">{% trans "StockManagement" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':stock_list' %}">{% trans "Stock" %}</a></li>
+                </ul>
+                <ul class="dropdown-menu">
+                    <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);">
+                    <span class="title">{% trans "ReceivingManagement" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a class="sidebar-link" href="{% url namespace|add:':receiving_entry' %}">{% trans "Receive" %}</a></li>
+                      <li><a class="sidebar-link" href="{% url namespace|add:':receiving_history_list' %}">{% trans "ReceiveHistory" %}</a></li>
+                    </ul>
+                </ul>
+                <ul class="dropdown-menu">
+                    <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);">
+                    <span class="title">{% trans "ShippingManagement" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a class="sidebar-link" href="{% url namespace|add:':shipping_entry' %}">{% trans "Shipping" %}</a></li>
+                      <li><a class="sidebar-link" href="{% url namespace|add:':shipping_history_list' %}">{% trans "ShippingHistory" %}</a></li>
+                    </ul>
+                </ul>
+            </li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-brown-500 ti-settings"></i> </span>
+                <span class="title">{% trans "Settings" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_profile' %}">{% trans "Profile" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_plan' %}">{% trans "Plan" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_notification' %}">{% trans "Notifications" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_style' %}">{% trans "Style" %}</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- End Sidebar navigation -->

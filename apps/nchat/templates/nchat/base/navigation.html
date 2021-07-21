@@ -1,0 +1,48 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Sidebar navigation-->
+<div class="sidebar">
+    <div class="sidebar-inner">
+        <div class="sidebar-logo">
+            <div class="peers ai-c fxw-nw">
+                <div class="peer peer-greed"><a class="sidebar-link td-n" href="{% url namespace|add:':business_detail' %}">
+                    <div class="peers ai-c fxw-nw">
+                        <div class="peer peer-greed">
+                            <div class="logo" style="width:5vw;">
+                                <img class=" img-fluid" src='{% static "qa/images/chatquest-logo-w.png" %}' alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a></div>
+                <div class="peer">
+                    <div class="mobile-toggle sidebar-toggle"><a href="" class="td-n"><i
+                            class="ti-arrow-circle-left"></i></a></div>
+                </div>
+            </div>
+        </div>
+        <ul class="sidebar-menu scrollable pos-r">
+            <li class="nav-item mT-30 active"><a class="sidebar-link" href="{% url namespace|add:':business_detail' %}"><span class="icon-holder"><i class="c-blue-500 ti-dashboard"></i> </span><span class="title">{% trans "Dashboard" %}</span></a></li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-email"></i> </span>
+                <span class="title">{% trans "Mail Room" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':mailroom:trigger_message_list' %}">{% trans "Trigger Messages" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':mailroom:message_history' %}">{% trans "Message History" %}</a></li>
+                </ul>
+            </li>
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':messageflow:bot_list' base_template='blank' %}"><span class="icon-holder"><i class="c-blue-500 ti-comments"></i> </span><span class="title">{% trans "Messageflow" %}</span></a></li>
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':messageflow:targeted_message' base_template='blank' %}"><span class="icon-holder"><i class="c-green-500 ti-target"></i> </span><span class="title">{% trans "Target Message" %}</span></a></li>
+            <li class="nav-item active"><a class="sidebar-link" href="{% url namespace|add:':messageflow:user_list' base_template='blank' %}"><span class="icon-holder"><i class="c-blue-500 ti-user"></i> </span><span class="title">{% trans "Users" %}</span></a></li>
+            <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-brown-500 ti-settings"></i> </span>
+                <span class="title">{% trans "Settings" %}</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="sidebar-link" href="{% url namespace|add:':business_detail' %}">{% trans "Profile" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':business_plan_detail' %}">{% trans "Billing" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_webhooks' %}">{% trans "Webhooks" %}</a></li>
+                    <li><a class="sidebar-link" href="{% url namespace|add:':settings_files' %}">{% trans "Files" %}</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- End Sidebar navigation -->

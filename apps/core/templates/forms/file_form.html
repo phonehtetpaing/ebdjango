@@ -1,0 +1,90 @@
+{% extends "base/service_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="">
+                <h3>{% trans "Upload to Cloud Storage" %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 mt-4">
+                            {{ form.as_p }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <small class="form-text text-muted">{% trans "Files uploaded to cloud storage can be accessed by anyone with an access link. <br> Never store sensitive information using this service." %}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary float-right" type="submit">{% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form id="deleteform" action="{% url namespace|add:':file_delete'%}" method="post" role="form">
+                        {% csrf_token %}
+            <div class="card-title">
+                <h2>{% trans "Public Uploads" %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="align-middle"><input type="checkbox" name="select_all" id="select_all" value="all"></th>
+                            <th>{% trans "File Name" %}</th>
+                            <th>{% trans "Uploaded at" %}</th>
+                            <th>{% trans "Size" %}</th>
+                            <th><button type="submit" class="btn badge badge-danger btn-fill btn-wd"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</button></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <td class="align-middle"><input type="checkbox" name="select_item" value={{ file.id }}></td>
+                            <td><a href="{{ file.upload.url }}" target="_blank">{{ file.pretty_name }}</a></td>
+                            <td>{{ file.uploaded_at }}</td>
+                            <td>{{ file.upload.size|filesizeformat }}</td>
+                            <td></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">{% trans "No Data" %}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block append_js_on_tail %}
+    <script src='{% static "core/assets/js/checkbox-buttons.js" %}'></script>
+<script>
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        checkboxes.prop('checked', $(this).is(':checked'));
+    });
+</script>
+{% endblock %}

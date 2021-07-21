@@ -1,0 +1,46 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block content %}
+<div class="masonry-item col-md-8" style="position: absolute; left: 0%; top: 20px;">
+    <div class="bgc-white p-20 bd"><h6 class="c-grey-900">{% trans "lbl_stock_editor" %}</h6>
+        <div class="mT-30">
+            {% if stock %}
+            <form class="container" action="{% url namespace|add:':stock_edit' stock_id=stock.id %}" method="post" role="form">
+            {% else %}
+            <form class="container" action="{% url namespace|add:':stock_add' %}" method="post" role="form">
+            {% endif %}
+                 {% csrf_token %}
+                <div class="form-group row">
+                    <label for="product_name" class="col-sm-2 col-form-label">{% trans "lbl_product_name" %}</label>
+                    <div class="col-sm-10">
+                        <select id="product_name" class="form-control" name="product" required>
+                            {% for product in products %}
+                                <option value="{{product.id}}" {% if product.id == stock.product.id %}selected{% endif %}>{{product.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="quantity" class="col-sm-2 col-form-label">{% trans "lbl_stock_quantity" %}</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="quantity" value="{{stock.quantity}}" class="form-control" id="quantity" placeholder="{% trans "lbl_stock_quntity_placeholder" %}" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">{% trans "lbl_stock_memo" %}</label>
+                    <div class="col-sm-8">
+                        <textarea name="memo" class="form-control" placeholder="{% trans "lbl_stock_memo_placeholder" %}">{{stock.memo}}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">{% trans "btn_stock_submit" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

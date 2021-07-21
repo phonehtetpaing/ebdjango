@@ -37,7 +37,7 @@
                 <hr>
                 <div class="block-list btn-group-vertical w-100">
                     {% for block in message_blocks %}
-                    <a class=" w-100" href="{% url namespace|add:':block_message_detail' message_block_id=block.id %}">
+                    <a class=" w-100 block-link" href="{% url namespace|add:':block_message_detail' message_block_id=block.id %}">
                         <button type="button" class=" w-100 message-bubble bubble-white text-left">
                             <span><i class="ti-comment-alt"></i> {{ block.admin_text }}</span>
                         </button>
@@ -53,7 +53,7 @@
         </div>
 
         <div class="col-md-6">
-            <form action="{% url namespace|add:':block_message_edit' message_block_id=message_block_id %}" method="post" role="form">
+            <form id="messageform" action="{% url namespace|add:':block_message_edit' message_block_id=message_block_id %}" method="post" role="form">
                 {% csrf_token %}
                 <!--block header-->
                 <div id="step13" class="api-header">
@@ -104,6 +104,43 @@
 
 {% endblock content %}
 {% block append_js_on_tail %}
+<script id="block_message_template_url" type="application/json">"{% url namespace|add:':block_message_template' %}"</script>
+<script id="file_upload_url" type="application/json">"{% url 'api:file_upload' %}"</script>
+
 <script src='{% static "core/assets/js/editor.js" %}'></script>
 <script src='{% static "core/assets/js/autosize.min.js" %}'></script>
+
+<script>
+    let formChanged = false;
+    document.getElementById("messageform").addEventListener('change', () => {
+        formChanged = true;
+    });
+
+    function confirmLeave(e) {
+        if (formChanged) {
+            if (!confirm('{% trans "Do you want to leave this page? Changes you made may not be saved." %}')) e.preventDefault();
+        }
+    }
+
+    let links = document.getElementsByClassName('block-link');
+    for (let i = 0, l = links.length; i < l; i++) {
+            links[i].addEventListener('click', confirmLeave, false);
+    }
+
+    $(function(){
+        $(document).on('click', '.add-textsend', function(){getMessageTemplate.call(this, "text_message");});
+        $(document).on('click', '.add-imgsend', function(){getMessageTemplate.call(this, "image_message");});
+        $(document).on('click', '.add-filesend', function(){getMessageTemplate.call(this, "file_message");});
+
+        $(document).on('click', '.add-carouselsend', function(){getMessageTemplate.call(this, "carousel_message");});
+        $(document).on('click', '.add-quickreplysend', function(){getMessageTemplate.call(this, "quickreply_message");});
+        $(document).on('click', '.add-formsend', function(){getMessageTemplate.call(this, "form_message");});
+
+        $(document).on('click', '.add-waitsend', function(){getMessageTemplate.call(this, "wait_message");});
+        $(document).on('click', '.add-tagsend', function(){getMessageTemplate.call(this, "tag_message");});
+        $(document).on('click', '.add-inputsend', function(){getMessageTemplate.call(this, "input_message");});
+        $(document).on('click', '.add-goto', function(){getMessageTemplate.call(this, "goto_message");});
+    });
+
+</script>
 {% endblock %}

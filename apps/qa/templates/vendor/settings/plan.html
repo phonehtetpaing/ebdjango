@@ -1,0 +1,118 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="col-md-12">
+    <div class="row p-20" style="height: 50vh;">
+        {% for plan in plans %}
+        <div class="col-md-4">
+            <div class="bd bgc-white">
+                <div class="layers">
+                    <div class="layer w-100">
+                        <div class="bgc-light-blue-500 c-white p-20">
+                            <div class="peers ai-c jc-sb gap-40">
+                                <div class="peer peer-greed">
+                                    <h5>{% trans plan.name %}</h5>
+                                </div>
+                                <div class="peer">
+                                    <h3 class="text-right plan-fontsize-ipad">
+                                        {% trans "Free" %} {% if active_plan.plan_id == plan.id %}({% trans "Active" %}){% endif %}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-padding">
+                            <ul>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Drafts" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Users" %}</li>
+                                <li><span><i class="fa fa-check-circle c-yellow-500" aria-hidden="true"></i> </span>{% trans "1 Active Questionnaire" %}</li>
+                                <li><span><i class="fa fa-check-circle c-yellow-500" aria-hidden="true"></i> </span>{% trans "10 Monthly Mails" %}</li>
+                                <li><span><i class="fa fa-times-circle c-red-500" aria-hidden="true"></i> </span>{% trans "No Reports" %}</li>
+                                <li><span><i class="fa fa-times-circle c-red-500" aria-hidden="true"></i> </span>{% trans "No Slim MA" %}</li>
+                            </ul>
+                        </div>
+
+                        <div class="row flex-d justify-content-center m-10">
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save Questionnaire" {% if active_plan.plan_id == plan.id %} disabled {% endif %}>
+                                <h3>{% if active_plan.plan_id == plan.id %}{% trans "Active" %}{% else %}{% trans "Activate" %}{% endif %}</h3>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="col-md-4">
+            <div class="bd bgc-white">
+                <div class="layers">
+                    <div class="layer w-100">
+                        <div class="bgc-light-blue-500 c-white p-20">
+                            <div class="peers ai-c jc-sb gap-40">
+                                <div class="peer peer-greed">
+                                    <h5>{% trans "Business Plan" %}</h5>
+                                </div>
+                                <div class="peer">
+                                    <h3 class="text-right plan-fontsize-ipad">
+                                        {% trans "$500 / Month" %}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-padding">
+                            <ul>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Drafts" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Users" %}</li>
+                                <li><span><i class="fa fa-check-circle c-yellow-500" aria-hidden="true"></i> </span>{% trans "10 Active Questionnaires" %}</li>
+                                <li><span><i class="fa fa-check-circle c-yellow-500" aria-hidden="true"></i> </span>{% trans "500 Monthly Mails" %}</li>
+                                <li><span><i class="fa fa-check-circle c-yellow-500" aria-hidden="true"></i> </span>{% trans "Monthly Reports" %}</li>
+                                <li><span><i class="fa fa-times-circle c-red-500" aria-hidden="true"></i> </span>{% trans "No Slim MA" %}</li>
+                            </ul>
+                        </div>
+
+                        <div class="row flex-d justify-content-center m-10">
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save Questionnaire"><h3>{% trans "Activate" %}</h3></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bd bgc-white">
+                <div class="layers">
+                    <div class="layer w-100">
+                        <div class="bgc-light-blue-500 c-white p-20">
+                            <div class="peers ai-c jc-sb gap-40">
+                                <div class="peer peer-greed">
+                                    <h5>{% trans "Enterprise Plan" %}</h5>
+                                </div>
+                                <div class="peer">
+                                    <h3 class="text-right plan-fontsize-ipad">
+                                        {% trans "$10000 / Year" %}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-padding">
+                            <ul>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Drafts" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Users" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Active Questionnaires" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Unlimited Monthly Mails" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Daily Reports" %}</li>
+                                <li><span><i class="fa fa-check-circle c-green-500" aria-hidden="true"></i> </span>{% trans "Slim MA" %}</li>
+                            </ul>
+                        </div>
+
+                        <div class="row flex-d justify-content-center m-10">
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title=""><h3>{% trans "Activate" %}</h3></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

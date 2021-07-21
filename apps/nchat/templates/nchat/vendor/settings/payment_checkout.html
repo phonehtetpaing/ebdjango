@@ -1,0 +1,79 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block body %}
+
+<style>
+    #plan-description p {
+        margin: 0px;
+    }
+    #plan-description img {
+        max-width: 100%;
+    }
+    @media (min-width: 768px) {
+        #scrollable-menu {
+            height: 80vh;
+            overflow-y: scroll;
+        }
+    }
+    @media (max-width: 767.98px) {
+        div.col-md-2 {
+            padding: 0px !important;
+        }
+    }
+    .stripe-button-el {
+        width: 300px !important;
+    }
+    h2 {
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
+    h3, h4, h5 {
+        margin-left: 4rem;
+        margin-right: 4rem;
+    }
+</style>
+     <div class="bg-white p-40 w-100 border">
+                <h1 class="text-center pb-20">{{ vendor_user.business }}</h1>
+                <h2 class="pb-10 border-bottom">{% trans "Order Summary" %}:</h2>
+                <h3 class="py-10">{% trans "Product" %}: {{ business_plan.name }}{% trans " Plan" %}</h3>
+                <h3 class="pb-10">{% trans "Duration" %}:
+                    {% blocktrans count months=business_plan.duration %}{{ months }} Month{% plural %}{{ months }} Months{% endblocktrans %}
+                </h3>
+          <h3 class="pb-10">{% trans "Price" %}: ¥{{ business_plan.price }}</h3>
+                <div class="py-10" style="margin-left: 4rem; margin-right: 4rem;">
+                <table class="table">
+                    {% if have_previous_purchase %}
+                    <tr>
+                        <td>{% trans "Renewal Date" %}:</td>
+                        <td>{{ previous_expiration_date|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>{% trans "Renewal Date" %}:
+                            {% if have_previous_purchase %}
+                            <br>({% trans "with this purchase" %})</td>
+                            {% endif %}
+                        <td>{{ expiration_date|date:"Y-m-d" }}</td>
+                    </tr>
+                </table>
+                </div>
+            <div class="col d-flex justify-content-center py-10">
+                <form action="{% url namespace|add:':payment_checkout' plan_id=business_plan.id %}" method="post">
+                    {% csrf_token %}
+                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="{{ stripe_key }}"
+                        data-email="chaz303@protonmail.com"
+                        data-amount="{{ business_plan.price }}"
+                        data-name="{{ vendor_user.business }}"
+                        data-description="{{ business_plan.name }}{% trans ' Plan' %}"
+                        data-label="{% trans 'Pay with Card' %}"
+                        data-locale="{% trans 'en' %}"
+                        data-currency="jpy"
+                    </script>
+                </form>
+            </div>
+        </div>
+
+{% endblock %}

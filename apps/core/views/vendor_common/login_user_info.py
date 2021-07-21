@@ -1,9 +1,4 @@
-# import models
-from apps.core.models.end_user import EndUser
-from apps.core.models.event_category import EventCategory
-
-# import views
-
+# -*- Coding: utf-8 -*-
 # import models
 from apps.core.models.vendor_branch import VendorBranch
 from apps.core.models.vendor_user import VendorUser

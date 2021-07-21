@@ -1,0 +1,141 @@
+{% extends "nchat/base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card m-20">
+    <div class="card-header">{% trans "Upload to Cloud Storage" %}
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row m-0">
+                <div class="col-md-12 d-flex justify-content-end p-0">
+                    <div>
+                        <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            <div class="col-md-12 mx-0 px-20" style="padding:10px;">
+                <div class="mb-20">{% trans 'Upload Files' %}:</div>
+                <div class="input-group mx-0 px-0">
+                <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                        {% trans 'Browse...' %}<input type="file" name="upload" required="" id="id_upload" style="display: none;" multiple>
+                    </span>
+                </label>
+                    <input type="text" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="col-md-12 m-0 px-20">
+                <small class="form-text text-muted">{% trans "Files uploaded to cloud storage can be accessed by anyone with an access link. <br> Never store sensitive information using this service." %}</small>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="card m-20">
+    <form id="deleteform" action="{% url namespace|add:':file_delete'%}" method="post" role="form">
+                {% csrf_token %}
+    <div class="card-header">{% trans "Public Uploads" %}
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class="align-middle"><input type="checkbox" name="select_all" id="select_all" value="all"></th>
+                    <th>{% trans "File Name" %}</th>
+                    <th>{% trans "Uploaded at" %}</th>
+                    <th>{% trans "Size" %}</th>
+                    <th><button type="submit" class="btn badge badge-danger btn-fill btn-wd"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "btn_delete" %}</button></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                <tr>
+                    <td class="align-middle"><input type="checkbox" name="select_item" value={{ file.id }}></td>
+                    <td><a href="{{ file.upload.url }}" target="_blank">{{ file.pretty_name }}</a></td>
+                    <td>{{ file.uploaded_at }}</td>
+                    <td>{{ file.upload.size|filesizeformat }}</td>
+                    <td></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">{% trans "No Data" %}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src='{% static "core/assets/js/checkbox-buttons.js" %}'></script>
+<script>
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        checkboxes.prop('checked', $(this).is(':checked'));
+    });
+</script>
+<script>
+$(function() {
+  $(document).on('change', ':file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+  });
+
+  $(document).ready( function() {
+      $(':file').on('fileselect', function(event, numFiles, label) {
+
+          var input = $(this).parents('.input-group').find(':text'),
+              log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+          if( input.length ) {
+              input.val(log);
+          } else {
+              if( log ) alert(log);
+          }
+
+      });
+  });
+});
+</script>
+
+{% endblock %}

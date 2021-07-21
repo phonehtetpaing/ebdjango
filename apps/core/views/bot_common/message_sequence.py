@@ -285,6 +285,11 @@ def process_input(end_user_info, text):
             end_user.first_name = text
         elif attribute == 'last_name':
             end_user.last_name = text
+        elif attribute == 'business_name':
+            end_user.business_name = text
+        elif attribute == 'instagram_id':
+            end_user.instagram_id = text
+
         end_user.save()
     elif step['type'] == 'formsendmessage':
         process_form(end_user_info, sequence_state, step, text)

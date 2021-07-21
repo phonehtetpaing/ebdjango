@@ -220,7 +220,6 @@ def parse_file_message(index, key, data):
         "version": "1.0",
         "payload": ""
     }
-
     tmp_obj = deepcopy(image_send)
     tmp_obj['payload'] = data[key]
 

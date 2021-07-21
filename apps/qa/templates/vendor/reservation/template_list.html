@@ -1,0 +1,153 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+
+<script type="text/javascript">
+function copy(target){
+  let range = document.createRange();
+  let span = document.getElementById(target);
+  range.selectNodeContents(span);
+
+  let selection = document.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  document.execCommand('copy');
+  alert('{% trans "message_copied" %}');
+}
+</script>
+<main class="main-content bgc-grey-100">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    <div id="mainContent">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="headline-main">
+                        <h1 class="headline-main__headline">{% trans "screen_template_list_description_1" %}</h1>
+                        <p class="headline-main__text">{% trans "screen_template_list_description_2" %}</p>
+                    </div>
+                    <p>
+                        <a href="{% url namespace|add:':reservation_template_new' %}">
+                            <button type="button" class="btn cur-p btn-outline-primary iphone-schedule-margin">
+                                <i class="ti-plus"></i>{% trans "new_template_button" %}
+                            </button>
+                        </a>
+                        <a href="{% url namespace|add:':reservation_template_once' %}">
+                            <button type="button" class="btn cur-p btn-outline-success">
+                                <i class="fa fa-fw fa-clock-o c-green-500"></i>{% trans "one_time_new_template_button" %}
+                            </button>
+                        </a>
+                    </p>
+                    <div class="bgc-blue-50">
+                        {% trans "meeting_time_kind_title" %}：
+                        <span class="badge bgc-yellow-50 c-yellow-700 p-10 lh-0 tt-c badge-pill">{% trans "meeting_time_kind_30" %}</span>
+                        <span class="badge badge-pill bgc-blue-100 c-blue-700">{% trans "meeting_time_kind_45" %}</span>
+                        <span class="badge badge-pill bgc-amber-100 c-amber-700">{% trans "meeting_time_kind_60" %}</span>
+                        <span class="badge badge-pill bgc-green-100 c-green-700">{% trans "meeting_time_kind_90" %}</span>
+                        <span class="badge badge-pill bgc-deep-purple-100 c-deep-purple-700">{% trans "meeting_time_kind_120" %}</span>
+                        <span class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill">{% trans "meeting_time_kind_custom" %}</span>
+                    </div>
+                    <div class="bdrs-3 ov-h bgc-white bd">
+                        <div class="pos-r">
+                            <div class="bd bgc-white">
+                                <div class="layers">
+                                    <div class="layer w-100">
+                                        <div class="table-responsive">
+                                            {% if templates is None %}
+                                            <h4 class="c-black">{% trans "screen_template_list_description_3" %}</h4>
+                                            {% else %}
+                                            <table class="table">
+                                                <thead></thead>
+                                                <tbody>
+                                                    {% for template in templates %}
+                                                    <tr>
+                                                        <td class="fw-600">
+                                                            <span class="fw-600">{{template.template_name}}</span>
+                                                            {% if template.selected_meeting_times_flag == "30" %}
+                                                            <span class="badge bgc-yellow-50 c-yellow-700 p-10 lh-0 tt-c badge-pill">
+                                                            {% elif template.selected_meeting_times_flag == "45" %}
+                                                            <span class="badge badge-pill bgc-blue-100 c-blue-700">
+                                                            {% elif template.selected_meeting_times_flag == "60" %}
+                                                            <span class="badge badge-pill bgc-amber-100 c-amber-700">
+                                                            {% elif template.selected_meeting_times_flag == "90" %}
+                                                            <span class="badge badge-pill bgc-green-100 c-green-700">
+                                                            {% elif template.selected_meeting_times_flag == "120" %}
+                                                            <span class="badge badge-pill bgc-deep-purple-100 c-deep-purple-700">
+                                                            {% else %}
+                                                            <span class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill">{{template.custom_meeting_times}}{% trans "lbl_minutes" %}
+                                                            {% endif %}
+                                                                {% if template.category_flag == "1" %}
+                                                                    {% trans "category_kind_visit" %}
+                                                                {% elif template.category_flag == "2" %}
+                                                                    {% trans "category_kind_come" %}
+                                                                {% elif template.category_flag == "3" %}
+                                                                    {% trans "category_kind_lunch" %}
+                                                                {% elif template.category_flag == "4" %}
+                                                                    {% trans "category_kind_dinner" %}
+                                                                {% else %}
+                                                                    {% trans "category_kind_others" %}
+                                                                {% endif %}
+                                                            </span><br/>
+                                                            <span id="copyTarget{{template.id}}" class="c-grey-700" style="word-break: break-all;">
+                                                                <small class="form-text text-muted">{{base_url}}meeting/input/{{template.template_url_key}}/</small>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="peer">
+                                                                <a href="#" onclick="copy('copyTarget{{template.id}}')" data-toggle="tooltip" data-placement="top" data-original-title='{% trans "menu_clipboard_copy" %}'>
+                                                                    <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_clipboard_copy.png" %}'>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="peer">
+                                                                <a href="{% url namespace|add:':reservation_template_detail' template_id=template.id %}" data-toggle="tooltip" data-placement="top" data-original-title='{% trans "menu_edit" %}'>
+                                                                    <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_edit.png" %}'>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="peer">
+                                                                <a href="#" data-toggle="modal" data-target="#deleteModal_{{template.id}}">
+                                                                    <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_garbage_can.png" %}'>
+                                                                </a>
+                                                                <div class="modal fade" id="deleteModal_{{template.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header"><h5 class="modal-title" id="deleteModalLabel">{% trans "lbl_modal_title_delete_confirm" %}</h5></div>
+                                                                            <div class="modal-body">{% trans "lbl_modal_body_delete_confirm" %}</div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "close_button" %}</button>
+                                                                                <a href="{% url namespace|add:':reservation_template_delete' template_id=template.id %}">
+                                                                                    <button type="button" class="btn btn-primary">{% trans "delete_button" %}</button>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

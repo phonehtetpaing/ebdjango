@@ -1,0 +1,15 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="ti-comment-alt" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<textarea rows="5" class="form-control input-child border-input bubble-border-blue expand"
+          placeholder=" " name="TextSendMessage_0_{{ message_counter }}"
+          maxlength="2000" required="">{{ message.payload }}</textarea>
+<small class="form-text text-muted" style="margin-top: 5px;">Max 2000 characters.</small>
+
+{% endblock %}

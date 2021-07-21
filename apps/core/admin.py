@@ -5,8 +5,6 @@ from apps.core.models.service import Service
 admin.site.register(Service)
 from apps.core.models.vendor import Vendor
 admin.site.register(Vendor)
-from apps.core.models.vendor import Preset
-admin.site.register(Preset)
 from apps.core.models.vendor_branch import VendorBranch
 admin.site.register(VendorBranch)
 from apps.core.models.vendor_event_settings import VendorEventSettings

@@ -1,0 +1,83 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <title>{{ title }}</title>
+    <style>
+        #loader{transition:all .3s ease-in-out;opacity:1;visibility:visible;position:fixed;height:100vh;width:100%;background:#fff;z-index:90000}#loader.fadeOut{opacity:0;visibility:hidden}.spinner{width:40px;height:40px;position:absolute;top:calc(50% - 20px);left:calc(50% - 20px);background-color:#333;border-radius:100%;-webkit-animation:sk-scaleout 1s infinite ease-in-out;animation:sk-scaleout 1s infinite ease-in-out}@-webkit-keyframes sk-scaleout{0%{-webkit-transform:scale(0)}100%{-webkit-transform:scale(1);opacity:0}}@keyframes sk-scaleout{0%{-webkit-transform:scale(0);transform:scale(0)}100%{-webkit-transform:scale(1);transform:scale(1);opacity:0}}
+    </style>
+    <link href='{% static "qa/style.css" %}' rel="stylesheet"/>
+</head>
+
+<body class="app">
+<div id="loader">
+    <div class="spinner"></div>
+</div>
+<script>window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.classList.add('fadeOut');
+      }, 300);
+    });
+</script>
+<div class="header navbar" style="width:100% !important;">
+    <div class="header-container">
+        <ul class="nav-right">
+            <!-- language settings -->
+            <li class="dropdown">
+                <a href="" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1" data-toggle="dropdown">
+                    <div class="peer mR-10"><i class="fa fa-language"></i></div>
+                    <div class="peer"></div>
+                </a>
+                <ul class="dropdown-menu fsz-sm">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                    <li>
+                        <form name="{{ language.code }}" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}" />
+                            <input name="language" type="hidden" value="{{ language.code }}" />
+                            <a href="javascript:document.{{ language.code }}.submit()" class="d-b td-n pY-5 px-5 bgcH-grey-100 c-grey-700">
+                                {% if language.code == LANGUAGE_CODE %}
+                                <i class="fa fa-circle mR-10"></i>
+                                {% else %}
+                                <i class="fa fa-circle-thin mR-10"></i>
+                                {% endif %}
+
+                                <span>{{ language.name_local }}</span>
+                            </a>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="peers ai-s fxw-nw h-100vh">
+    <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv"
+         style="background-image:url({% static 'qa/images/index_bg.jpg' %})">
+        {% if service_logo %}
+            <div class="pos-a centerXY">
+                <div class="pos-r" style="width:320px;height:320px">
+                    <img class="pos-a centerXY img-fluid" src="{{ service_logo }}" alt="">
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r" style="min-width:320px">
+        {% block content %}
+        {{ content }}
+        {% endblock %}
+    </div>
+</div>
+<script type="text/javascript" src='{% static "qa/js/vendor.js" %}'></script>
+<script type="text/javascript" src='{% static "qa/js/bundle.js" %}'></script>
+</body>
+
+</html>

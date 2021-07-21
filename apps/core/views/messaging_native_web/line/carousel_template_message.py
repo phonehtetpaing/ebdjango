@@ -44,6 +44,7 @@ def line_carousel_template_message(end_user_line, param):
             carousel_template_message
         )
     except LineBotApiError as e:
+        print('DEBUG LINE BOT API CAROUSEL MESSAGE ERROR')
         print(e.status_code)
         print(e.error.message)
         print(e.error.details)

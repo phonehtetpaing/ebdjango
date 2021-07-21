@@ -1,0 +1,32 @@
+{% extends "messageflow/messages/base_message.html" %}
+{% load i18n %}
+{% load to_string %}
+{% load message_utils %}
+{% load staticfiles %}
+
+
+{% block message_contents %}
+
+<div class="d-flex justify-content-start">
+    <span>
+    {% trans 'File URL' %}:
+        <select class='input-child file-input mb-20' name="message_set-{{message_counter}}-json_content">
+                     <optgroup label="{% trans 'Files' %}">
+                            <option selected disabled>{% trans 'Select a file.' %}</option>
+                            {% for file in files %}
+                            <option value="{{ file.upload.url }}"{% if message.json_content.value|to_string == file.upload.url|to_string %} selected{% endif %}>{{ file.pretty_name }}</option>
+                            {% endfor %}
+                     </optgroup>
+            </select>
+    </span>
+    <small class="col mr-20">
+        <!-- todo use namespace rather than 'nchat' -->
+        <a href="{% url 'nchat'|add:':settings_files' %}">{% trans "Upload Files" %}</a>
+    </small>
+</div>
+
+<div id="message_set-{{message_counter}}-file" class="file-display d-flex justify-content-center p-20">
+
+</div>
+<input type="hidden" name="message_set-{{message_counter}}-options" id="id_message_set-{{message_counter}}-options" value="None">
+{% endblock %}

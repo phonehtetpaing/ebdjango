@@ -1,0 +1,309 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load to_string %}
+{% load qr_code %}
+
+{% block content %}
+
+<div class="row" style="height: 85vh;">
+    <!-- Listing of all questionnaires with their status -->
+    <div class="col-md-3 ml-5">
+        <div class="peers fxw-nw pos-r">
+            <div class="peer bdR qa-word-break iphone-list-height">
+                <div class="layers h-100">
+                    <div class="p-10 bgc-grey-100 layer w-100">
+                        <div class="btn-group" role="group">
+                            <!-- Large modal -->
+                            <a class=" w-100" href="{% url namespace|add:':coupon_add' %}">
+                                <button type="button" class="btn btn-danger bdrs-2 mR-3 cur-p new-coupon-btn">
+                                    {% trans "New Coupon" %}
+                                </button>
+                            </a>
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn cur-p bgc-white no-after dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ti-more-alt"></i>
+                                </button>
+                                <ul class="dropdown-menu fsz-sm" aria-labelledby="btnGroupDrop1">
+                                    <li>
+                                        {% if selected_coupon %}
+                                        <a href="{% url namespace|add:':coupon_delete' coupon_id=selected_coupon.id %}" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><i class="ti-trash mR-10"></i>
+                                            <span>{% trans "Delete" %}</span></a>
+                                        {% else %}
+                                        <a class="d-b td-n pY-5 pX-10 bgcH-black c-grey-200"><i class="ti-trash mR-10"></i>
+                                            <span>{% trans "Delete" %}</span></a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bdB layer w-100">
+                        <input type="text" placeholder="{% trans 'Search Coupons'%}..." name="couponSearch" id="couponSearch"
+                               class="form-constrol p-15 bdrs-0 w-100 bdw-0"></div>
+                    <div id="couponList" class="infinite-container layer w-100 fxg-1 scrollable pos-r" style="height: 70vh;">
+                        {% for coupon in coupons %}
+                        <div class="infinite-item">
+                            <a href="{% url namespace|add:':coupon_edit' coupon_id=coupon.id %}">
+                                {% if coupon.id == selected_coupon.id %}
+                                <div class="peers fxw-nw ai-c p-20 bdB bgc-blue-100 bgcH-grey-50 cur-p">
+                                    {% else %}
+                                    <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                        {% endif %}
+
+                                        {% if coupon.status|to_string == "Running" %}
+                                        <div class="peer"><i class="fa fa-2x fa-qrcode c-green-500" aria-hidden="true"></i></div>
+                                        <div class="peer peer-greed pL-20">
+                                            <h6 class="mB-0 lh-1 fw-400">{{ coupon.name }}</h6><small class="lh-1 c-green-500">{% trans coupon.status %}</small>
+                                        </div>
+                                    </div>
+                                    {% elif coupon.status|to_string == "Expired" %}
+                                    <div class="peer"><i class="fa fa-2x fa-qrcode c-red-500" aria-hidden="true"></i></div>
+                                    <div class="peer peer-greed pL-20">
+                                        <h6 class="mB-0 lh-1 fw-400">{{ coupon.name }}</h6><small class="lh-1 c-red-500 ">{% trans coupon.status %}</small>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="peer"><i class="fa fa-2x fa-qrcode c-grey-500" aria-hidden="true"></i></div>
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400">{{ coupon.name }}</h6><small class="lh-1 c-grey-500">{% trans coupon.status %}</small>
+                                </div>
+                        </div>
+                        {% endif %}
+                        </a>
+                    </div>
+                    {% endfor %}
+                    <div class="loading" style="display: none;">Loading...</div>
+                </div>
+                {% if coupons.has_next %}
+                <a class="infinite-more-link" href="?page={{ coupons.next_page_number }}" hidden>More</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-8">
+    <div class="card">
+        <div class="card-header">
+            {{ selected_coupon.name }}
+        </div>
+        <div class="card-body">
+            {% if selected_coupon %}
+            <div class="row">
+                <div class="col-md-6">
+                    <!--&lt;!&ndash; General Questionnaire Stats&ndash;&gt;-->
+                    <!--<div class="row gap-20">-->
+                        <!--<div class="col-md-6 col-sm-6">-->
+                            <!--<div class="layers bd bgc-white top-card">-->
+                                <!--<div class="layer w-100 mB-10">-->
+                                    <!--<h6 class="lh-1 top-card-lavel">{% trans "Total Claims" %}</h6>-->
+                                <!--</div>-->
+                                <!--<div class="layer w-100">-->
+                                    <!--<div class="peers ai-sb fxw-nw">-->
+                                        <!--<div class="peer peer-greed"><span id="sparklinedash3"></span></div>-->
+                                        <!--<div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em bgc-green-50 c-green-500 number">13</span></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-6 col-sm-6">-->
+                            <!--<div class="layers bd bgc-white top-card">-->
+                                <!--<div class="layer w-100 mB-10">-->
+                                    <!--<h6 class="lh-1 top-card-lavel">{% trans "Customer Conversion" %}</h6>-->
+                                <!--</div>-->
+                                <!--<div class="layer w-100">-->
+                                    <!--<div class="peers ai-sb fxw-nw">-->
+                                        <!--<div class="peer peer-greed"><span id="sparklinedash"></span></div>-->
+                                        <!--<div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em bgc-green-50 c-green-500 number">89</span></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash; monthly coupon stats &ndash;&gt;-->
+                    <!--<div class="row gap-20">-->
+                        <!--<div class="masonry-item col-md-12">-->
+                            <!--<div class="bd bgc-white">-->
+                                <!--<div class="layers">-->
+                                    <!--<div class="layer w-100 pX-20 pT-20">-->
+                                        <!--<h6 class="lh-1">{% trans "Monthly Stats" %}</h6>-->
+                                    <!--</div>-->
+                                    <!--<div class="layer w-100 p-20"><canvas id="line-chart" height="220"></canvas></div>-->
+                                    <!--<div class="layer bdT p-20 w-100">-->
+                                        <!--<div class="peers ai-c jc-c gapX-20">-->
+                                            <!--<div class="peer"><span class="fsz-def fw-600 mR-10 c-grey-800">10% <i class="fa fa-level-up c-green-500"></i></span>-->
+                                                <!--<small class="c-grey-500 fw-600">Claims</small></div>-->
+                                            <!--<div class="peer fw-600"><span class="fsz-def fw-600 mR-10 c-grey-800">2% <i class="fa fa-level-down c-red-500"></i></span>-->
+                                                <!--<small class="c-grey-500 fw-600">Conversion</small></div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!-- Coupon Setting Editor-->
+                    <div class="row pt-20">
+                        <div class="col-md-12">
+                            <div class="bd bgc-white">
+                                <div class="layers">
+                                    <div class="layer w-100">
+                                        <form class="container" action="{% url namespace|add:':coupon_edit' coupon_id=selected_coupon.id %}" method="post" role="form">
+                                            {% csrf_token %}
+                                            {% for hidden_field in form.hidden_fields %}
+                                            {{ hidden_field }}
+                                            {% endfor %}
+
+                                            {% if form.non_field_errors %}
+                                            <div class="alert alert-danger" role="alert">
+                                                {% for error in form.non_field_errors %}
+                                                {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    {% include 'forms/default_form_field.html' with field=form.name %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="mb-3 qp-valid">
+                                                    {% include 'forms/default_form_field.html' with field=form.valid_from %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="mb-3 qp-valid">
+                                                    {% include 'forms/default_form_field.html' with field=form.valid_until %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 mb-3">
+                                                    <label for="type" style="width: 100px;">{% trans "Coupon Type" %}</label>
+                                                    {{ form.type }}
+                                                </div>
+                                            </div>
+                                            {% if selected_coupon.type|to_string == 'url' %}
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3" id="coupon_data">
+                                                    <label for="inputurl">URL</label>
+                                                    <input type="url" class="form-control" id="inputurl" name="inputurl" placeholder="www.example.com" value="{{ selected_coupon.data }}" required>
+                                                </div>
+                                            </div>
+                                            {% elif selected_coupon.type|to_string == 'questionnaire' %}
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3" id="coupon_data">
+                                                    <label for="questionnaire" style="padding-top: 5px;">{% trans "Questionnaires" %}</label><br>
+                                                    <select class="input-child" id="questionnaire" name="questionnaire" style="width: 152px;">
+                                                        {% for questionnaire in questionnaires %}
+                                                        <option value="{{ questionnaire.id }}" {% if selected_coupon.data == questionnaire.id|to_string %} selected{% endif %}>{{ questionnaire.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3" id="coupon_data">
+                                                    <label for="inputtext">{% trans "Text" %}</label>
+                                                    <input type="text" class="form-control" id="inputtext" name="inputtext" placeholder="some message here" value="{{ selected_coupon.data }}" required>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <div class="row mt-20">
+                                                <div class="col-md-5">
+                                                    <button type="submit" class="btn btn-primary coupon-save-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="" style="width: 126px;">{% trans "Save Changes" %}</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if selected_coupon.qrcode %}
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6" style="padding-left: 0px;">
+                            <div class="peer iphone-cp-qrcord">
+                                <img src="{{ selected_coupon.qrcode.url }}" alt="qrcoupon" class="qr-cord">
+                                <!--<img src="{% static 'qa/images/qrframe.png' %}" alt="" class="">-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="row pt-20">
+                        <div class="col-md-12">
+                            <div class="bgc-grey-100 peers ai-c jc-sb p-20 fxw-nw">
+                                <div class="peer iphone-cp-qrcord">
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url namespace|add:':coupon_print' coupon_id=selected_coupon.id %}" class="d-b td-n pY-5 pX-10 bgcH-grey-100 c-grey-700"><button type="button" class="btn bgc-blue-100 bdrs-2 mR-3 cur-p p-20 print-btn"><i class="ti-file mR-10"></i> <span>{% trans "Print Coupon"%}</span></button></a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+{% block append_js_on_tail %}
+<script src='{% static "core/assets/js/jscolor.js" %}'></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<!-- search filter -->
+<script>
+$(document).ready(function(){
+  $("#couponSearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#couponList a").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+<!-- type change -->
+<script>
+    $("#id_type").change(function(e) {
+        $("#coupon_data").empty();
+        if (e.target.selectedIndex == 0) {
+            var html = '';
+            html += '<label for="inputtext">Text</label><input type="text" class="form-control" id="inputtext" name="inputtext" placeholder="some message here" value="" required>';
+            $("#coupon_data").append(html);
+        }
+        else if (e.target.selectedIndex == 1) {
+            var html = '';
+            html += '<label for="inputurl">URL</label><input type="text" class="form-control" id="inputurl" name="inputurl" placeholder="www.example.com" value="" required>';
+            $("#coupon_data").append(html);
+        }
+        else if (e.target.selectedIndex == 2) {
+            var html = '';
+            html += `
+            <label for="questionnaire">{% trans "Questionnaires" %}</label>
+            <select class="input-child" id="questionnaire" name="questionnaire">
+            {% for questionnaire in questionnaires %}
+                <option value="{{ questionnaire.id }}" {% if selected_coupon.data == questionnaire.id|to_string %} selected{% endif %}>{{ questionnaire.name }}</option>
+            {% endfor %}
+            </select>
+            `;
+            $("#coupon_data").append(html);
+        }
+    })
+</script>
+<script>
+var infinite = new Waypoint.Infinite({
+  element: $('.infinite-container')[0],
+  context: document.getElementById('couponList'),
+});
+</script>
+{% endblock %}

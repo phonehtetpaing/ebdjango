@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<div class="row">
+    <!-- Email message contents -->
+    {% csrf_token %}
+    <!-- for form errors -->
+    {% for hidden_field in message_form.hidden_fields %}
+    {{ hidden_field }}
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <!--Email subject-->
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {% include 'forms/default_form_field.html' with field=message_form.subject %}
+    </div>
+</div>
+<div class="row" id="messageContainer">
+    <!--Email contents-->
+    <div class="col-md-12" style="height: 450px;">
+        {% include 'forms/default_form_field.html' with field=message_form.message_text %}
+    </div>
+</div>
+<div class="col-md-12">
+    <button type="submit" form="slimma_form" class="btn btn-danger ma-submit-btn pull-right">{% trans "Save" %}</button>
+</div>

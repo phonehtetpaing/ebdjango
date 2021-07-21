@@ -1,0 +1,22 @@
+<div class="row api-child" data-id="{{ message_counter }}">
+    <div class="col-md-12">
+        <div class="message-base">
+            <div class="form-group" style="margin: 0 !important">
+                <div class="message-base-header">
+                    <span>
+                        <i class="ti-menu" style="user-select: inherit;"></i>
+                    </span>
+                    <span>
+                        {% block message_header %}{% endblock %}
+                    </span>
+                    <span>
+                        <i class="ti-close" style="user-select: inherit;"></i>
+                    </span>
+                </div>
+                <div class="message-base-body">
+                    {% block message_contents %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

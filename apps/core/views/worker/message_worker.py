@@ -1,26 +1,11 @@
-import json
-import datetime
-import string
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
-
+# -*- coding: utf-8 -*-
 # import views
-from apps.core.views.messaging_adapter_web.text_send_message import *
-from apps.core.views.messaging_adapter_web.button_select_message import *
-from apps.core.views.messaging_adapter_web.image_send_message import *
-from apps.core.views.messaging_adapter_web.carousel_send_message import *
-from apps.core.views.vendor_common.message_json_converter import *
-from apps.core.views.vendor_common.login_user_info import *
 from apps.core.views.worker.manual_message import *
 from apps.core.views.worker.auto_message import *
+from apps.qa.views.worker.slimma_message import send_slimma_message
 
 # import models
-from apps.core.models.end_user import EndUser
-from apps.core.models.manual_message_controller import ManualMessageController
 from apps.core.models.manual_message_history import ManualMessageHistory
-from apps.core.models.tag import Tag
-from apps.core.models.manual_message_overview import ManualMessageOverview
-from apps.core.models.message_status import MessageStatus
 from apps.core.models.worker_sqs_status import WorkerSQSStatus
 
 
@@ -128,6 +113,19 @@ def send_message(request):
         auto_message_history_id = int(sqs_message_body_dict["auto_message_history_id"])
         batch_start_dt = datetime.datetime.strptime(sqs_message_body_dict["batch_start_dt"], '%Y-%m-%d %H:%M:%S')
         result = send_auto_message(auto_message_trigger_id, auto_message_history_id, batch_start_dt, worker_sqs_status)
+
+        if result == "Message Send ERROR":
+            return HttpResponse("Message Send ERROR", status=500)
+        elif result == "Success":
+            return HttpResponse("Success", status=200)
+        else:
+            return HttpResponse("ERROR", status=500)
+
+    # Send SLIMMA Message
+    elif message_type == "SLIMMA":
+        trigger_type_id = int(sqs_message_body_dict["trigger_type_id"])
+        batch_start_dt = datetime.datetime.strptime(sqs_message_body_dict["batch_start_dt"], '%Y-%m-%d %H:%M:%S')
+        result = send_slimma_message(trigger_type_id, batch_start_dt, worker_sqs_status)
 
         if result == "Message Send ERROR":
             return HttpResponse("Message Send ERROR", status=500)

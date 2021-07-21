@@ -1,0 +1,71 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block body %}
+
+    <!-- Business Plan Options -->
+
+        <div class="card mb-40">
+            <div class="card-header">
+                {% trans "Billing Overview" %}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 d-flex mb-4">
+                        <div class="col-4 mr-2 px-2 py-4 text-center bgc-grey-100 bd">
+                            <h4 class="f5">{% trans 'Current Bill Total' %}</h4>
+                            <span class="f2 d-block">
+                                  <span class="text-gray-light">¥0</span>
+                              </span>
+                        </div>
+
+                        <div class="col-4 mx-2 px-2 py-4 text-center bgc-grey-100 bd">
+                            <h4 class="f5">{% trans 'Next Payment Due' %}</h4>
+
+                            <a class="f6" href="{% url namespace|add:':payment_edit' %}">{% trans 'Renew payment plan now' %}</a>
+                        </div>
+
+                        <div class="col-4 ml-2 px-2 py-4 text-center bgc-grey-100 bd">
+                            <h4 class="f5">{% trans 'Quick Actions' %}</h4>
+                            <ul class="list-style-none f6">
+                                <li><a href="">{% trans 'Explore subscription options' %}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-20">
+                    <div class="col-md-12">
+                        <h2>
+                            {% trans "Transaction History" %}
+                        </h2>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>{% trans 'Payment Date' %}:</th>
+                                <th>{% trans 'Service' %}:</th>
+                                <th>{% trans 'Expiration Date' %}:</th>
+                                <th>{% trans 'Account' %}:</th>
+                                <th>{% trans 'Amount' %}:</th>
+                            </tr>
+                        {% for payment in payment_history %}
+                            <tr>
+                                <td>{{ payment.regist_dt }}</td>
+                                <td>{{ payment.plan_name }}</td>
+                                <td>{{ payment.expiration_dt }}</td>
+                                <td>{% if payment.from_business == user_business %}{{ payment.to_business }}
+                                    {% else %}{{ payment.from_business }}{% endif %}</td>
+                                <td>{% if payment.from_business == user_business %}-
+                                    {% else %}+ {% endif %}¥{{ payment.amount }}</td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+</div>
+
+
+{% endblock %}

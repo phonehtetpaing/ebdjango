@@ -1,0 +1,279 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load to_string %}
+
+{% block css %}
+<link href='{% static "core/assets/css/editor.css" %}' rel="stylesheet" type="text/css">
+<style>
+    #cf-context {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card" style="padding:0;">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#general" role="tab">{% trans "General Style" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#bot" role="tab">{% trans "Bot Style" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#user" role="tab">{% trans "User Style" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#statictext" role="tab">{% trans "Static Text" %}</a>
+                    </li>
+                </ul>
+            </div>
+            <form action="{% url namespace|add:':settings_style' %}" method="post" role="form">
+                {% csrf_token %}
+                <div class="tab-content tabcontent-border">
+                    <!-- General Chat Settings-->
+                    <div class="tab-pane card-body active" id="general" style="padding:20px;" role="tabpanel">
+                        <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
+                        <!-- color of the chat popup window -->
+                        <div class="form-group">
+                            <label for="--windowcolor">{% trans "Window Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--windowcolor" name="--windowcolor" value="{{ css_dict.windowcolor }}">
+                        </div>
+                        <!-- color of the chat popup window -->
+                        <div class="form-group">
+                            <label for="--infotextcolor">{% trans "Info Text Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--infotextcolor" name="--infotextcolor" value="{{ css_dict.infotextcolor }}">
+                        </div>
+                        <!-- color of the window background -->
+                        <div class="form-group">
+                            <label for="--chatbackgroundcolor">{% trans "Background Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--chatbackgroundcolor" name="--chatbackgroundcolor" value="{{ css_dict.chatbackgroundcolor }}">
+                        </div>
+                        <!-- color of the submit button in the bottom right -->
+                        <div class="form-group">
+                            <label for="--submitbuttoncolor">{% trans "Submit Button Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--submitbuttoncolor" name="--submitbuttoncolor" value="{{ css_dict.submitbuttoncolor }}">
+                        </div>
+
+                        <!-- Font settings -->
+                        <div class="form-group">
+                            <label for="--fontsize">{% trans "Font Size" %}</label>
+                            <input type="number" name="--fontsize" id="--fontsize" min="10" max="25" value="{{ css_dict.fontsize }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--fontfamily">{% trans "Font Family" %}</label>
+                            <select class="input-child" id="--fontfamily" name="--fontfamily">
+                                <option value="Arial" {% if css_dict.fontfamily|to_string == 'Arial'%}selected{% endif %}>{% trans "Arial" %}</option>
+                                <option value="Helvetica" {% if css_dict.fontfamily|to_string == 'Helvetica'%}selected{% endif %}>{% trans "Helvetica" %}</option>
+                                <option value="Times New Roman" {% if css_dict.fontfamily|to_string == 'Times New Roman'%}selected{% endif %}>{% trans "Times New Roman" %}</option>
+                                <option value="Times" {% if css_dict.fontfamily|to_string == 'Times'%}selected{% endif %}>{% trans "Times" %}</option>
+                                <option value="Courier New" {% if css_dict.fontfamily|to_string == 'Courier New'%}selected{% endif %}>{% trans "Courier New" %}</option>
+                                <option value="Courier" {% if css_dict.fontfamily|to_string == 'Courier'%}selected{% endif %}>{% trans "Courier" %}</option>
+                                <option value="Verdana" {% if css_dict.fontfamily|to_string == 'Verdana'%}selected{% endif %}>{% trans "Verdana" %}</option>
+                                <option value="Georgia" {% if css_dict.fontfamily|to_string == 'Georgia'%}selected{% endif %}>{% trans "Georgia" %}</option>
+                                <option value="Palatino" {% if css_dict.fontfamily|to_string == 'Palatino'%}selected{% endif %}>{% trans "Palatino" %}</option>
+                                <option value="Garamond" {% if css_dict.fontfamily|to_string == 'Garamond'%}selected{% endif %}>{% trans "Garamond" %}</option>
+                                <option value="Bookman" {% if css_dict.fontfamily|to_string == 'Bookman'%}selected{% endif %}>{% trans "Bookman" %}</option>
+                                <option value="Comic Sans MS" {% if css_dict.fontfamily|to_string == 'Comic Sans MS'%}selected{% endif %}>{% trans "Comic Sans MS" %}</option>
+                                <option value="Trebuchet MS" {% if css_dict.fontfamily|to_string == 'Trebuchet MS'%}selected{% endif %}>{% trans "Trebuchet MS" %}</option>
+                                <option value="Arial Black" {% if css_dict.fontfamily|to_string == 'Arial Black'%}selected{% endif %}>{% trans "Arial Black" %}</option>
+                                <option value="Impact" {% if css_dict.fontfamily|to_string == 'Impact'%}selected{% endif %}>{% trans "Impact" %}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="--fontstyle">{% trans "Font Style" %}</label>
+                            <select class="input-child" id="--fontstyle" name="--fontstyle">
+                                <option value="normal">{% trans "normal" %}</option>
+                                <option value="italic" {% if css_dict.fontstyle|to_string == 'italic'%} selected{% endif %}>{% trans "italic" %}</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
+                    </div>
+                    <!-- Robot Settings -->
+                    <div class="tab-pane card-body" id="bot" style="padding:20px;" role="tabpanel">
+                        <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
+
+
+                        <div class="form-group">
+                            <label for="--robottextcolor">{% trans "Robot Text Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--robottextcolor" name="--robottextcolor" value="{{ css_dict.robottextcolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--robotbubblecolor">{% trans "Robot Bubble Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--robotbubblecolor" name="--robotbubblecolor" value="{{ css_dict.robotbubblecolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--roboticon">{% trans "Robot Icon" %}</label>
+                            <select class="input-child" name="--roboticon" id="--roboticon">
+                                <!-- custom -->
+                                {% if vendor.picture_url|to_string|length > 5 %}
+                                    <option value="{{vendor.picture_url.url}}"{% if css_dict.roboticon == '{{vendor.picture_url.url}}' %} selected{% endif %} data-imagesrc="{{vendor.picture_url.url}}"></option>
+                                {% endif %}
+                                <!--humanoids-->
+                                    <option value="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F916.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F916.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F916.svg"></option>
+
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/4/44/Emojione_1F474.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/4/44/Emojione_1F474.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/4/44/Emojione_1F474.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/e/ee/Emojione_1F575.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Emojione_1F575.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/e/ee/Emojione_1F575.svg"></option>
+                                <!--food-->
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/9/90/Emojione_1F363.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/9/90/Emojione_1F363.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/9/90/Emojione_1F363.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/9/98/Emojione_1F336.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/9/98/Emojione_1F336.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/9/98/Emojione_1F336.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F354.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F354.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F354.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F355.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F355.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Emojione_1F355.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/3/3c/Emojione_1F368.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Emojione_1F368.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/3/3c/Emojione_1F368.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/3/3e/Emojione_1F375.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Emojione_1F375.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/3/3e/Emojione_1F375.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/8/87/Emojione_1F37A.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/8/87/Emojione_1F37A.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/8/87/Emojione_1F37A.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_2615.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_2615.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_2615.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/a/a2/Emojione_1F957.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Emojione_1F957.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/a/a2/Emojione_1F957.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_1F374.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_1F374.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/1d/Emojione_1F374.svg"></option>
+
+                                <!--nature-->
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/c/ce/Emojione_1F331.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Emojione_1F331.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/c/ce/Emojione_1F331.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F335.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F335.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F335.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/4/4a/Emojione_1F338.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Emojione_1F338.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/4/4a/Emojione_1F338.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/17/Emojione_1F339.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/17/Emojione_1F339.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/17/Emojione_1F339.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emojione_1F340.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Emojione_1F340.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/2/2b/Emojione_1F340.svg"></option>
+
+                                <!--business-->
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/a/a5/Emojione_1F4B0.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Emojione_1F4B0.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/a/a5/Emojione_1F4B0.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/9/9d/Emojione_1F4B8.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Emojione_1F4B8.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/9/9d/Emojione_1F4B8.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/e/e5/Emojione_1F680.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Emojione_1F680.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/e/e5/Emojione_1F680.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/6/64/Emojione_1F6E0.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/6/64/Emojione_1F6E0.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/6/64/Emojione_1F6E0.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F6D2.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F6D2.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/d/d1/Emojione_1F6D2.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/a/a7/Emojione_2696.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Emojione_2696.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/a/a7/Emojione_2696.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/e/eb/Emojione_1F696.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Emojione_1F696.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/e/eb/Emojione_1F696.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/c/c6/Emojione_1F4E6.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Emojione_1F4E6.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/c/c6/Emojione_1F4E6.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/0/08/Emojione_2668.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/0/08/Emojione_2668.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/0/08/Emojione_2668.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/3/3b/Emojione_269B.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Emojione_269B.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/3/3b/Emojione_269B.svg"></option>
+
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/f/f8/Emojione_1F3E0.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/f/f8/Emojione_1F3E0.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/f/f8/Emojione_1F3E0.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/e/e7/Emojione_1F6CE.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Emojione_1F6CE.svg' %} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/e/e7/Emojione_1F6CE.svg"></option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
+
+                    </div>
+                    <!-- User Settings -->
+                    <div class="tab-pane card-body" id="user" style="padding:20px;" role="tabpanel">
+                        <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
+
+                        <div class="form-group">
+                            <label for="--usertextcolor">{% trans "User Text Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--usertextcolor" name="--usertextcolor" value="{{ css_dict.usertextcolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--userbubblecolor">{% trans "User Bubble Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--userbubblecolor" name="--userbubblecolor" value="{{ css_dict.userbubblecolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--usericon">{% trans "User Icon" %}</label>
+                            <select class="input-child" name="--usericon" id="--usericon">
+                                <!--humanoids-->
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
+                    </div>
+                                        <!-- User Settings -->
+                    <div class="tab-pane card-body" id="user" style="padding:20px;" role="tabpanel">
+                        <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
+
+                        <div class="form-group">
+                            <label for="--usertextcolor">{% trans "User Text Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--usertextcolor" name="--usertextcolor" value="{{ css_dict.usertextcolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--userbubblecolor">{% trans "User Bubble Color" %}</label>
+                            <input type="text" class="jscolor form-control" id="--userbubblecolor" name="--userbubblecolor" value="{{ css_dict.userbubblecolor }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="--usericon">{% trans "User Icon" %}</label>
+                            <select class="input-child" name="--usericon" id="--usericon">
+                                <!--humanoids-->
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/2/27/Emojione_1F464.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/b/b6/Emojione_1F468.svg"></option>
+                                <option value="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"{% if css_dict.roboticon == 'https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg'%} selected{% endif %} data-imagesrc="https://upload.wikimedia.org/wikipedia/commons/1/11/Emojione_1F469.svg"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
+                    </div>
+                    <!-- Static Text Settings -->
+                    <div class="tab-pane card-body" id="statictext" style="padding:20px;" role="tabpanel">
+                        <h5 class="card-title">{% trans "Static Text Settings" %}</h5>
+                        <div class="form-group">
+                            <label for="--englishheader">{% trans "Header Text" %}</label>
+                            <input type="text" class="form-control" id="--englishheader" name="--englishheader" value="{{ static_text_dict.english.header }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8" style="display: flex; justify-content: center;">
+            <div style="padding:2em 6em 2em 6em; font-size:10px;">
+                <div class="marvel-device iphone-x">
+                    <div class="notch">
+                        <div class="camera"></div>
+                        <div class="speaker"></div>
+                    </div>
+                    <div class="top-bar"></div>
+                    <div class="sleep"></div>
+                    <div class="bottom-bar"></div>
+                    <div class="volume"></div>
+                    <div class="overflow">
+                        <div class="shadow shadow--tr"></div>
+                        <div class="shadow shadow--tl"></div>
+                        <div class="shadow shadow--br"></div>
+                        <div class="shadow shadow--bl"></div>
+                    </div>
+                    <div class="inner-shadow"></div>
+                    <div class="screen">
+                        <!-- Content goes here -->
+                        <div id="contactchat-widget"></div>
+                        <script async="" src="{{ cc_base_url }}v1/chat/{{ vendor.contactchat_access_url_part }}/widget/loader/"></script>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+{% block append_js_on_tail %}
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src='{% static "core/assets/js/jscolor.js" %}'></script>
+<!--handle live changes-->
+<script>
+    var inputs = [].slice.call(document.querySelectorAll('input'));
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    function handleUpdate(e) {
+        if (this.type === 'text') {
+            document.documentElement.style.setProperty(this.id, '#'+this.value);
+        } else {
+            document.documentElement.style.setProperty(this.id, this.value);
+        }
+      getComputedStyle(document.documentElement).getPropertyValue(this.id);
+    }
+</script>
+<!--cross platform color input-->
+<script type="text/javascript">!function(e){e.fn.ddslick=function(t){return d[t]?d[t].apply(this,Array.prototype.slice.call(arguments,1)):"object"!=typeof t&&t?void e.error("Method "+t+" does not exists."):d.init.apply(this,arguments)};var d={},t={data:[],keepJSONItemsOnTop:!1,width:260,height:null,background:"#eee",selectText:"",defaultSelectedIndex:null,truncateDescription:!0,imagePosition:"left",showSelectedHTML:!0,clickOffToClose:!0,embedCSS:!0,onSelected:function(){}};function i(e,d){var t,i,s,o,l,a=e.data("ddslick"),c=e.find(".dd-selected"),r=c.siblings(".dd-selected-value"),p=(e.find(".dd-options"),c.siblings(".dd-pointer"),e.find(".dd-option").eq(d)),f=p.closest("li"),h=a.settings,g=a.settings.data[d];e.find(".dd-option").removeClass("dd-option-selected"),p.addClass("dd-option-selected"),a.selectedIndex=d,a.selectedItem=f,a.selectedData=g,h.showSelectedHTML?c.html((g.cssSprite?'<span class="dd-selected-csssprite'+("right"==h.imagePosition?" dd-image-right "+g.cssSprite:" dd-image-left "+g.cssSprite)+'" />':"")+(g.imageSrc?'<img class="dd-selected-image'+("right"==h.imagePosition?" dd-image-right":"")+'" src="'+g.imageSrc+'" />':"")+(g.text?'<label class="dd-selected-text">'+g.text+"</label>":"")+(g.description?'<small class="dd-selected-description dd-desc'+(h.truncateDescription?" dd-selected-description-truncated":"")+'" >'+g.description+"</small>":"")):c.html(g.text),r.val(g.value),a.original.val(g.value),e.data("ddslick",a),n(e),i=(t=e).find(".dd-select").css("height"),s=t.find(".dd-selected-description"),o=t.find(".dd-selected-image"),l=t.find(".dd-selected-csssprite"),(s.length<=0&&o.length>0||s.length<=0&&l.length>0)&&t.find(".dd-selected-text").css("lineHeight",i),"function"==typeof h.onSelected&&h.onSelected.call(this,a)}function s(d){var t,i=d.find(".dd-select"),s=i.siblings(".dd-options"),n=i.find(".dd-pointer"),o=s.is(":visible");e(".dd-click-off-close").not(s).slideUp(50),e(".dd-pointer").removeClass("dd-pointer-up"),i.removeClass("dd-open"),o?(s.slideUp("fast"),n.removeClass("dd-pointer-up"),i.removeClass("dd-open")):(i.addClass("dd-open"),s.slideDown("fast"),n.addClass("dd-pointer-up")),(t=d).find(".dd-option").each(function(){var d=e(this),i=d.css("height"),s=d.find(".dd-option-description"),n=t.find(".dd-option-image"),o=t.find(".dd-selected-csssprite");(s.length<=0&&n.length>0||s.length<=0&&o.length>0)&&d.find(".dd-option-text").css("lineHeight",i)})}function n(e){e.find(".dd-select").removeClass("dd-open"),e.find(".dd-options").slideUp(50),e.find(".dd-pointer").removeClass("dd-pointer-up").removeClass("dd-pointer-up")}d.init=function(d){var n=e.extend({},t,d);return e("#css-ddslick").length<=0&&n.embedCSS&&e('<style id="css-ddslick" type="text/css">.dd-select{ border-radius:2px; border:solid 1px #ccc; position:relative; cursor:pointer;}.dd-desc { color:#aaa; display:block; overflow: hidden; font-weight:normal; line-height: 1.4em; }.dd-selected{ overflow:hidden; display:block; padding:10px; font-weight:bold;}.dd-pointer{ width:0; height:0; position:absolute; right:10px; top:50%; margin-top:-3px;}.dd-pointer-down{ border:solid 5px transparent; border-top:solid 5px #000; }.dd-pointer-up{border:solid 5px transparent !important; border-bottom:solid 5px #000 !important; margin-top:-8px;}.dd-options{ border:solid 1px #ccc; border-top:none; list-style:none; box-shadow:0px 1px 5px #ddd; display:none; position:absolute; z-index:2000; margin:0; padding:0;background:#fff; overflow:auto;}.dd-option{ padding:10px; display:block; border-bottom:solid 1px #ddd; overflow:hidden; text-decoration:none; color:#333; cursor:pointer;-webkit-transition: all 0.25s ease-in-out; -moz-transition: all 0.25s ease-in-out;-o-transition: all 0.25s ease-in-out;-ms-transition: all 0.25s ease-in-out; }.dd-options > li:last-child > .dd-option{ border-bottom:none;}.dd-option:hover{ background:#f3f3f3; color:#000;}.dd-selected-description-truncated { text-overflow: ellipsis; white-space:nowrap; }.dd-option-selected { background:#f6f6f6; }.dd-option-image, .dd-selected-image, .dd-selected-csssprite, dd-image-left{ vertical-align:middle; float:left; margin-right:5px; max-width:64px;}.dd-image-right { float:right; margin-right:15px; margin-left:5px;}.dd-container{ position:relative;}​ .dd-selected-text { font-weight:bold}​</style>').appendTo("head"),this.each(function(){var n=e.extend({},t,d),o=e(this);if(!o.data("ddslick")){var l=[];n.data;o.find("option").each(function(){var d=e(this),t=d.data();l.push({text:e.trim(d.text()),value:d.val(),selected:d.is(":selected"),description:t.description,cssSprite:t.csssprite,imageSrc:t.imagesrc})}),n.keepJSONItemsOnTop?e.merge(n.data,l):n.data=e.merge(l,n.data);var a=o,c=e("<div>").attr("id",o.attr("id")+"-dd-placeholder");o.replaceWith(c),o=c,ddSelectHtml='<div class="dd-select"><input class="dd-selected-value" name="'+a.attr("name")+'" type="hidden" /><a class="dd-selected"></a><span class="dd-pointer dd-pointer-down"></span></div>',o.addClass("dd-container").append(ddSelectHtml).append('<ul class="dd-options"></ul>'),o.find("input.dd-selected-value").attr("id",e(a).attr("id")).attr("name",e(a).attr("name"));l=o.find(".dd-select");var r=o.find(".dd-options");r.css({width:n.width}),l.css({width:n.width,background:n.background}),o.css({width:n.width}),null!=n.height&&r.css({height:n.height,overflow:"auto"}),e.each(n.data,function(e,d){d.selected&&(n.defaultSelectedIndex=e),r.append('<li><a class="dd-option">'+(d.value?' <input class="dd-option-value" type="hidden" value="'+d.value+'" />':"")+(d.cssSprite?' <span class="dd-selected-csssprite'+("right"==n.imagePosition?" dd-image-right "+d.cssSprite:" dd-image-left "+d.cssSprite)+'" />':"")+(d.imageSrc?' <img class="dd-option-image'+("right"==n.imagePosition?" dd-image-right":"")+'" src="'+d.imageSrc+'" />':"")+(d.text?' <label class="dd-option-text">'+d.text+"</label>":"")+(d.description?' <small class="dd-option-description dd-desc">'+d.description+"</small>":"")+"</a></li>")});var p={settings:n,original:a,selectedIndex:-1,selectedItem:null,selectedData:null};if(o.data("ddslick",p),n.selectText.length>0&&null==n.defaultSelectedIndex)o.find(".dd-selected").html(n.selectText);else{var f=null!=n.defaultSelectedIndex&&n.defaultSelectedIndex>=0&&n.defaultSelectedIndex<n.data.length?n.defaultSelectedIndex:0;i(o,f)}o.find(".dd-select").on("click.ddslick",function(){s(o)}),o.find(".dd-option").on("click.ddslick",function(){i(o,e(this).closest("li").index())}),n.clickOffToClose&&(r.addClass("dd-click-off-close"),o.on("click.ddslick",function(e){e.stopPropagation()}),e("body").on("click",function(){e(".dd-open").removeClass("dd-open"),e(".dd-click-off-close").slideUp(50).siblings(".dd-select").find(".dd-pointer").removeClass("dd-pointer-up")}))}})},d.select=function(d){return this.each(function(){var t,s,n;void 0!==d.index&&i(e(this),d.index),d.id&&(t=e(this),s=d.id,n=t.find(".dd-option-value[value= '"+s+"']").parents("li").prevAll().length,i(t,n))})},d.open=function(){return this.each(function(){var d=e(this);d.data("ddslick")&&s(d)})},d.close=function(){return this.each(function(){var d=e(this);d.data("ddslick")&&n(d)})},d.destroy=function(){return this.each(function(){var d=e(this),t=d.data("ddslick");if(t){var i=t.original;d.removeData("ddslick").unbind(".ddslick").replaceWith(i)}})}}(jQuery);</script>
+<!--cross platform icon input-->
+<script>
+$('#--roboticon').ddslick({onSelected: function(selectedData){}});
+$('#--usericon').ddslick({onSelected: function(selectedData){}});
+</script>
+{% endblock %}

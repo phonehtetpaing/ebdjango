@@ -1,0 +1,19 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="ti-timer" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<div class='form-group'>
+    <div class='bubble-input bubble-white range-slider anchor' data-api-child-id='{{ message_counter }}'>
+        {% trans "api_wait_description" %}
+        <input class='range-slider__range input-child' type='range' name='WaitSendMessage_{{ message_counter }}'
+               value={{ message.payload }} min='0' max='500'>
+        <span class='range-slider__value'>0</span>
+    </div>
+</div>
+
+{% endblock %}

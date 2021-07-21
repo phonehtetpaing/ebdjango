@@ -1,0 +1,96 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load questionnaire %}
+
+<!-- select option question -->
+<div class="row qtop" id="q{{question.display_order}}" onMouseOver="show('autohide{{question.display_order}}')" onMouseOut="hide('autohide{{question.display_order}}')">
+    <div class="col-md-1  my-auto autohide{{question.display_order}}">
+        <div class="d-flex flex-column  mx-auto w-25 p-3">
+            <button type="button" class="btn btn-secondary my-5 mx-auto"><i class="ti-angle-up"></i></button>
+            <button type="button" class="btn btn-secondary my-5 mx-auto"><i class="ti-angle-down"></i></button>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <!-- question toolbar -->
+                <div class="row autohide{{question.display_order}} d-flex justify-content-between">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-secondary"><i class="ti-pencil"></i></button>
+                    </div>
+                    <div class="btn-group"  role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-secondary pl-5 add-question"><i class="ti-plus"></i> {% trans "Add a question" %}</button>
+                    </div>
+                    <div class="btn-group float-right" role="group" aria-label="Third group">
+                        <button type="button" class="btn btn-secondary"><i class="ti-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h2>Q{{question.display_order}}.</h2>
+                <div class="form-group">
+                    <input type="hidden" name="question_{{question.id}}_id" value="{{question.id}}"/>
+                    <input type="hidden" name="question_{{question.id}}_template_id" value="{{question.question.id}}"/>
+                    <input type="hidden" name="question_{{question.id}}_display_order" value="{{question.display_order}}"/>
+                    <!-- the question type selector -->
+                    <label for="question_{{question.id}}_type">{% trans "Question Type" %}</label>
+                    <select class="input-child question_type" id="question_{{question.id}}_type" name="question_{{question.id}}_type">
+                       {% for type in question_types%}
+                        <option value="{{ type.name }}" {% if type.name == 'option' %} selected {% endif %}>{% trans type.name %}</option>
+                        {% endfor %}
+                    </select>
+
+                    <!-- question prompt for this question -->
+                    <div class="form-group">
+                        <label for="question">{% trans "Question (Text)" %}</label>
+                        <input type="text" class="form-control" id="question" name="question_{{question.id}}_question_text"
+                               value="{{ question.question.question_text }}">
+                    </div>
+
+                    <!-- array of options for this question -->
+                    {% if not question.question.question_options|loadjson %}
+                    <div class="form-group question_option_element">
+                        <label for="question_{{question.id}}_options">{% trans "Option" %}</label>
+                        <div class="px-20 form-inline">
+                            <input type="text" class="form-control" id="question_{{question.id}}_options" name="question_{{question.id}}_options"
+                                   placeholder="" maxlength="160" required="" value="">
+                        </div>
+
+                    </div>
+                    {% endif %}
+                    {% for option in question.question.question_options|loadjson %}
+                    <div class="form-group question_option_element">
+                        <label for="question_{{question.id}}_options">{% trans "Option" %}</label>
+                        <div class="px-20 form-inline">
+                            <input type="text" class="form-control" id="question_{{question.id}}_options" name="question_{{question.id}}_options"
+                                   placeholder="" maxlength="160" required="" value="{{ option }}">
+                            {% if forloop.counter > 1 %}
+                           <span><i class="pl-5 fa fa-2x fa-minus-circle remove-option"></i></span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                    <div class="form-group">
+                        <div class="p-20 form-inline">
+                            <input type="text" class="form-control" id="question_{{question.id}}_options" name="question_{{question.id}}_options"
+                                   placeholder="{% trans 'New Option' %}" maxlength="160" value="" disabled>
+                            <span><i class="pl-5 fa fa-2x fa-plus-circle add-option"></i></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <!-- question toolbar -->
+                <div class="row autohide{{question.display_order}} d-flex justify-content-center">
+                    <div class="btn-group"  role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-secondary pl-5 add-question"><i class="ti-plus"></i> {% trans "Add a question" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

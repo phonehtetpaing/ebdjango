@@ -6,6 +6,7 @@ from django.conf import settings
 from apps.core.models.event_reservation import EventReservation
 from apps.core.models.event_reservation_status import EventReservationStatus
 from apps.core.models.event import Event
+from apps.core.models.event_category import EventCategory
 from apps.core.models.end_user import EndUser
 
 # import views

@@ -1,0 +1,69 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block editor_head %}
+        <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+        <link href='{% static "froala_editor/css/froala_editor.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+        <link href='{% static "froala_editor/css/froala_style.min.css" %}' type="text/css" media="all" rel="stylesheet"/>
+        <script type="text/javascript" src='{% static "froala_editor/js/froala_editor.min.js" %}'></script>
+        <script>
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+var csrftoken = getCookie('csrftoken');</script>
+{% endblock %}
+
+{% block body %}
+
+    <!-- Business Plan Options -->
+
+<div class="col-md-12 px-0 h-100">
+    <div class="col-12 p-0 p-20 bg-white border">
+    <form id="plan_edit_form"
+          action="{% url namespace|add:':business_plan_edit' plan_id=business_plan.id %}"
+          method="post"
+          role="form">
+        {% csrf_token %}
+        <div class="row m-0 p-0">
+            <div class="col-md-3 p-0">
+                {{ business_plan_form.name.label }}:<br>
+                {{ business_plan_form.name }}
+            </div>
+            <div class="col-md-3 p-0">
+                {{ business_plan_form.price.label }}:<br>
+                {{ business_plan_form.price }}
+            </div>
+            <div class="col-md-3 p-0">
+                {{ business_plan_form.duration.label }}:<br>
+                {{ business_plan_form.duration }}
+            </div>
+        </div>
+        <div class="row m-0 pt-20">
+            <div class="col-md-12 p-0">
+                {{ business_plan_form.description.label }}:<br>
+                {{ business_plan_form.description }}
+            </div>
+        </div>
+    </form>
+    <div class="row m-0 pt-20">
+            <div class="col-md-12 p-0">
+                <button type="submit" form="plan_edit_form" class="btn btn-danger float-right">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

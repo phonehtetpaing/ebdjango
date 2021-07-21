@@ -65,6 +65,28 @@ class ContactChatApi(object):
             'v1/bot/', data=json.dumps(msg_data, ensure_ascii=False, separators=(",", ":")), timeout=timeout
         )
 
+    def push_question(self, to, message, timeout=None):
+        """push message API.
+
+        Send messages to users, groups, and rooms at any time.
+
+        :param str to: ID of the receiver
+        :param message: Message.
+        :param timeout: (optional) How long to wait for the server
+            to send data before giving up, as a float,
+            or a (connect timeout, read timeout) float tuple.
+        :type timeout: float | tuple(float, float)
+        """
+
+        msg_data = {
+            "recipient": {"id": to},
+            "message": message
+        }
+        print('debug push_question contactchat api', msg_data)
+        return self._post(
+            'v2/bot/', data=json.dumps(msg_data, ensure_ascii=False, separators=(",", ":")), timeout=timeout
+        )
+
     def _post(self, url, data=None, timeout=None):
         """POST request.
 
@@ -87,8 +109,6 @@ class ContactChatApi(object):
         headers.update(self.headers)
 
         post_message_url = self.endpoint + url + self.channel_access_token + '/'
-        print('debug _post contactchat api type ', type(data))
-        print('debug _post contactchat api ', post_message_url, headers, data)
         response = requests.post(
             post_message_url, headers=headers, data=data.encode('utf-8'), timeout=timeout
         )

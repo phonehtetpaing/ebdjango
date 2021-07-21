@@ -1,0 +1,13 @@
+{% extends base_template %}
+{% load i18n %}
+
+{% block content %}
+<h1>scenario list placeholder</h1>
+<ul>
+{% for item in object_list %}
+    <li>{{ item }}</li>
+{% empty %}
+    <li>{% trans "No items yet." %}</li>
+{% endfor %}
+</ul>
+{% endblock %}

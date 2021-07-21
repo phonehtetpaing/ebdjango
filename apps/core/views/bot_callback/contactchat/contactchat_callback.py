@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbid
 from django.views.decorators.csrf import csrf_exempt
 
 # import views
+from future.moves import collections
+
 from apps.core.views.bot_parts.contactchat.end_user_info import *
 from apps.core.views.bot_parts.contactchat.access_util import *
 from apps.core.views.bot_common.message_sequence import *
@@ -11,6 +13,7 @@ from apps.core.views.bot_common.payload_converter import *
 from apps.core.views.logging.end_user_logging import end_user_logger
 from apps.contactchat.webhook import CCWebhookParser
 from apps.contactchat.exceptions import InvalidSignatureError
+from apps.qa.views.utilities.questionnaire_sequence import process_questionnaire_sequence
 
 
 class MessageView(generic.View):
@@ -63,39 +66,56 @@ class MessageView(generic.View):
                 user_id = message['sender']['id']
 
                 if 'message' in message:
-                    text = message['message']['text']
-                    payload = message['message']['payload']
-                    # start welcome message sequence
-                    if payload == "GET_STARTED_PAYLOAD":
-
+                    # start questionnaire sequence
+                    if message['message'] and message['message'].get('endpoint') and message['message']['endpoint'] == 'qa':
+                        print('testing questionnaire')
                         # get end_user_vendor_info and update user
                         end_user_vendor_info_dict = get_end_user_vendor_info(request.path)
                         if end_user_vendor_info_dict:
                             create_or_update_auth_user(user_id, end_user_vendor_info_dict)
 
-                        # get end_user_info
+                        # get end_user_info # todo replace this with a qa alternative
+                        print('testing end_user_info')
                         end_user_info = get_end_user_info(request.path, user_id)
 
-                        update_message_sequence(payload, text, end_user_info)
-
-                    # continue previous sequence
+                        process_questionnaire_sequence(message['message'], end_user_info)
                     else:
-                        # get end_user_info
-                        end_user_info = get_end_user_info(request.path, user_id)
+                        text = message['message']['text']
+                        payload = message['message']['payload']
 
-                        # start event registration
-                        if "__event_" in payload:
-                            start_event_reservation(payload, text, end_user_info)
 
-                        elif "__session_close" in payload:
-                            delete_auth_user(user_id, end_user_vendor_info_dict)
 
-                        elif "test_payload" in payload:
-                            # echo message back as test
-                            text_send_message(end_user_info, {'text': text})
-                        # update existing message sequence
-                        else:
+                        # start welcome message sequence
+                        if payload == "GET_STARTED_PAYLOAD":
+
+                            # get end_user_vendor_info and update user
+                            end_user_vendor_info_dict = get_end_user_vendor_info(request.path)
+                            if end_user_vendor_info_dict:
+                                create_or_update_auth_user(user_id, end_user_vendor_info_dict)
+
+                            # get end_user_info
+                            end_user_info = get_end_user_info(request.path, user_id)
+
                             update_message_sequence(payload, text, end_user_info)
+
+                        # continue previous sequence
+                        else:
+                            # get end_user_info
+                            end_user_info = get_end_user_info(request.path, user_id)
+
+                            # start event registration
+                            if "__event_" in payload:
+                                start_event_reservation(payload, text, end_user_info)
+
+                            elif "__session_close" in payload:
+                                delete_auth_user(user_id, end_user_vendor_info_dict)
+
+                            elif "test_payload" in payload:
+                                # echo message back as test
+                                text_send_message(end_user_info, {'text': text})
+                            # update existing message sequence
+                            else:
+                                update_message_sequence(payload, text, end_user_info)
 
                 # todo testing
                 end_user_logger(request, end_user_info)

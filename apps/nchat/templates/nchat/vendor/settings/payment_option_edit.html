@@ -1,0 +1,92 @@
+{% extends "nchat/vendor/settings/nchat_menu.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block left_nav %}
+
+<style>
+    #plan-description p {
+        margin: 0px;
+    }
+    #plan-description img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    @media (min-width: 768px) {
+        #scrollable-menu {
+            height: 80vh;
+            overflow-y: scroll;
+        }
+    }
+    @media (max-width: 767.98px) {
+        div.col-md-2 {
+            padding: 0px !important;
+            margin-bottom: 1em;
+        }
+    }
+    .stripe-button-el {
+        width: 300px !important;
+    }
+</style>
+
+    <!-- sidebar -->
+        <form name="planForm" class="m-0 border mb-20">
+            {% csrf_token %}
+            {% for option in business_plans %}
+            <label class="col-12 px-0 m-0">
+                <div class="col-12 p-20 fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p text-truncate">
+                    <span class="d-inline text-nowrap">
+                        <input style="margin-top: 0.25em; margin-right: 1em"
+                        type="radio"
+                        name="payOpt"
+                        id="pay-opt-{{option.id}}"
+                        class="payOptInput"
+                        value="{{option.id}}"
+                        {% if forloop.first %} checked {% endif %}>
+                        {{ option.name }}
+                    </span>
+                </div>
+            </label>
+            {% endfor %}
+        </form>
+
+    {% endblock %}
+    {% block body %}
+
+    <div class="p-0 h-100 d-flex align-items-stretch border">
+        {% for option in business_plans %}
+        <div class="plan-description p-20 w-100 bg-white {% if forloop.first %} d-flex {% endif %} d-none
+            align-items-center justify-content-center" id="display-{{ option.id }}">
+            <div>
+                {{ option.description|safe }}
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row w-100 m-0 p-40" style="user-select: none; position: absolute; z-index: 100;
+                bottom: 0; ">
+            <div class="col d-flex justify-content-center">
+                <a id="paymentButton"
+                   class="btn btn-primary"
+                   href="{% url namespace|add:':payment_checkout' plan_id=business_plans.0.id %}"
+                   role="button">{% trans "Confirm Order" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let url = "{% url namespace|add:':payment_checkout' 0 %}".slice(0, "{% url namespace|add:':payment_checkout' 0 %}".length -2)
+    let paymentButton = document.querySelector("#paymentButton")
+    let rad = document.planForm.payOpt;
+    let prev = null;
+    for (let i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', (e) => {
+            let prev = document.querySelector(".plan-description.d-flex");
+            prev.classList.remove("d-flex");
+            let curr = document.querySelector("#display-" + e.target.value);
+            curr.classList.add("d-flex");
+            paymentButton.href=url + e.target.value + "/"
+        });
+    }
+</script>
+{% endblock %}

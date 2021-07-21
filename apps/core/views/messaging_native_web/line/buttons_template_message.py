@@ -37,6 +37,7 @@ def line_buttons_template_message(end_user_line, param):
             buttons_template_message
         )
     except LineBotApiError as e:
+        print('DEBUG LINE BOT API BUTTON MESSAGE ERROR')
         print(e.status_code)
         print(e.error.message)
         print(e.error.details)

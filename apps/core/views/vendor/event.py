@@ -6,6 +6,7 @@ from django.utils import timezone
 
 # import models
 from apps.core.models.event import Event
+from apps.core.models.event_category import EventCategory
 from apps.core.models.event_reservation import EventReservation
 
 # import views

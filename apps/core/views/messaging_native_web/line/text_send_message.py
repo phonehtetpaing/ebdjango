@@ -16,6 +16,7 @@ def line_text_send_message(end_user_line, param):
         )
 
     except LineBotApiError as e:
+        print('DEBUG LINE BOT API TEXT MESSAGE ERROR')
         print(e.status_code)
         print(e.error.message)
         print(e.error.details)

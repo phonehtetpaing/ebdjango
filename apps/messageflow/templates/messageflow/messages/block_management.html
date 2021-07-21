@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{{ message_forms.management_form }}
+<input type="hidden" name="block_id" id="block_id" value="{{block_id}}">
+<div id="forms" class="col-md-12">
+    {% for set in message_forms %}
+
+    {% if set.type.value == 1 or set.type.value == '1' %}
+    {% include 'messageflow/messages/text_message.html' with message=set message_counter=forloop.counter0 %}
+    {% elif set.type.value == 2 or set.type.value == '2' %}
+    {% include 'messageflow/messages/option_message.html' with message=set message_counter=forloop.counter0 %}
+    {% elif set.type.value == 3 or set.type.value == '3' %}
+    {% include 'messageflow/messages/image_message.html' with message=set message_counter=forloop.counter0 files=files %}
+    {% elif set.type.value == 4 or set.type.value == '4' %}
+    {% include 'messageflow/messages/file_message.html' with message=set message_counter=forloop.counter0 %}
+    {% else %}
+    {{ set.type.value }}
+    ERROR MESSAGE TYPE NOT IMPLEMENTED
+    {% endif %}
+
+    {% endfor %}
+</div>
+<div class="col-12 pr-0 pl-20 pt-20">
+    <div class="card">
+        <div class="card-body d-flex justify-content-around">
+            <a href="javascript:void(0)" id="add_text_message" class="btn btn-info btn-fill btn-wd">{% trans 'Add Text Message' %}</a>
+            <a href="javascript:void(0)" id="add_image_message" class="btn btn-info btn-fill btn-wd mx-5">{% trans 'Add Image Message' %}</a>
+            <a href="javascript:void(0)" id="add_option_message" class="btn btn-info btn-fill btn-wd mx-5">{% trans 'Add Option Message' %}</a>
+            <a href="javascript:void(0)" id="add_file_message" class="btn btn-info btn-fill btn-wd mx-5">{% trans 'Add File Message' %}</a>
+        </div>
+    </div>
+</div>

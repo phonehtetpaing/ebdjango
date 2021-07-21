@@ -1,0 +1,18 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="fa fa-user-plus" aria-hidden="true"></i><i class="fa fa-tags" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<div class="form-inline horizontal-align bubble-white">
+    <select class="input-child mb-2 mr-sm-2 mb-sm-0" name="TagSendMessage_{{ message_counter }}">
+        <option value="add" {% if message.payload.mode == "add" %} selected {% endif %}>{% trans "option_add" %}</option>
+        <option value="remove" {% if message.payload.mode == "remove" %} selected {% endif %}>{% trans "option_remove" %}</option>
+    </select>
+    <input type="text" class="form-control border-input input-child" placeholder="some tag description" name="TagSendMessage_{{ message_counter }}" value="{{ message.payload.tag }}" maxlength="1000" required>
+</div>
+
+{% endblock %}

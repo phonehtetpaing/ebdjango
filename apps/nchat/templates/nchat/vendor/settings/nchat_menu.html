@@ -1,0 +1,72 @@
+{% extends "nchat/base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+    {% block editor_head %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="row m-0 p-20 h-100">
+    <!-- Notification Applications -->
+    <div class="col-md-3 m-0 p-0 col-sm-12">
+        <div class="peers fxw-nw pos-r mb-20 border">
+            <div class="peer bdR w-100">
+                <div class="layers h-100">
+                        <div class="layer w-100 fxg-1 scrollable pos-r">
+                            <a href="{% url namespace|add:':business_plan_detail' %}">
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{% trans "Billing Overview" %}</h6>
+                                </div>
+                            </div>
+                            </a>
+                            {% if business.is_super_oem == 1 %}
+                            <a href="{% url namespace|add:':business_plan_list' %}">
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{% trans "Whitelabel Resale Plans" %}</h6>
+                                </div>
+                            </div>
+                            </a>
+                            {% endif %}
+                            <a href="{% url namespace|add:':payment_history_list' %}">
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{% trans "Transaction History" %}</h6>
+                                </div>
+                            </div>
+                            </a>
+                            {% if business.parent %}
+                            <a href="{% url namespace|add:':payment_edit' %}">
+                            <div class="peers fxw-nw ai-c p-20 bdB bgc-white bgcH-grey-50 cur-p">
+                                <div class="peer peer-greed pL-20">
+                                    <h6 class="mB-0 lh-1 fw-400 mR-50">{% trans "Payment Plan Purchasing" %}</h6>
+                                </div>
+                            </div>
+                            </a>
+                            {% endif %}
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    {% block left_nav %}
+
+    {% endblock %}
+
+    </div>
+
+    <div class="col-md-9 m-0 p-0 pl-20 col-sm-12">
+
+    {% block body %}
+
+    {% endblock %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

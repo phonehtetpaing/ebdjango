@@ -1,0 +1,308 @@
+{% extends base_template %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+<style>
+
+
+#id_filter_all {
+  list-style-type: none;
+  padding: 20px;
+}
+#id_filter_all li {
+}
+#clear-input {
+    border: 1px solid #ced4da;
+}
+
+.side-by-side {
+    width: 45% !important;
+    display: inline !important;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+<form id="target_form" name="target_form" action="{% url namespace|add:':messageflow:targeted_message' base_template=args.base_template %}" method="post" role="form">
+    {% csrf_token %}
+    {{ message_forms.management_form }}
+     <div class="card mt-20 mr-20 ml-20">
+            <div class="card-header">{% trans 'Target Message' %}:</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 offset-lg-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'forms/default_form_field.html' with field=target_form.filter_gender %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'forms/default_form_field.html' with field=target_form.filter_birth_month %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="row">
+                            <div class="col-12">
+                                {% include 'messageflow/forms/side-by-side_range_form.html' with field=target_form.filter_birth_year %}
+                            </div>
+                            <div class="col-12">
+                                {% include 'messageflow/forms/side-by-side_range_form.html' with field=target_form.filter_regist_dt %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="d-flex justify-content-end">
+                            <input type="hidden" name="action" value="select">
+                            <a href="javascript:void(0)" class="btn btn-primary" id="send_message">{% trans 'Send' %}</a>
+                            <input type="submit" hidden>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     </div>
+    <div class="mr-20">
+             <div id="message-list" data-block-id="{{message_forms.instance.id}}" class="col-md-12"></div>
+    </div>
+         <div class="card m-20">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col d-flex justify-content-around">
+                        <a href="javascript:void(0)" id="add_text_message" class="btn btn-info btn-fill btn-wd">{% trans 'Add Text Message' %}</a>
+                        <a href="javascript:void(0)" id="add_image_message" class="btn btn-info btn-fill btn-wd mx-5">{% trans 'Add Image Message' %}</a>
+                        <a href="javascript:void(0)" id="add_file_message" class="btn btn-info btn-fill btn-wd mx-5">{% trans 'Add File Message' %}</a>
+                    </div>
+                </div>
+            </div>
+         </div>
+</form>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script>
+$(function(){
+    // add new question template
+    var form_count = {{message_forms.total_form_count}};
+    $(document).on('click', '#add_text_message', function(){ addMessageTemplate('text', form_count); });
+    $(document).on('click', '#add_image_message', function(){ addMessageTemplate('image', form_count); });
+    $(document).on('click', '#add_option_message', function(){ addMessageTemplate('option', form_count); });
+    $(document).on('click', '#add_file_message', function(){ addMessageTemplate('file', form_count); });
+
+    $(document).on('click', '#send_message', function(){ sendMessageHandler(); });
+
+    function sendMessageHandler() {
+        checkAndSend();
+    }
+
+    // delete a message
+    $(document).on("click", ".ti-close", function(){
+        if(!confirm(gettext('dia-erase-confirm'))){
+            return false;
+        } else {
+            // get formset id
+            let cbody = $(this).parent().parent().parent().parent().parent().find('.card-body');
+            let message_dsp_order = cbody.find("input[id^='id_message_set-'][id$='-display_order']");
+            let message_set_id = message_dsp_order.attr('id')[15];
+
+            // set delete field to true
+            $(`#id_message_set-${message_set_id}-DELETE`)[0].checked = true;
+
+            // set entire message to hidden
+            $(this).closest(".base_message").hide();
+            messageRefresh();
+        }
+    });
+
+    function messageRefresh() {
+        var messages = $(".base_message:visible");
+        $.each(messages,function(i,child) {
+            var message_id = i;
+            orderChange.bind($(this))(message_id);
+        });
+    }
+
+    function orderChange(new_position) {
+        // get current question div
+        var currentMessageDiv = $(this).closest('.base_message');
+        // find hidden formfield and update value
+        currentMessageDiv.find("input[name*='-display_order']").attr("value", new_position);
+    }
+
+    function moveUp() {
+        $(this).closest('.base_message').insertBefore($(this)
+        .closest('.base_message').prev('.base_message:visible')).hide().show('slow');
+        messageRefresh();
+    }
+
+    function moveDown() {
+        $(this).closest('.base_message').next('.base_message:visible')
+        .insertBefore($(this).closest('.base_message')).hide().show('slow');
+        messageRefresh();
+    }
+
+    $(document).on('click', '.ti-angle-up', function(){ moveUp.bind($(this))(); });
+    $(document).on('click', '.ti-angle-down', function(){ moveDown.bind($(this))(); });
+
+    function addMessageTemplate(type, display_order) {
+        let block_id = document.getElementById('message-list').getAttribute("data-block-id");
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:scenario_message_template' %}',
+            data: {
+                'message_set_id': form_count,
+                'block_id': block_id,
+                'type': type,
+                'display_order': display_order
+                },
+            dataType: 'json',
+            success: function (data) {
+              var html_template = data.template;
+                console.log('getting template:', html_template);
+
+              $('#message-list').append(html_template)
+              form_count++;
+              $('#id_message_set-TOTAL_FORMS').val(form_count);
+              console.log($('#id_message_set-TOTAL_FORMS'));
+              messageRefresh();
+            }
+         });
+    }
+
+    function messageBlockRefresh() {
+        let blocks = (document.getElementsByClassName('message_block'));
+        let block_ids = [];
+        for(var i=0;typeof(blocks[i])!='undefined';block_ids.push(blocks[i++].getAttribute('data-block-id')));
+
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:message_block_order' %}',
+            data: {'block_ids': block_ids,},
+            dataType: 'json',
+            success: function (data) {
+              console.log('success!', data);
+            }
+         });
+    }
+});
+
+$(document).on("change", ".image-input", function() {
+    var url = $(this).val();
+    var current = $(this);
+    var img = new Image();
+
+    $(current).siblings(".img-thumbnail").empty();
+    img.onload = function() {
+                $(current).siblings(".img-thumbnail").prepend('<img src="'+url+'" style="max-width:auto; height:25vh;"/>')
+    }
+            img.onerror = function() {
+                $(current).siblings(".img-thumbnail").prepend('<div><div><img src="{% static 'images/picture_icon_4.svg' %}" alt="upload a photo" style="max-width:auto; height:100px;"></div><div class=" text-center">{% trans "Image Not Found" %}</div></div>')
+            }
+            img.src = url;
+});
+
+function checkAndSend() {
+
+    let gender = document.getElementById("id_filter_gender")
+    let filter_gender = gender.options[gender.selectedIndex].value;
+    let birth_month = document.getElementById("id_filter_birth_month")
+    let filter_birth_month = birth_month.options[birth_month.selectedIndex].value;
+    let filter_birth_year_min = document.getElementById("id_filter_birth_year_0").value;
+    let filter_birth_year_max = document.getElementById("id_filter_birth_year_1").value;
+    let filter_regist_dt_min = document.getElementById("id_filter_regist_dt_0").value;
+    let filter_regist_dt_max = document.getElementById("id_filter_regist_dt_1").value;
+
+    filtered = () => {
+        let filterList = [filter_gender, filter_birth_month, filter_birth_year_min, filter_birth_year_max, filter_regist_dt_min, filter_regist_dt_max]
+        return filterList.some((e) => { return e !== "" })
+    }
+
+    correctDateFormat = () => {
+        let re = /^$|^([12]\d{3}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01]))$/
+        let dateFilterList = [filter_birth_year_min, filter_birth_year_max, filter_regist_dt_min, filter_regist_dt_max]
+        return dateFilterList.every((e) => { return e.match(re) });
+    }
+
+    atLeastOneMessage = () => {
+        let messages = document.querySelector("#message-list").children;
+        let visibleMessageCount = 0;
+        for (let message of messages){
+            if (message.style.display !== "none") {
+                visibleMessageCount++;
+            }
+        }
+        return visibleMessageCount > 0;
+    }
+
+    passedChecks = () => {
+        let alertMessage = "\n";
+        let passedChecks = true;
+        if (!filtered()) {
+            passedChecks = false;
+            alertMessage += "\u2022 {% trans 'No filters have been selected.' %}\n\n"
+        }
+        if (!correctDateFormat()) {
+            passedChecks = false;
+            alertMessage += "\u2022 {% trans 'One or more date fields do not match the format, YYYY-MM-DD (e.g. 2020-12-25).' %}\n\n"
+        }
+        if (!atLeastOneMessage()){
+            passedChecks = false;
+            alertMessage += "\u2022 {% trans 'At least one message needs to be sent.' %}\n\n";
+        }
+        if (!passedChecks){
+            alert(alertMessage);
+        }
+        return passedChecks
+    }
+
+    getRecipientCount = () => {
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:targeted_message_count' %}',
+            data: {
+                'filter_gender': filter_gender,
+                'filter_birth_month': filter_birth_month,
+                'filter_birth_year_min': filter_birth_year_min,
+                'filter_birth_year_max': filter_birth_year_max,
+                'filter_regist_dt_min': filter_regist_dt_min,
+                'filter_regist_dt_max': filter_regist_dt_max,
+            },
+            dataType: 'json',
+            success: (data) => {
+                if (data.recipientCount === 0) {
+                    alert("{% trans 'This search criteria results in no recipients.' %}")
+                } else {
+                    confirmMessage = "{% trans 'Are you sure you sure you want to send this/these message(s) to ' %}" + data.recipientCount + "{% trans ' user(s)?' %}"
+                    if (confirm(confirmMessage)) {
+                        form = document.querySelector("#target_form")
+                        document.querySelector('input[type="submit"]').click();
+                    }
+                }
+            },
+            error: (data) => {
+                alert(" {% trans 'There was a problem connecting to the server. Please check your Internet connection and try again.' %}")
+            }
+        });
+    }
+
+    if (passedChecks()){
+        getRecipientCount();
+    }
+}
+
+$(document).on("change", ".file-input", function() {
+    var url = $(this).val();
+    var fileName = $(this).find('option:selected').text()
+    var current = $(this);
+    var img = new Image();
+
+    $(current).siblings(".file-display").empty();
+    img.onload = function() {
+            $(current).siblings(".file-display").prepend('<a href="' + url + '">' + fileName + '</a>')
+    }
+            img.onerror = function() {
+                $(current).siblings(".img-thumbnail").prepend('<i class="fa fa-camera fa-5x text-center" aria-hidden="true"></i><span class=" text-center">No File Found</span>')
+            }
+            img.src = url;
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends base_template %}
+{% load staticfiles %}
+{% load i18n %}
+{% load path_utils %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="py-20 px-0">
+    <form action="" method="post" role="form">
+        {% csrf_token %}
+        <!-- main scenario settings -->
+        <div class="card p-20 mx-20">
+            <div class="d-flex flex-row justify-content-between">
+                <div>{{ form }}</div>
+                <!-- save buttons -->
+                <div>
+                    <button type="submit" class="btn btn-info btn-fill btn-wd">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-20">
+            <!-- message block list -->
+            <div class="col-md-3 mt-20 px-0 h-md-100">
+                <div class="border-left border">
+                    <div class="p-20 bgc-white">
+                        <input id="historySearch" type="text" class="form-control m-0 p-20" placeholder='{% trans "Search..." %}'>
+                    </div>
+                    <div id="block-list" class="infinite-container scrollable w-100 border-top">
+                        {% for block in message_blocks %}
+                            {% include 'messageflow/messages/message_block.html' with block=block %}
+                        {% endfor %}
+                        <div class="loading" style="display: none;">{% trans 'Loading...' %}</div>
+                    </div>
+                    <div class="p-20 h-md-100 border-bottom bgc-white">
+                        <a href="javascript:void(0)" id="add_block" class="btn btn-info btn-fill btn-wd w-100">{% trans 'Add Message Block' %}</a>
+                    </div>
+                </div>
+            </div>
+            <!-- message list -->
+            <div id="message-list" data-block-id="None" class="col-md-9 px-0" >
+            </div>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script>
+$(function(){
+    // add new question template
+    var form_count = {{message_forms.total_form_count}};
+    $(document).on('click', '#add_text_message', function(){ addMessageTemplate('text', form_count); });
+    $(document).on('click', '#add_image_message', function(){ addMessageTemplate('image', form_count); });
+    $(document).on('click', '#add_option_message', function(){ addMessageTemplate('option', form_count); });
+    $(document).on('click', '#add_file_message', function(){ addMessageTemplate('file', form_count); });
+
+    // delete a message
+    $(document).on("click", ".ti-close", function(){
+        if(!confirm(gettext('dia-erase-confirm'))){
+            return false;
+        } else {
+            // get formset id
+            let cbody = $(this).parent().parent().parent().parent().parent().find('.card-body');
+            let message_dsp_order = cbody.find("input[id^='id_message_set-'][id$='-display_order']");
+            let message_set_id = message_dsp_order.attr('id')[15];
+
+            // set delete field to true
+            $(`#id_message_set-${message_set_id}-DELETE`)[0].checked = true;
+
+            // set entire message to hidden
+            $(this).closest(".base_message").hide();
+            messageRefresh();
+        }
+    });
+
+    function messageRefresh() {
+        var messages = $(".base_message:visible");
+        $.each(messages,function(i,child) {
+            var message_id = i;
+            orderChange.bind($(this))(message_id);
+        });
+    }
+
+    function orderChange(new_position) {
+        // get current question div
+        var currentMessageDiv = $(this).closest('.base_message');
+        // find hidden formfield and update value
+        currentMessageDiv.find("input[name*='-display_order']").attr("value", new_position);
+    }
+
+    function moveUp() {
+        $(this).closest('.base_message').insertBefore($(this)
+        .closest('.base_message').prev('.base_message:visible')).hide().show('slow');
+        messageRefresh();
+    }
+
+    function moveDown() {
+        $(this).closest('.base_message').next('.base_message:visible')
+        .insertBefore($(this).closest('.base_message')).hide().show('slow');
+        messageRefresh();
+    }
+
+    $(document).on('click', '.ti-angle-up', function(){ moveUp.bind($(this))(); });
+    $(document).on('click', '.ti-angle-down', function(){ moveDown.bind($(this))(); });
+
+    function addMessageTemplate(type, display_order) {
+        let block_id = document.getElementById('message-list').getAttribute("data-block-id");
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:scenario_message_template' %}',
+            data: {
+                'message_set_id': form_count,
+                'scenario_id': {{ form.instance.id }},
+                'block_id': block_id,
+                'type': type,
+                'display_order': display_order
+                },
+            dataType: 'json',
+            success: function (data) {
+              var html_template = data.template;
+              $('#forms').append(html_template)
+              form_count++;
+              $('#id_message_set-TOTAL_FORMS').val(form_count);
+              console.log($('#id_message_set-TOTAL_FORMS'));
+              messageRefresh();
+            }
+         });
+    }
+
+    function messageBlockRefresh() {
+        let blocks = (document.getElementsByClassName('message_block'));
+        let block_ids = [];
+        for(var i=0;typeof(blocks[i])!='undefined';block_ids.push(blocks[i++].getAttribute('data-block-id')));
+
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:message_block_order' %}',
+            data: {'block_ids': block_ids,},
+            dataType: 'json',
+            success: function (data) {
+              console.log('success!', data);
+            }
+         });
+    }
+
+    function addMessageBlock() {
+        var message_block_count = $('#block-list .infinite-item').length;
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:message_block_add' %}',
+            data: {
+                'scenario_id': {{ form.instance.id }},
+                'display_order': message_block_count,
+                },
+            dataType: 'json',
+            success: function (data) {
+              var html_template = data.template;
+              $('#block-list').append(html_template)
+              messageBlockRefresh();
+            }
+         });
+    }
+    $(document).on('click', '#add_block', function(){ addMessageBlock().bind($(this))(); });
+
+    function loadMessageSet(block_id) {
+        if (!block_id) { return; }
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:message_block_set' %}',
+            data: { 'block_id': block_id, },
+            dataType: 'json',
+            success: function (data) {
+              var html_template = data.template;
+              document.getElementById('message-list').innerHTML = html_template;
+              document.getElementById('message-list').setAttribute("data-block-id", block_id);
+              form_count = document.getElementById('id_message_set-TOTAL_FORMS').getAttribute("value");
+            }
+        });
+    }
+
+    $(document).on('click', '.load_block', function(event){
+        var block_id = $(event.target).closest('.message_block').attr('data-block-id');
+        loadMessageSet(block_id);
+    });
+
+    function addMessageOption(block_id, set_id) {
+        var option_list = $("#message_set-"+ set_id +"-option_list")
+        var message_option_count = $("#message_set-"+ set_id +"-option_list .message-option").length;
+
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:message_option_add' %}',
+            data: {
+                'block_id': block_id,
+                'set_id': set_id,
+                'option_id': message_option_count,
+                },
+            dataType: 'json',
+            success: function (data) {
+              var html_template = data.template;
+              option_list.append(html_template)
+            }
+         });
+    }
+
+    $(document).on('click', '.add-message-option', function(event){
+        let block_id = document.getElementById('message-list').getAttribute("data-block-id");
+        let set_id =  $(event.target).closest('.base_message').find("input[name*='-display_order']").val();
+
+        addMessageOption(block_id, set_id);
+    });
+});
+
+$(document).on("change", ".image-input", function() {
+    var url = $(this).val();
+    var current = $(this);
+    var img = new Image();
+
+    $(current).siblings(".img-thumbnail").empty();
+    img.onload = function() {
+            $(current).siblings(".img-thumbnail").prepend('<img src="'+url+'" style="max-width:auto; height:25vh;"/>')
+    }
+            img.onerror = function() {
+                $(current).siblings(".img-thumbnail").prepend('<i class="fa fa-camera fa-5x text-center" aria-hidden="true"></i><span class=" text-center">No Image Found</span>')
+            }
+            img.src = url;
+});
+
+$(document).on("change", ".file-input", function() {
+    var url = $(this).val();
+    var fileName = $(this).find('option:selected').text()
+    var current = $(this);
+    var img = new Image();
+
+    $(current).siblings(".file-display").empty();
+    img.onload = function() {
+            $(current).siblings(".file-display").prepend('<a href="' + url + '">' + fileName + '</a>')
+    }
+            img.onerror = function() {
+                $(current).siblings(".img-thumbnail").prepend('<i class="fa fa-camera fa-5x text-center" aria-hidden="true"></i><span class=" text-center">No File Found</span>')
+            }
+            img.src = url;
+});
+</script>
+{% endblock %}

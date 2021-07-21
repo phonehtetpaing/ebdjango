@@ -1,0 +1,126 @@
+<!doctype html>
+{% load staticfiles %}
+{% load i18n %}
+{% load questionnaire %}
+{% load list_utils %}
+{% load to_string %}
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{% trans "Respondent Responses" %}</title>
+    <style type="text/css">
+        @font-face {
+          font-family: "japanese";
+          src: url("{% static 'fonts/migmix/migmix-2p-regular.ttf' %}");
+        }
+        @page {
+            size: A4;
+            margin: 1cm;
+            font-family: "japanese";
+        }
+        html, body {
+          font-family: "japanese";
+        }
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 5px;
+            background-color: #fff;
+        }
+        .table th,
+        .table td {
+            padding: 5px;
+            vertical-align: top;
+            border-top: 1px solid #000;
+            text-align: center;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #000;
+        }
+        .table tbody + tbody {
+            border-top: 2px solid #000;
+        }
+        .table .table {
+            background-color: #fff;
+        }
+        .list-group {
+            display: block;
+            width: 100%;
+            list-style: none;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .list-group p {
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            list-style: none;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>{% trans "Respondent Responses" %} - {{ today | date:"d/m/Y" }}</h3>
+        </div>
+
+        <div class="list-group">
+            <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+            <p>{% trans "Questionnaire" %}: #{{ questionnaire.id }} - {{ questionnaire.name }}</p>
+        </div>
+
+        {% for user_questionnaire in user_questionnaires %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Response Date</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Questions Answered</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ user_questionnaire.regist_dt | date:"d/m/Y" }}</td>
+                <td>{{ user_questionnaire.end_user.id }}</td>
+                <td>{{ user_questionnaire.end_user.get_full_name }}</td>
+                <td>{{ user_questionnaire.end_user.email }}</td>
+                <td>{{ user_questionnaire.id|get_qa_response_count }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Question" %}</th>
+                    <th>{% trans "Response" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for response in user_questionnaire.responses %}
+                    <tr>
+                        <!-- Question content -->
+                        <td>
+                            {{ response.questionnaire_question.question.question_text }}
+                        </td>
+                        <!-- Response content -->
+                        <td>
+                            {{ response|get_question_response }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

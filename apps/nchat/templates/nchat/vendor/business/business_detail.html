@@ -1,0 +1,117 @@
+{% extends "nchat/base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+<form id="business_form" enctype=multipart/form-data class="" action="{% url namespace|add:':business_detail' %}" method="post" role="form">
+    {% csrf_token %}
+    <div class="p-20">
+        <div class="card mb-40">
+            <div class="card-header">
+                {% trans "title_vendor_info"%}
+            </div>
+            <div class="card-body pt-30 px-20">
+                {% csrf_token %}
+                <div class="row m-0 mb-20">
+                    <div class="col-md-3">
+                        {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field }}
+                        {% endfor %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="row mx-0 mb-3">
+                            {% include 'forms/default_form_field.html' with field=form.business_name %}
+                        </div>
+                        <div class="row mx-0 mb-3">
+                            {% include 'forms/default_form_field.html' with field=form.service_name %}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row mx-0 mb-3">
+                            <div class="form-group">
+                                <label for="plan_name">{% trans "Active Plan"%}:</label>
+                                <input disabled type="text"
+                                       class="form-control"
+                                       id="plan_name"
+                                       placeholder="{% if active_plan %}{{ active_plan.plan_name }} {% trans 'Plan' %}{% else %}{% trans 'No Active Plan' %}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="row mx-0 mb-3">
+                            <div class="form-group">
+                                <label for="plan_end">{% trans "Plan Expiration Date"%}:</label>
+                                <input disabled type="text" class="form-control" id="plan_end" placeholder="{% if active_plan %}{{ active_plan.expiration_dt|date:'Y-m-d' }}{% else %}{% trans 'N/A' %}{% endif %}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="vertical-align p-20">
+                                    {% if business.logo %}
+                                    <img  src="{{ business.logo.url }}" class="w-6r h-6r bdrs-50p mx-auto d-block">
+                                    {% else %}
+                                    <img  src='{% static "core/assets/images/default_vendor_picture.png" %}' class="w-6r h-6r bdrs-50p mx-auto d-block">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" hidden>{% trans "Edit" %}</button>
+                        <button type="submit" form="business_form" class="btn btn-primary profile-submit-btn">{% trans "Save" %}</button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-center">
+                            <div class="form-group">
+                                {{ form.logo }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+        <div class="clearfix"></div>
+        <div class="card">
+            <div class="card-header">
+                {% trans "Business Subsidiaries" %}
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr style="text-align:left;">
+                            <th>{% trans "Business Name"%}</th>
+                            <th>{% trans "Service Name"%}</th>
+                            <th>{% trans "Active Plan"%}</th>
+                            <th>{% trans "Plan Termination Date"%}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for subsidiary in business_subsidiaries %}
+                        <tr>
+                            <td>{{ subsidiary.business_name }}</td>
+                            <td>{{ subsidiary.service_name }}</td>
+                            <td>Premium Plan</td>
+                            <td>2020-01-01</td>
+                            <td><a href="{% url namespace|add:':business_detail' business_id=subsidiary.id %}" class="btn badge badge-info btn-fill btn-wd"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;{% trans "btn_details" %}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

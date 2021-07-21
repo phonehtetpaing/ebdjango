@@ -23,10 +23,10 @@
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#general" role="tab">{% trans "General Style" %}</a>
+                        <a class="nav-link active" data-toggle="tab" href="#general" role="tab">{% trans "General Style" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#bot" role="tab">{% trans "Bot Style" %}</a>
+                        <a class="nav-link" data-toggle="tab" href="#bot" role="tab">{% trans "Bot Style" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#user" role="tab">{% trans "User Style" %}</a>
@@ -36,31 +36,24 @@
             <form action="{% url namespace|add:':settings_style_index' %}" method="post" role="form">
                 {% csrf_token %}
                 <div class="tab-content tabcontent-border">
-                    <div class="tab-pane card-body" id="general" style="padding:20px;" role="tabpanel">
+                    <!-- General Chat Settings-->
+                    <div class="tab-pane card-body active" id="general" style="padding:20px;" role="tabpanel">
                         <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
-
-                        <div class="form-group">
-                            <label for="--preset">{% trans "Preset" %}</label>
-                            <select class="input-child" id="preset" name="--preset">
-                                  <option value="0" 
-                                  {% if css_dict.preset_id|to_string == '0' %}selected{% endif %}>{% trans "Customized" %}
-                                  </option>
-                                  {% for preset in presets%}
-                                     <option value="{{preset.id}}"
-                                         {% if css_dict.preset_id|to_string == preset.id|to_string %}selected{% endif %}>
-                                         {{preset.preset_name|capfirst}}
-                                     </option>
-                                  {% endfor %}
-                            </select>
-                        </div>
-
+                        <!-- color of the window background -->
                         <div class="form-group">
                             <label for="--chatbackgroundcolor">{% trans "Background Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--chatbackgroundcolor" name="--chatbackgroundcolor" value="{{ css_dict.chatbackgroundcolor }}">
+                            <input type="text" class="jscolor form-control" id="--chatbackgroundcolor" name="--chatbackgroundcolor" value="{{ css_dict.chatbackgroundcolor }}">
                         </div>
+                        <!-- color of the submit button in the bottom right -->
                         <div class="form-group">
                             <label for="--submitbuttoncolor">{% trans "Submit Button Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--submitbuttoncolor" name="--submitbuttoncolor" value="{{ css_dict.submitbuttoncolor }}">
+                            <input type="text" class="jscolor form-control" id="--submitbuttoncolor" name="--submitbuttoncolor" value="{{ css_dict.submitbuttoncolor }}">
+                        </div>
+
+                        <!-- Font settings -->
+                        <div class="form-group">
+                            <label for="--fontsize">{% trans "Font Size" %}</label>
+                            <input type="number" name="--fontsize" id="--fontsize" min="10" max="25" value="{{ css_dict.fontsize }}">
                         </div>
                         <div class="form-group">
                             <label for="--fontfamily">{% trans "Font Family" %}</label>
@@ -91,17 +84,18 @@
                         </div>
                         <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
                     </div>
-                    <div class="tab-pane active card-body" id="bot" style="padding:20px;" role="tabpanel">
+                    <!-- Robot Settings -->
+                    <div class="tab-pane card-body" id="bot" style="padding:20px;" role="tabpanel">
                         <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
 
 
                         <div class="form-group">
                             <label for="--robottextcolor">{% trans "Robot Text Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--robottextcolor" name="--robottextcolor" value="{{ css_dict.robottextcolor }}">
+                            <input type="text" class="jscolor form-control" id="--robottextcolor" name="--robottextcolor" value="{{ css_dict.robottextcolor }}">
                         </div>
                         <div class="form-group">
                             <label for="--robotbubblecolor">{% trans "Robot Bubble Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--robotbubblecolor" name="--robotbubblecolor" value="{{ css_dict.robotbubblecolor }}">
+                            <input type="text" class="jscolor form-control" id="--robotbubblecolor" name="--robotbubblecolor" value="{{ css_dict.robotbubblecolor }}">
                         </div>
                         <div class="form-group">
                             <label for="--roboticon">{% trans "Robot Icon" %}</label>
@@ -153,16 +147,17 @@
                         <button type="submit" class="btn btn-primary">{% trans "btn_confirm" %}</button>
 
                     </div>
+                    <!-- User Settings -->
                     <div class="tab-pane card-body" id="user" style="padding:20px;" role="tabpanel">
                         <h5 class="card-title">{% trans "Contactchat Style Settings" %}</h5>
 
                         <div class="form-group">
                             <label for="--usertextcolor">{% trans "User Text Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--usertextcolor" name="--usertextcolor" value="{{ css_dict.usertextcolor }}">
+                            <input type="text" class="jscolor form-control" id="--usertextcolor" name="--usertextcolor" value="{{ css_dict.usertextcolor }}">
                         </div>
                         <div class="form-group">
                             <label for="--userbubblecolor">{% trans "User Bubble Color" %}</label>
-                            <input type="color" class="jscolor form-control" id="--userbubblecolor" name="--userbubblecolor" value="{{ css_dict.userbubblecolor }}">
+                            <input type="text" class="jscolor form-control" id="--userbubblecolor" name="--userbubblecolor" value="{{ css_dict.userbubblecolor }}">
                         </div>
                         <div class="form-group">
                             <label for="--usericon">{% trans "User Icon" %}</label>
@@ -179,8 +174,8 @@
             </form>
         </div>
     </div>
-    <div class="col-md-6">
-            <div style="padding:20em 60em 20em 60em; font-size:1px">
+    <div class="col-md-8" style="display: flex; justify-content: center;">
+            <div style="padding:2em 6em; font-size:10px;">
                 <div class="marvel-device iphone-x">
                     <div class="notch">
                         <div class="camera"></div>
@@ -211,32 +206,15 @@
 {% endblock content %}
 {% block append_js_on_tail %}
 <script src='{% static "core/assets/js/jscolor.js" %}'></script>
-<script src='{% static "core/assets/js/jspresets.js" %}'></script>
 <!--handle live changes-->
 <script>
-    let css={{css_dict|safe}}
-    let presetField = document.querySelector("#preset");
     var inputs = [].slice.call(document.querySelectorAll('input'));
     inputs.forEach(input => input.addEventListener('change', handleUpdate));
     function handleUpdate(e) {
-        if(!css['preset_id'] || css['preset_id'] == '0' || presetField.value =='0'){
-          if (this.type === 'text') {
-              document.documentElement.style.setProperty(this.id, '#'+this.value);
-            }
-            checkPreset();
+        if (this.type === 'text') {
+            document.documentElement.style.setProperty(this.id, '#'+this.value);
+        } else {
             document.documentElement.style.setProperty(this.id, this.value);
-        }else{
-           let confirmation = confirm(' Do you wish to change anyway?')
-           if (confirmation) {
-              if (this.type === 'text') {
-                document.documentElement.style.setProperty(this.id, '#'+this.value);
-              }
-              presetField.value='0'
-              checkPreset();
-              document.documentElement.style.setProperty(this.id, this.value);
-           }else{
-              return
-           }
         }
       getComputedStyle(document.documentElement).getPropertyValue(this.id);
     }

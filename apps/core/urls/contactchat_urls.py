@@ -1,10 +1,10 @@
 from django.urls import path
-from django.conf.urls import url
 from apps.core.views.bot_callback.fbms import fbms_smartsec_callback
 from apps.core.views.bot_callback.line import line_smartsec_callback
 from apps.core.views.bot_callback.contactchat import contactchat_callback
 from apps.core.views.vendor_contactchat import dashboard
-from apps.core.views.vendor import logout
+from apps.core.views.vendor_contactchat import analytics
+from apps.core.views.vendor import logout, files
 from apps.core.views.vendor import todo
 from apps.core.views.vendor_contactchat import settings_vendor
 from apps.core.views.vendor import settings_tag
@@ -15,9 +15,7 @@ from apps.core.views.worker import message_worker
 from apps.core.views.vendor_contactchat import block_message
 from apps.core.views.vendor_contactchat import direct_message
 from apps.core.views.vendor_common import end_user_registration
-from apps.core.views.sample import samples
-from apps.core.views.vendor_contactchat.documents import DocumentCreateView
-
+from apps.core.views.vendor.files import FileCreateView
 
 urlpatterns = [
     # callback
@@ -41,9 +39,11 @@ urlpatterns = [
     path('block/message/detail/<int:message_block_id>/', block_message.detail, name='block_message_detail'),
     path('block/message/edit/<int:message_block_id>/', block_message.edit, name='block_message_edit'),
     path('block/message/delete/<int:message_block_id>/', block_message.delete, name='block_message_delete'),
+    path('block/message/template/', block_message.get_message_template, name='block_message_template'),
 
     # Documents
-    path('documents/', DocumentCreateView.as_view(), name='documents'),
+    path('files/', FileCreateView.as_view(), name='files'),
+    path('files/delete/', files.delete, name='file_delete'),
 
     # Direct Message
     path('direct/message/', direct_message.index, name='direct_message'),
@@ -66,7 +66,9 @@ urlpatterns = [
     path('settings/tag/<int:tag_category_id>/edit/<int:tag_id>/', settings_tag.edit, name='settings_tag_edit'),
     path('settings/tag/delete/', settings_tag.delete, name='settings_tag_delete'),
     path('settings/style/', settings_style.index, name='settings_style_index'),
-    path('settings/get_presets/<int:preset_id>/', settings_style.get_presets, name='settings_style_preset'),
+
+    # Analytics
+    path('analytics/', analytics.index, name='analytics_index'),
 
     # Registration
     path('registration/line/entry/', end_user_registration.line_entry, name='registration_line_entry'),
@@ -83,8 +85,4 @@ urlpatterns = [
 
     # Worker
     path('worker/send/message/', message_worker.send_message, name='worker_send_message'),
-
-    # Sample
-    # botui
-    path('sample/botui/helloworld/', samples.botui_helloworld, name='sample_botui_helloworld'),
 ]

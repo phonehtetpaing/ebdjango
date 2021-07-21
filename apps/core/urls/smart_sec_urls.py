@@ -5,15 +5,9 @@ from apps.core.views.bot_callback.line import line_smartsec_callback
 from apps.core.views.bot_callback.contactchat import contactchat_callback
 from apps.core.views.vendor import dashboard
 from apps.core.views.vendor import logout
-from apps.core.views.vendor import user
-from apps.core.views.vendor import todo
-from apps.core.views.vendor import auto_message
-from apps.core.views.vendor import message_history
-from apps.core.views.vendor import manual_message
-from apps.core.views.vendor import directmessage
-from apps.core.views.vendor import event_category
-from apps.core.views.vendor import event
-from apps.core.views.vendor import event_reservation
+from apps.core.views.vendor import user, files, todo
+from apps.core.views.vendor import auto_message, manual_message, directmessage, message_history
+from apps.core.views.vendor import event_category, event, event_reservation
 from apps.core.views.vendor import settings_vendor
 from apps.core.views.vendor import settings_event
 from apps.core.views.vendor import settings_tag
@@ -24,7 +18,7 @@ from apps.core.views.vendor import block_message
 from apps.core.views.worker import manual_message as worker_manual_message
 from apps.core.views.vendor import affiliate
 from apps.core.views.vendor_common import end_user_registration
-
+from apps.core.views.vendor.files import FileCreateView
 
 urlpatterns = [
     # message callback
@@ -52,6 +46,8 @@ urlpatterns = [
     path('block/message/detail/<int:message_block_id>/', block_message.detail, name='block_message_detail'),
     path('block/message/edit/<int:message_block_id>/', block_message.edit, name='block_message_edit'),
     path('block/message/delete/<int:message_block_id>/', block_message.delete, name='block_message_delete'),
+    path('block/message/template/', block_message.get_message_template, name='block_message_template'),
+
     # Auto Mesasge
     path('auto/message/list/', auto_message.list, name='auto_message_list'),
     path('auto/message/detail/<int:auto_message_id>/', auto_message.detail, name='auto_message_detail'),
@@ -63,7 +59,8 @@ urlpatterns = [
     path('auto/message/inactive/<int:auto_message_id>/', auto_message.inactive, name='auto_message_inactive'),
     path('auto/message/active/<int:auto_message_id>/', auto_message.active, name='auto_message_active'),
     path('auto/message/history/list/', message_history.list, name='auto_message_history_list'),
-    path('auto/message/history/detail/<int:auto_message_history_id>/', message_history.detail, name='auto_message_history_detail'),
+    path('auto/message/history/detail/<int:auto_message_history_id>/', message_history.detail,
+         name='auto_message_history_detail'),
     # Manual Message
     path('manual/message/list/', manual_message.list, name='manual_message_list'),
     path('manual/message/detail/<int:message_id>/', manual_message.detail, name='manual_message_detail'),
@@ -73,7 +70,8 @@ urlpatterns = [
     path('manual/message/add/', manual_message.add, name='manual_message_add'),
     path('manual/message/edit/<int:message_id>/', manual_message.edit, name='manual_message_edit'),
     path('manual/message/delete/', manual_message.delete, name='manual_message_delete'),
-    path('manual/message/history/detail/<int:manual_message_history_id>/', message_history.manual_detail, name='manual_message_history_detail'),
+    path('manual/message/history/detail/<int:manual_message_history_id>/', message_history.manual_detail,
+         name='manual_message_history_detail'),
     # Direct Message
     path('directmessage/', directmessage.index, name='directmessage_index'),
     # Event Category
@@ -89,20 +87,30 @@ urlpatterns = [
     path('event/add/<int:event_category_id>/', event.add, name='event_add'),
     path('event/delete/', event.delete, name='event_delete'),
     path('event/reservation/list/<int:event_id>/', event_reservation.list, name='event_reservation_list'),
-    path('event/reservation/detail/<int:event_category_id>/', event_reservation.detail, name='event_reservation_detail'),
+    path('event/reservation/detail/<int:event_category_id>/', event_reservation.detail,
+         name='event_reservation_detail'),
+
+    # Documents
+    path('files/', FileCreateView.as_view(), name='files'),
+    path('files/delete/', files.delete, name='file_delete'),
 
     # Settings
     path('settings/vendor/', settings_vendor.index, name='setting_vendor_index'),
     path('settings/vendor/edit/<int:vendor_id>/', settings_vendor.edit, name='setting_vendor_edit'),
     path('settings/organization/list/', settings_vendor.organization_list, name='settings_organization_list'),
-    path('settings/organization/detail/<int:message_id>/', settings_vendor.organization_detail, name='settings_organization_detail'),
+    path('settings/organization/detail/<int:message_id>/', settings_vendor.organization_detail,
+         name='settings_organization_detail'),
     path('settings/account/list/', settings_vendor.account_list, name='settings_account_list'),
-    path('settings/account/detail/<int:vendor_user_id>/', settings_vendor_account.detail, name='settings_vendor_account_detail'),
+    path('settings/account/detail/<int:vendor_user_id>/', settings_vendor_account.detail,
+         name='settings_vendor_account_detail'),
     path('settings/account/add/', settings_vendor_account.add, name='settings_vendor_account_add'),
     path('settings/account/create/', settings_vendor_account.create_user, name='settings_vendor_account_create'),
-    path('settings/account/edit/<int:vendor_user_id>/', settings_vendor_account.edit, name='settings_vendor_account_edit'),
-    path('settings/account/login/detail/<int:vendor_user_id>/', settings_vendor_account.login_detail, name='settings_vendor_account_login_detail'),
-    path('settings/account/login/edit/<int:vendor_user_id>/', settings_vendor_account.login_edit, name='settings_vendor_account_login_edit'),
+    path('settings/account/edit/<int:vendor_user_id>/', settings_vendor_account.edit,
+         name='settings_vendor_account_edit'),
+    path('settings/account/login/detail/<int:vendor_user_id>/', settings_vendor_account.login_detail,
+         name='settings_vendor_account_login_detail'),
+    path('settings/account/login/edit/<int:vendor_user_id>/', settings_vendor_account.login_edit,
+         name='settings_vendor_account_login_edit'),
     path('settings/event/', settings_event.index, name='setting_event_index'),
     path('settings/event/edit/<int:vendor_event_settings_id>/', settings_event.edit, name='setting_event_edit'),
     path('settings/tag/', settings_tag.index, name='setting_tag_index'),
@@ -129,7 +137,8 @@ urlpatterns = [
 
     # System
     path('system/initial/setup/', system_initial_setup.list, name='system_initial_setup_list'),
-    path('system/initial/setup/detail/<int:vendor_id>/', system_initial_setup.detail, name='system_initial_setup_detail'),
+    path('system/initial/setup/detail/<int:vendor_id>/', system_initial_setup.detail,
+         name='system_initial_setup_detail'),
     path('system/initial/setup/edit/<int:vendor_id>/', system_initial_setup.edit, name='system_initial_setup_edit'),
     path('system/initial/setup/add/', system_initial_setup.add, name='system_initial_setup_add'),
     path('system/initial/setup/new/', system_initial_setup.new, name='system_initial_setup_new'),

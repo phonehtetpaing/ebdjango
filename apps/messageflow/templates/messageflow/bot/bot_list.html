@@ -1,0 +1,125 @@
+{% extends base_template %}
+{% load staticfiles %}
+{% load i18n %}
+
+<h1>bot list placeholder</h1>
+<ul>
+    <li>{{ item }}</li>
+    <li>No items yet.</li>
+</ul>
+
+{% block content %}
+
+<div class="card m-20">
+    <div class="card-header">
+         <a href="{% url namespace|add:':messageflow:bot_add' base_template=args.base_template %}" class="btn btn-md btn-danger">{% trans "New Bot" %}</a>
+        <a href="{% url namespace|add:':messageflow:scenario_add' base_template=args.base_template  %}" class="btn btn-md btn-danger">{% trans "New Scenario" %}</a>
+    </div>
+    <div class="card-body">
+    {% for item in bot_list %}
+    <div class="card my-20">
+    <div class="infinite-item row m-0 p-0 pt-20 pb-10 border-bottom bgcH-grey-100 card-header" style="box-sizing:border-box;">
+        <div class="col-12 px-20 my-auto d-flex justify-content-between">
+            <div>
+                <a href="{% url namespace|add:':messageflow:bot_edit' base_template=args.base_template bot_id=item.id %}">
+                    <h5 class="fsz-def tt-c c-grey-900">{{ item.name }}<i class="ti-pencil ml-5" style="font-size: 0.8rem;"></i></h5>
+                </a>
+            </div>
+            <div class="my-auto">
+                <div id="toggle_{{ item.id }}" class="btn-group disable-on-error" onclick="toggle_bot({{ item.id }})">
+                        <span class="btn btn-sm {% if item.is_active == False %} btn-secondary {% else %} btn-success disabled {% endif %}">
+                            On
+                        </span>
+                    <span class="btn btn-sm {% if item.is_active == True %} btn-secondary {% else %} btn-danger disabled {% endif %}">
+                            Off
+                        </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        {% for scenario in item.scenarios %}
+        <div class="row m-0 p-0">
+            <div class="bgcH-grey-100 col-11 px-20 offset-1 my-auto d-flex justify-content-between
+                {% if forloop.first %} pt-10 {% endif %}
+                {% if not forloop.last %} border-bottom mb-10 {% endif %}">
+                <div>
+                    <a href="{% url namespace|add:':messageflow:scenario_edit' base_template=args.base_template scenario_id=scenario.scenario_id %}">
+                        <h6 class="fsz-def tt-c c-grey-900">{{ scenario.name }}<i class="ti-pencil ml-5" style="font-size: 0.8rem;"></i></h6>
+                    </a>
+                </div>
+                <div>
+                    <h6 class="fsz-def tt-c c-grey-900">{{ scenario.weight }} %</h6>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    {% empty %}
+    <div>{% trans 'No Data' %}</div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block append_js_on_tail %}
+<script src='{% static "core/assets/js/lib/jquery/jquery.min.js" %}'></script>
+<script>
+    function toggle_button(trigger_id) {
+        let spanSelector = document.querySelectorAll("#toggle_" + trigger_id + " span");
+        spanSelector[0].classList.toggle("btn-success");
+        spanSelector[0].classList.toggle("btn-secondary");
+        spanSelector[0].classList.toggle("disabled");
+
+        spanSelector[1].classList.toggle("btn-danger");
+        spanSelector[1].classList.toggle("btn-secondary");
+        spanSelector[1].classList.toggle("disabled");
+    }
+
+    function button_on (trigger_id){
+        let spanSelector = document.querySelectorAll("#toggle_" + trigger_id + " span");
+        spanSelector[0].className = "btn btn-sm btn-success disabled";
+        spanSelector[1].className = "btn btn-sm btn-secondary";
+    }
+
+    function button_off (trigger_id) {
+        let spanSelector = document.querySelectorAll("#toggle_" + trigger_id + " span");
+        spanSelector[0].className = "btn btn-sm btn-secondary";
+        spanSelector[1].className = "btn btn-sm btn-danger disabled";
+    }
+
+    function create_alert () {
+        alertNode = document.createElement('div');
+        alertNode.innerHTML = '<div class="row m-0 p-0 h-md-100 bg-warning border-bottom"><div class="col-12 p-0 text-center"><p class="m-0">There was trouble connecting to the server. Please <a href="javascript:window.location.reload(true)">reload</a> this page.</p></div></div>'
+        document.body.insertBefore(alertNode, document.body.childNodes[0]);
+    }
+
+    function disable_elements (elements) {
+        elements.forEach((element) => {
+            element.style.pointerEvents='none';
+            element.style.opacity=0.5;
+        });
+    }
+
+    function toggle_bot(bot_id) {
+        toggle_button (bot_id);
+        $.ajax({
+            url: '{% url namespace|add:':messageflow:bot_toggle' %}',
+            data: {'bot_id': bot_id},
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (ajax_response) {
+                if(ajax_response.is_active === true){
+                    button_on(bot_id);
+                } else {
+                    button_off(bot_id);
+                }
+            },
+            error: function () {
+                create_alert();
+                disable_elements(document.querySelectorAll(".disable-on-error"));
+            }
+        });
+    }
+</script>
+{% endblock %}

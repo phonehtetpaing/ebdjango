@@ -1,0 +1,165 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+
+<form id="vendor_user_form" enctype=multipart/form-data class="container" action="{% url namespace|add:':settings_profile' %}" method="post" role="form">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row p-20" style="height: 85vh;">
+                <div class="card">
+                    <div class="card-header">
+                        {% trans "Vendor User Info" %}
+                    </div>
+                    <div class="card-body">
+                        <div class="row p-20">
+                            <div class="col-md-3">
+                                <!--<div class="peer"><img src="https://randomuser.me/api/portraits/men/3.jpg" alt="" class="w-6r h-6r bdrs-50p"></div>-->
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+
+                        <div class="row pt-20">
+                            <!-- User Profile Information -->
+                            <div class="col-md-12">
+                                <div class="bd bgc-white">
+                                    <div class="layers">
+                                        <div class="layer w-100">
+                                            <div class="bgc-light-blue-500 c-white p-20">
+                                                <div class="peers ai-c jc-sb gap-40">
+                                                    <div class="peer peer-greed">
+                                                        <h5>{% trans "Joined" %}: {{ vendor_user.regist_dt }}</h5>
+                                                        <p class="mB-0">{% trans "User Profile" %}</p>
+                                                    </div>
+                                                    <div class="peer">
+                                                        <h3 class="text-right">
+                                                            {{ vendor_user.get_full_name }}
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive p-20">
+                                                <div class="">
+
+                                                    {% for hidden_field in form.hidden_fields %}
+                                                    {{ hidden_field }}
+                                                    {% endfor %}
+
+                                                    {% if form.non_field_errors %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        {% for error in form.non_field_errors %}
+                                                        {{ error }}
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            {% include 'forms/default_form_field.html' with field=form.first_name %}
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            {% include 'forms/default_form_field.html' with field=form.last_name %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                            {% include 'forms/default_form_field.html' with field=form.email %}
+                                                        </div>
+                                                        <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+                                                            {% include 'forms/default_form_field.html' with field=form.tel %}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-3 pt-20">
+                                                            <button type="submit" form="vendor_user_form" class="btn btn-primary profile-submit-btn">{% trans "Save" %}</button>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <script>!function () { "use strict"; window.addEventListener("load", function () { var e = document.getElementById("needs-validation"); e.addEventListener("submit", function (t) { !1 === e.checkValidity() && (t.preventDefault(), t.stopPropagation()), e.classList.add("was-validated") }, !1) }, !1) }()</script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 p-20">
+            <div class="card">
+                <div class="card-header">
+                    {% trans "title_vendor_info"%}
+                </div>
+                <div class="card-body">
+
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                            {% endfor %}
+
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="col-md-12">
+                                <div class="row mb-3">
+                                    {% include 'forms/default_form_field.html' with field=vendor_info_form.company_name %}
+                                </div>
+                                <div class="row mb-3">
+                                    {% include 'forms/default_form_field.html' with field=vendor_info_form.company_name_kana %}
+                                </div>
+                                <div class="row mb-3">
+                                    {% include 'forms/default_form_field.html' with field=vendor_info_form.company_url %}
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="form-group">
+                                      {{ vendor_info_form.picture_url.label_tag }}
+                                      {{ vendor_info_form.picture_url }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 offset-1">
+                            <div class="form-group">
+                                <div class="vertical-align">
+                                    {% if vendor.picture_url %}
+                                    <img  src="{{ vendor.picture_url.url }}" class="w-6r h-6r bdrs-50p">
+                                    {% else %}
+                                    <img  src='{% static "core/assets/images/default_vendor_picture.png" %}' class="w-6r h-6r bdrs-50p">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!--{% include 'forms/default_form_field.html' with field=vendor_info_form.picture_url %}-->
+
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- avatar upload -->
+
+
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

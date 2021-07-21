@@ -1,0 +1,58 @@
+{% extends "base/blank.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="bdrs-3 ov-h bgc-white bd">
+        <div class="bgc-deep-purple-500 ta-c p-20">
+            <h5 class="c-white">{% trans "lbl_shipping_history_list" %}</h5>
+        </div>
+        <div class="pos-r">
+            <div class="pos-r">
+                <div class="bd bgc-white">
+                    <div class="layers">
+                        <div class="layer w-100">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans "col_product_name" %}</th>
+                                            <th>{% trans "col_bp_name" %}</th>
+                                            <th>{% trans "col_shipping_quantity" %}</th>
+                                            <th>{% trans "col_shipping_price" %}</th>
+                                            <th>{% trans "col_shipping_scheduled_dt" %}</th>
+                                            <th>{% trans "col_update_dt" %}</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for sh in shipping_histories %}
+                                        <tr>
+                                            <td>{{sh.product.name}}</td>
+                                            <td>{{sh.business_partner.name}}</td>
+                                            <td>{{sh.quantity}}</td>
+                                            <td>{{sh.price}}円</td>
+                                            <td>{{sh.scheduled_dt|date:"Y-m-d"}}</td>
+                                            <td>{{sh.update_dt|date:"Y-m-d H:i"}}</td>
+                                            <td></td>
+                                            <td>
+                                                <div class="peer">
+                                                    <a href="{% url namespace|add:':shipping_history_detail' history_id=sh.id %}" data-toggle="tooltip" data-placement="top">
+                                                        <img class="w-2r bdrs-50p" src='{% static "qa/images/senbay/icon_edit.png" %}'>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

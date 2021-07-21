@@ -1,0 +1,65 @@
+{% extends "forms/messages/base_message.html" %}
+{% load i18n %}
+
+{% block message_header %}
+    <i class="ti-layers-alt" aria-hidden="true"></i>
+{% endblock %}
+
+{% block message_contents %}
+
+<input type="text" class="form-control border-input input-child" placeholder="https://example.com/original.jpg" name="CarouselTemplate_alt_text_0_{{ message_counter }}" value="{{ message.param.alt_text}}" hidden>
+                <i class="columns-toggle ti-angle-down"></i>
+                <div class="carousel_columns scrolling-wrapper">
+                    {% for column in message.payload %}
+                    <div class="message-bubble bubble-white bubble-border-blue api-child col-md-12 item">
+                        <input type="hidden" name="CarouselTemplate_column_{{column.id}}_{{ forloop.counter }}" required>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="margin-right:15px;">{% trans "lbl_thumbnail" %}</span>
+                            <i class="ti-close"></i>
+                        </div>
+                        <div class="content">
+                            <div class="form-group">
+                                <div class="message-img-thumbnail vertical-align">
+                                    <img src="{{ column.image_url }}">
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <div class="btn btn-primary btn-fill btn-wd mt-3" onclick="(openModal(type='carousel', node=this))">Select Image</div>
+                                    <div class="this div is for jquery">
+                                        <div class="this div is for jquery">
+                                            <input type="text" class="message-img-input form-control border-input" placeholder=" " name="column_thumbnail_image_url_{{ message_counter }}" value="{{ column.image_url }}"  maxlength="1000" hidden required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 0;">
+                                <label>{% trans "lbl_title" %}</label>
+                                <input type="text" class="form-control border-input" placeholder="" name="column_title_{{ message_counter }}" value="{{ column.title }}"  maxlength="40" required>
+                                <small class="form-text text-muted">
+                                    Max 40 characters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>{% trans "lbl_text" %}</label>
+                                <input type="text" class="form-control border-input" placeholder="" name="column_text_{{ message_counter }}" value="{{ column.subtitle }}"  maxlength="60" required>
+                                <small class="form-text text-muted">
+                                    Max 60 characters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>{% trans "lbl_action_url" %}</label>
+                                <input type="url" class="form-control border-input" placeholder=" " name="column_action_json_{{ message_counter }}" value="{{ column.actions }}" maxlength="1000" required>
+                                <small class="form-text text-muted">
+                                    Max 1000 characters.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="carousel_columns_control text-right">
+                    <button type="button" class="btn btn-info btn-fill btn-wd add-carousel-child"><i class="ti-plus"></i></button>
+                </div>
+
+{% endblock %}

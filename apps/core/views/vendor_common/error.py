@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 
 
-def view_500(request, exception):
+def view_500(request):
     #TODO make this work
     return render(request, "common/500.html")
 
